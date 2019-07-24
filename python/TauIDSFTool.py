@@ -11,6 +11,8 @@ class TauIDSFTool:
         https://cms-nanoaod-integration.web.cern.ch/integration/master-102X/mc102X_doc.html#Tau"""
         
         assert year in [2016,2017,2018], "You must choose a year from 2016, 2017, or 2018."
+        self.ID = id
+        self.WP = wp
         
         if id in ['MVAoldDM2017v2']:
           if dm:
@@ -40,25 +42,25 @@ class TauIDSFTool:
             self.getSFvsPT  = self.disabled
             self.getSFvsDM  = self.disabled
         else:
-          raise IOError("Could not recognize tau ID '%s'!"%id)
+          raise IOError("Did not recognize tau ID '%s'!"%id)
         
     def getSFvsPT(self, pt, genmatch=5, unc=None):
         """Get tau ID SF vs. tau pT."""
         if genmatch==5:
           return self.func[unc].Eval(pt)
-        else:
-          return 1.0
+        return 1.0
         
     def getSFvsDM(self, pt, dm, genmatch=5, unc=None):
         """Get tau ID SF vs. tau DM."""
         if dm in self.DMs:
-          if genmatch==5 and pt>40 and dm in self.DMs:
+          if genmatch==5 and pt>40:
             bin = self.hist.GetXaxis().FindBin(dm)
+            SF  = self.hist.GetBinContent(bin)
             if unc=='Up':
-              return self.hist.GetBinContent(bin)+self.hist.GetBinError(bin)
+              SF += self.hist.GetBinError(bin)
             elif unc=='Down':
-              return self.hist.GetBinContent(bin)-self.hist.GetBinError(bin)
-            return self.hist.GetBinContent(bin)
+              SF -= self.hist.GetBinError(bin)
+            return SF
           return 1.0
         return 0.0
         
@@ -66,11 +68,12 @@ class TauIDSFTool:
         """Get tau ID SF vs. tau eta."""
         if genmatch in self.genmatches:
           bin = self.hist.GetXaxis().FindBin(eta)
+          SF  = self.hist.GetBinContent(bin)
           if unc=='Up':
-            return self.hist.GetBinContent(bin)+self.hist.GetBinError(bin)
+            SF += self.hist.GetBinError(bin)
           elif unc=='Down':
-            return self.hist.GetBinContent(bin)-self.hist.GetBinError(bin)
-          return self.hist.GetBinContent(bin)
+            SF -= self.hist.GetBinError(bin)
+          return SF
         return 1.0
         
     @staticmethod

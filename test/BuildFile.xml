@@ -1,0 +1,4 @@
+<bin file="testTauIDSFTool.cc" name="testTauIDSFTool">
+  <use name="root"/>
+  <use name="TauPOG/TauIDSFs"/>
+</bin>
