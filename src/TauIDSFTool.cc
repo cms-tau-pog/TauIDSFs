@@ -103,8 +103,8 @@ float TauIDSFTool::getSFvsPT( double pt, const std::string& unc){
 
 float TauIDSFTool::getSFvsDM( double pt, int dm, int genmatch, const std::string& unc) const{
   if(!isVsDM) disabled();
-  if(std::find(DMs.begin(),DMs.end(),dm)!=DMs.end()){
-    if(genmatch==5 and pt>40){
+  if(std::find(DMs.begin(),DMs.end(),dm)!=DMs.end() or pt<=40){
+    if(genmatch==5){
       Int_t bin = hist->GetXaxis()->FindBin(dm);
       float SF  = hist->GetBinContent(bin);
       if(unc=="Up")

@@ -52,8 +52,8 @@ class TauIDSFTool:
         
     def getSFvsDM(self, pt, dm, genmatch=5, unc=None):
         """Get tau ID SF vs. tau DM."""
-        if dm in self.DMs:
-          if genmatch==5 and pt>40:
+        if dm in self.DMs or pt<40:
+          if genmatch==5:
             bin = self.hist.GetXaxis().FindBin(dm)
             SF  = self.hist.GetBinContent(bin)
             if unc=='Up':
