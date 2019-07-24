@@ -13,17 +13,27 @@ cd $CMSSW_BASE/src
 git clone https://github.com/cms-tau-pog/TauIDSFs TauPOG/TauIDSFs
 scram b -j8
 ```
-After compiling with this respective directory hierarchy, you can acces the tool in python as
+
+### Python
+
+After compiling with this respective directory hierarchy, you can acces the tool (`python/TauIDSFTool.py`) in python as
 ```
 from TauPOG.TauIDSFs.TauIDSFTool import TauIDSFTool
 ```
 A test of the tool can be run with
 ```
-./python/testSFs.py
+./test/testSFs.py
+```
+
+### C++
+
+A similar C++ implementation is available (`src/TauIDSFTool.cc`). A test in C++ (`test/testTauIDSFTool.cc`) can be compiled and run with
+```
+scram b runtest
 ```
 
 
-## Application
+## Usage
 
 ### pT-dependent SFs
 
@@ -36,7 +46,7 @@ and to retrieve the scale factor for a given tau pT, do
 ```
 SF = tauSFTool.getSFvsPT(pt)
 ```
-The scale factor should only be applied to tau objects that match "real" taus at gen-level (`genmatch==5`). You can pass the optional `genmatch` argument and the function will return the SF if `genmatch==5`, and `1.` otherwise,
+The scale factor should only be applied to tau objects that match "real" taus at gen-level (`genmatch==5`). You can pass the optional `genmatch` argument and the function will return the appropriate SF if `genmatch==5`, and `1.0` otherwise,
 ```
 SF = tauSFTool.getSFvsPT(pt,genmatch)
 ```
