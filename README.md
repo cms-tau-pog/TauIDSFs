@@ -15,7 +15,7 @@ scram b -j8
 ```
 After compiling with this respective directory hierarchy, you can acces the tool in python as
 ```
-from TauIDSFs.TauIDSFTool import TauIDSFTool
+from TauPOG.TauIDSFs.TauIDSFTool import TauIDSFTool
 ```
 A test can be run with
 ```
@@ -29,7 +29,7 @@ A test can be run with
 
 Import the `TauIDSFTool` tool as
 ```
-from TauIDSFs.TauIDSFTool import TauIDSFTool
+from TauPOG.TauIDSFs.TauIDSFTool import TauIDSFTool
 ```
 As an example, to get the scale factors for the tight working point of the `'MVAoldDM2017v2'` tau ID in 2017, initialize the tool as
 ```
