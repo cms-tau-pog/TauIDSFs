@@ -17,7 +17,7 @@ After compiling with this respective directory hierarchy, you can acces the tool
 ```
 from TauPOG.TauIDSFs.TauIDSFTool import TauIDSFTool
 ```
-A test can be run with
+A test of the tool can be run with
 ```
 ./python/testSFs.py
 ```
@@ -27,12 +27,9 @@ A test can be run with
 
 ### pT-dependent SFs
 
-Import the `TauIDSFTool` tool as
-```
-from TauPOG.TauIDSFs.TauIDSFTool import TauIDSFTool
-```
 As an example, to get the scale factors for the tight working point of the `'MVAoldDM2017v2'` tau ID in 2017, initialize the tool as
 ```
+from TauPOG.TauIDSFs.TauIDSFTool import TauIDSFTool
 tauSFTool = TauIDSFTool(2017,'MVAoldDM2017v2','Tight')
 ```
 and to retrieve the scale factor for a given tau pT, do
@@ -54,6 +51,7 @@ SF_down = tauSFTool.getSFvsPT(pt,genmatch,unc='Down')
 
 Analysis using tau triggers and tau pT > 40 GeV, may use DM-dependent SFs as
 ```
+from TauPOG.TauIDSFs.TauIDSFTool import TauIDSFTool
 tauSFTool = TauIDSFTool(2017,'MVAoldDM2017v2','Tight',dm=True)
 SF        = tauSFTool.getSFvsDM(pt,dm,genmatch)
 SF_up     = tauSFTool.getSFvsDM(pt,dm,genmatch,unc='Up')
