@@ -6,11 +6,11 @@ modulepath = os.path.dirname(__file__)
 def ensureTFile(filename,option='READ'):
   """Open TFile, checking if the file in the given path exists."""
   if not os.path.isfile(filename):
-    print '>>> ERROR! ScaleFactorTool.ensureTFile: File in path "%s" does not exist!'%(filename)
+    raise OSError('File in path "%s" does not exist!'%(filename))
     exit(1)
   file = TFile(filename,option)
   if not file or file.IsZombie():
-    print '>>> ERROR! ScaleFactorTool.ensureTFile Could not open file by name "%s"'%(filename)
+    raise OSError('Could not open file by name "%s"'%(filename))
     exit(1)
   return file
   
@@ -29,11 +29,11 @@ def ensureFile(*paths,**kwargs):
 def extractTH1(file,histname,setdir=True):
   """Get histogram from a given file."""
   if not file or file.IsZombie():
-    print '>>> ERROR! ScaleFactorTool.extractTH1 Could not open file!'
+    raise OSError('Could not open file!')
     exit(1)
   hist = file.Get(histname)
   if not hist:
-    print '>>> ERROR! ScaleFactorTool.extractTH1: Did not find histogtam "%s" in file %s!'%(histname,file.GetName())
+    raise OSError('Did not find histogtam "%s" in file %s!'%(histname,file.GetName()))
     exit(1)
   if setdir and isinstance(hist,TH1):
     hist.SetDirectory(0)
@@ -54,4 +54,4 @@ def warning(string,**kwargs):
   if title: pre = "%s%s: "%(pre,title)
   string = "%s%s\033[0m"%(pre,string)
   print string.replace('\n','\n'+' '*(len(pre)-18))
-
+  
