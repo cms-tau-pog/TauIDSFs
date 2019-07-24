@@ -7,7 +7,7 @@ This repository contains the recommended scale factors for tau IDs. More detaile
 
 To install the tool for reading the tau ID scale factors, do
 ```
-CMSSW_BASE=CMSSW_10_3_3 # or whichever one you like
+CMSSW_BASE=CMSSW_10_3_3 # or whichever release one you desire
 cmsrel $CMSSW_BASE
 cd $CMSSW_BASE/src
 git clone https://github.com/cms-tau-pog/TauIDSFs TauPOG/TauIDSFs
@@ -22,7 +22,7 @@ from TauPOG.TauIDSFs.TauIDSFTool import TauIDSFTool
 ```
 A test of the tool can be run with
 ```
-./test/testSFs.py
+./test/testTauIDSFTool.py
 ```
 
 ### C++
