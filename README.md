@@ -55,7 +55,9 @@ SF_down = tauSFTool.getSFvsPT(pt,genmatch,unc='Down')
 Analysis using tau triggers and tau pT > 40 GeV, may use DM-dependent SFs as
 ```
 tauSFTool = TauIDSFTool(2017,'MVAoldDM2017v2','Tight',dm=True)
-SF = tauSFTool.getSFvsDM(pt,dm,genmatch)
+SF        = tauSFTool.getSFvsDM(pt,dm,genmatch)
+SF_up     = tauSFTool.getSFvsDM(pt,dm,genmatch,unc='Up')
+SF_down   = tauSFTool.getSFvsDM(pt,dm,genmatch,unc='Down')
 ```
 where `genmatch` is optional.
 
