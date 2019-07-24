@@ -16,7 +16,7 @@ scram b -j8
 
 ### Python
 
-After compiling with this respective directory hierarchy, you can acces the tool (`python/TauIDSFTool.py`) in python as
+After compiling with this respective directory hierarchy, you can acces the tool ([`python/TauIDSFTool.py`](python/TauIDSFTool.py)) in python as
 ```
 from TauPOG.TauIDSFs.TauIDSFTool import TauIDSFTool
 ```
@@ -27,7 +27,7 @@ A test of the tool can be run with
 
 ### C++
 
-A similar C++ implementation is available (`src/TauIDSFTool.cc`). A test in C++ (`test/testTauIDSFTool.cc`) can be compiled and run with
+A similar C++ implementation is available ([`src/TauIDSFTool.cc`](src/TauIDSFTool.cc)). A test in C++ ([`test/testTauIDSFTool.cc`](test/testTauIDSFTool.cc)) can be compiled and run with
 ```
 scram b runtest
 ```
