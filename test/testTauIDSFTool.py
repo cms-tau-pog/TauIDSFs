@@ -14,10 +14,10 @@ def printSFTable(year=2017,id='MVAoldDM2017v2',wp='Tight',dm=False):
       print ">>> "
       print ">>> SF for %s WP of %s in %s with pT = %s GeV"%(wp,id,year,pt)
       print ">>> "
-      print ">>> %10s"%('var \ DM')+''.join("%10d"%dm for dm in dmvals)
-      print ">>> %10s"%("central") +''.join("%10.6f"%sftool.getSFvsDM(pt,dm,5)        for dm in dmvals)
-      print ">>> %10s"%("up")      +''.join("%10.6f"%sftool.getSFvsDM(pt,dm,5,'Up')   for dm in dmvals)
-      print ">>> %10s"%("down")    +''.join("%10.6f"%sftool.getSFvsDM(pt,dm,5,'Down') for dm in dmvals)
+      print ">>> %10s"%('var \ DM')+''.join("%9d"%dm for dm in dmvals)
+      print ">>> %10s"%("central") +''.join("%9.5f"%sftool.getSFvsDM(pt,dm,5)        for dm in dmvals)
+      print ">>> %10s"%("up")      +''.join("%9.5f"%sftool.getSFvsDM(pt,dm,5,'Up')   for dm in dmvals)
+      print ">>> %10s"%("down")    +''.join("%9.5f"%sftool.getSFvsDM(pt,dm,5,'Down') for dm in dmvals)
       print ">>> "
       ###sftool.getSFvsPT(pt,5)     # results in an error
       ###sftool.getSFvsEta(1.5,1,5) # results in an error
@@ -26,10 +26,10 @@ def printSFTable(year=2017,id='MVAoldDM2017v2',wp='Tight',dm=False):
       print ">>> "
       print ">>> SF for %s WP of %s in %s"%(wp,id,year)
       print ">>> "
-      print ">>> %10s"%('var \ pt')+''.join("%10.1f"%pt for pt in ptvals)
-      print ">>> %10s"%("central") +''.join("%10.6f"%sftool.getSFvsPT(pt,5)        for pt in ptvals)
-      print ">>> %10s"%("up")      +''.join("%10.6f"%sftool.getSFvsPT(pt,5,'Up')   for pt in ptvals)
-      print ">>> %10s"%("down")    +''.join("%10.6f"%sftool.getSFvsPT(pt,5,'Down') for pt in ptvals)
+      print ">>> %10s"%('var \ pt')+''.join("%9.1f"%pt for pt in ptvals)
+      print ">>> %10s"%("central") +''.join("%9.5f"%sftool.getSFvsPT(pt,5)        for pt in ptvals)
+      print ">>> %10s"%("up")      +''.join("%9.5f"%sftool.getSFvsPT(pt,5,'Up')   for pt in ptvals)
+      print ">>> %10s"%("down")    +''.join("%9.5f"%sftool.getSFvsPT(pt,5,'Down') for pt in ptvals)
       print ">>> "
       ###sftool.getSFvsDM(25,1,5)   # results in an error
       ###sftool.getSFvsEta(1.5,1,5) # results in an error
