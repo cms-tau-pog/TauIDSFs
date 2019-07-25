@@ -18,7 +18,7 @@
 void printSFTable(int year=2017,std::string id="MVAoldDM2017v2",std::string wp="Tight",bool dm=false){
   TauIDSFTool* sftool = new TauIDSFTool(year,id,wp,dm);
   std::cout << std::fixed;
-  std::cout.precision(6);
+  std::cout.precision(5);
   if(dm){
     std::vector<int> DMs    = {0,1,5,6,10,11};
     std::vector<int> ptvals = {25,50};
@@ -26,21 +26,21 @@ void printSFTable(int year=2017,std::string id="MVAoldDM2017v2",std::string wp="
       std::cout << ">>> " << std::endl;
       std::cout << ">>> SF for "<<wp<<" WP of "<<id<<" in "<<year<<" with pT = "<<pt<<" GeV" << std::endl;
       std::cout << ">>> " << std::endl;
-      std::cout << ">>> " << std::setw(10) << "var \\ DM";
+      std::cout << ">>> " << std::setw(9) << "var \\ DM";
       for(auto const& dm_: DMs)
-        std::cout << std::setw(10) << dm_;
+        std::cout << std::setw(9) << dm_;
       std::cout << std::endl;
-      std::cout << ">>> " << std::setw(10) << "central";
+      std::cout << ">>> " << std::setw(9) << "central";
       for(auto const& dm_: DMs)
-        std::cout << std::setw(10) << sftool->getSFvsDM(pt,dm_,5);
+        std::cout << std::setw(9) << sftool->getSFvsDM(pt,dm_,5);
       std::cout << std::endl;
-      std::cout << ">>> " << std::setw(10) << "up";
+      std::cout << ">>> " << std::setw(9) << "up";
       for(auto const& dm_: DMs)
-        std::cout << std::setw(10) << sftool->getSFvsDM(pt,dm_,5,"Up");
+        std::cout << std::setw(9) << sftool->getSFvsDM(pt,dm_,5,"Up");
       std::cout << std::endl;
-      std::cout << ">>> " << std::setw(10) << "down";
+      std::cout << ">>> " << std::setw(9) << "down";
       for(auto const& dm_: DMs)
-        std::cout << std::setw(10) << sftool->getSFvsDM(pt,dm_,5,"Down");
+        std::cout << std::setw(9) << sftool->getSFvsDM(pt,dm_,5,"Down");
       std::cout << std::endl;
       std::cout << ">>> " << std::endl;
       //sftool->getSFvsPT(pt,5);    // results in an error
@@ -51,22 +51,22 @@ void printSFTable(int year=2017,std::string id="MVAoldDM2017v2",std::string wp="
       std::cout << ">>> " << std::endl;
       std::cout << ">>> SF for "<<wp<<" WP of "<<id<<" in "<<year<< std::endl;
       std::cout << ">>> " << std::endl;
-      std::cout << ">>> " << std::setw(10) << "var \\ pt";
+      std::cout << ">>> " << std::setw(9) << "var \\ pt";
       for(auto const& pt: ptvals)
-        std::cout << std::setw(10) << pt
+        std::cout << std::setw(9) << pt
         ;
       std::cout << std::endl;
-      std::cout << ">>> " << std::setw(10) << "central";
+      std::cout << ">>> " << std::setw(9) << "central";
       for(auto const& pt: ptvals)
-        std::cout << std::setw(10) << sftool->getSFvsPT(pt,5);
+        std::cout << std::setw(9) << sftool->getSFvsPT(pt,5);
       std::cout << std::endl;
-      std::cout << ">>> " << std::setw(10) << "up";
+      std::cout << ">>> " << std::setw(9) << "up";
       for(auto const& pt: ptvals)
-        std::cout << std::setw(10) << sftool->getSFvsPT(pt,5,"Up");
+        std::cout << std::setw(9) << sftool->getSFvsPT(pt,5,"Up");
       std::cout << std::endl;
-      std::cout << ">>> " << std::setw(10) << "down";
+      std::cout << ">>> " << std::setw(9) << "down";
       for(auto const& pt: ptvals)
-        std::cout << std::setw(10) << sftool->getSFvsPT(pt,5,"Down");
+        std::cout << std::setw(9) << sftool->getSFvsPT(pt,5,"Down");
       std::cout << std::endl;
       std::cout << ">>> " << std::endl;
       //sftool->getSFvsDM(25,1,5);   // results in an error
