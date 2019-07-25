@@ -31,7 +31,7 @@ A test of the tool can be run with
 
 A similar C++ implementation is available ([`src/TauIDSFTool.cc`](src/TauIDSFTool.cc)). A test in C++ ([`test/testTauIDSFTool.cc`](test/testTauIDSFTool.cc)) can be compiled and run with
 ```
-scram b runtests
+scram b runtests -j8
 ```
 
 
