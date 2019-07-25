@@ -1,5 +1,7 @@
 <use name="root"/>
 <!--<Flags CXXFLAGS="-O3 -fPIC -Wswitch -Wswitch-enum -Werror -Wno-error=bool-compare" />-->
 <export>
-  <lib name="1"/>
+  <lib name="TauIDSFTool"/>
 </export>
+<!--<library name="TauIDSFTool" file="*.cc">
+<library>-->
