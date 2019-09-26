@@ -57,7 +57,7 @@ The recommended uncertainties can be retrieved as
 SF_up   = tauSFTool.getSFvsPT(pt,genmatch,unc='Up')
 SF_down = tauSFTool.getSFvsPT(pt,genmatch,unc='Down')
 ```
-Currently, the SFs are meant for 2016 Legacy (`RunIISummer16`), 2017 ReReco (`RunIIFall17`), and 2018 (`RunIIAutumn18`).
+Currently, the SFs are meant for 2016 Legacy (`RunIISummer16MiniAODv3` MC with `17Jul2018` data), 2017 ReReco (`RunIIFall17MiniAODv2` MC with `31Mar2018`), and 2018 ReReco (`RunIIAutumn18MiniAOD` MC with `17Sep2018`/`22Jan2019` data).
 
 
 ### DM-dependent SFs
