@@ -8,7 +8,7 @@ This repository contains the recommended scale factors for tau IDs. More detaile
 To install the tool for reading the tau ID scale factors, do
 ```
 export SCRAM_ARCH=slc6_amd64_gcc700 # for CMSSW_10_3_3, check "scram list"
-CMSSW_BASE=CMSSW_10_3_3             # or whichever release one you desire
+CMSSW_BASE=CMSSW_10_3_3             # or whichever release you desire
 cmsrel $CMSSW_BASE
 cd $CMSSW_BASE/src
 git clone https://github.com/cms-tau-pog/TauIDSFs TauPOG/TauIDSFs
