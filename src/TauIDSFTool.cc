@@ -16,7 +16,7 @@ TFile* ensureTFile(const TString filename, bool verbose=false){
   return file;
 }
 
-TH1* loadTH1(const TFile* file, const std::string& histname){
+TH1* extractTH1(const TFile* file, const std::string& histname){
   TH1* hist = dynamic_cast<TH1*>((const_cast<TFile*>(file))->Get(histname.data()));
   if(!hist){
     std::cerr << std::endl << "ERROR! Failed to load histogram = '" << histname << "' from input file!" << std::endl;
@@ -25,7 +25,7 @@ TH1* loadTH1(const TFile* file, const std::string& histname){
   return hist;
 }
 
-const TF1* loadTF1(const TFile* file, const std::string& funcname){
+const TF1* extractTF1(const TFile* file, const std::string& funcname){
   const TF1* function = dynamic_cast<TF1*>((const_cast<TFile*>(file))->Get(funcname.data()));
   if(!function){
     std::cerr << std::endl << "ERROR! Failed to load function = '" << funcname << "' from input file!" << std::endl;
@@ -40,15 +40,15 @@ TauIDSFTool::TauIDSFTool(const int year, const std::string& id, const std::strin
   
   bool verbose = false;
   std::string datapath = Form("%s/src/TauPOG/TauIDSFs/data",getenv("CMSSW_BASE"));
-  std::vector<std::string> antiJetIDs  = {"MVAoldDM2017v2","DeepTau2017v2p1"};
-  std::vector<std::string> antiEleIDs  = {"antiEleMVAV6"};
-  std::vector<std::string> antiMuonIDs = {"antiMuV3"};
+  std::vector<std::string> antiJetIDs = {"MVAoldDM2017v2","DeepTau2017v2p1"};
+  std::vector<std::string> antiEleIDs = {"antiEleMVA6"};
+  std::vector<std::string> antiMuIDs  = {"antiMu3"};
   
   if(std::find(antiJetIDs.begin(),antiJetIDs.end(),ID)!=antiJetIDs.end()){
     if(dm){
       TString filename = Form("%s/TauID_SF_dm_%s_%d.root",datapath.data(),ID.data(),year);
       TFile* file = ensureTFile(filename,verbose);
-      hist = loadTH1(file,WP);
+      hist = extractTH1(file,WP);
       hist->SetDirectory(0);
       file->Close();
       DMs    = {0,1,10};
@@ -56,24 +56,24 @@ TauIDSFTool::TauIDSFTool(const int year, const std::string& id, const std::strin
     }else{
       TString filename = Form("%s/TauID_SF_pt_%s_%d.root",datapath.data(),ID.data(),year);
       TFile* file = ensureTFile(filename,verbose);
-      func[""]     = loadTF1(file,Form("%s_cent",WP.data()));
-      func["Up"]   = loadTF1(file,Form("%s_up",  WP.data()));
-      func["Down"] = loadTF1(file,Form("%s_down",WP.data()));
+      func[""]     = extractTF1(file,Form("%s_cent",WP.data()));
+      func["Up"]   = extractTF1(file,Form("%s_up",  WP.data()));
+      func["Down"] = extractTF1(file,Form("%s_down",WP.data()));
       file->Close();
       isVsPT = true;
     }
   }else if(std::find(antiEleIDs.begin(),antiEleIDs.end(),ID)!=antiEleIDs.end()){
       TString filename = Form("%s/TauID_SF_eta_%s_%d.root",datapath.data(),ID.data(),year);
       TFile* file = ensureTFile(filename,verbose);
-      hist = loadTH1(file,WP);
+      hist = extractTH1(file,WP);
       hist->SetDirectory(0);
       file->Close();
       genmatches = {1,3};
       isVsEta    = true;
-  }else if(std::find(antiMuonIDs.begin(),antiMuonIDs.end(),ID)!=antiMuonIDs.end()){
-      TString filename = Form("%s/data/TauID_SF_eta_%s_%d.root",getenv("CMSSW_BASE"),ID.data(),year);
+  }else if(std::find(antiMuIDs.begin(),antiMuIDs.end(),ID)!=antiMuIDs.end()){
+      TString filename = Form("%s/TauID_SF_eta_%s_%d.root",datapath.data(),ID.data(),year);
       TFile* file = ensureTFile(filename,verbose);
-      hist = loadTH1(file,WP);
+      hist = extractTH1(file,WP);
       hist->SetDirectory(0);
       file->Close();
       genmatches = {2,4};

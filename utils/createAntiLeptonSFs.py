@@ -8,6 +8,7 @@ from ROOT import TFile, TH1F, kFullDotLarge
 SF  = namedtuple('SF',['val','unc'])
 SF1 = SF(1,0) # default
 
+
 def createSFTH1(histname,sflist,etabins):
   """Create histogram from SF list."""
   print ">>>   Creating hisogram '%s'..."%histname

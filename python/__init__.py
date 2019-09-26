@@ -7,11 +7,9 @@ def ensureTFile(filename,option='READ'):
   """Open TFile, checking if the file in the given path exists."""
   if not os.path.isfile(filename):
     raise OSError('File in path "%s" does not exist!'%(filename))
-    exit(1)
   file = TFile(filename,option)
   if not file or file.IsZombie():
     raise OSError('Could not open file by name "%s"'%(filename))
-    exit(1)
   return file
   
 def ensureFile(*paths,**kwargs):
@@ -30,11 +28,9 @@ def extractTH1(file,histname,setdir=True):
   """Get histogram from a given file."""
   if not file or file.IsZombie():
     raise OSError('Could not open file!')
-    exit(1)
   hist = file.Get(histname)
   if not hist:
     raise OSError('Did not find histogtam "%s" in file %s!'%(histname,file.GetName()))
-    exit(1)
   if setdir and isinstance(hist,TH1):
     hist.SetDirectory(0)
   return hist
