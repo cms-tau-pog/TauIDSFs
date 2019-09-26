@@ -40,7 +40,7 @@ TauIDSFTool::TauIDSFTool(const int year, const std::string& id, const std::strin
   
   bool verbose = false;
   std::string datapath = Form("%s/src/TauPOG/TauIDSFs/data",getenv("CMSSW_BASE"));
-  std::vector<std::string> antiJetIDs  = {"MVAoldDM2017v2"};
+  std::vector<std::string> antiJetIDs  = {"MVAoldDM2017v2","DeepTau2017v2p1"};
   std::vector<std::string> antiEleIDs  = {"antiEleMVAV6"};
   std::vector<std::string> antiMuonIDs = {"antiMuV3"};
   
