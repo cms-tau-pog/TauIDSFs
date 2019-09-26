@@ -75,12 +75,12 @@ where `genmatch` is optional.
 
 ### Eta-dependent SFs for the anti-lepton discriminators
 
-To apply SFs to electrons or muons faking taus, use e.g.
+To apply SFs to electrons or muons faking taus, use the eta of the reconstructed tau and the genmatch code (1 for prompt electrons, 2 for prompt muons, 3 for electrons from tau decay and 4 for muons from tau decay):
 ```
 from TauPOG.TauIDSFs.TauIDSFTool import TauIDSFTool
-antiEleSFTool = TauIDSFTool(2017,'antiEle','Tight')
-antiMuSFTool  = TauIDSFTool(2017,'antiMu','Loose')
+antiEleSFTool = TauIDSFTool(2017,'antiEleMVA6','Loose')
+antiMuSFTool  = TauIDSFTool(2017,'antiMu3','Tight')
 antiEleSF     = antiEleSFTool.getSFvsEta(eta,genmatch)
 antiMuSF      = antiMuSFTool.getSFvsEta(eta,genmatch)
 ```
-Note: The SFs for `againstMu3` in 2016 Legacy ([`data/TauID_SF_eta_antiMu3_2016.root`](data/TauID_SF_eta_antiMu3_2016.root)) are must placeholders.
+For the uncertainty, please seek the recommendations by the TauPOG. Note: The SFs for `againstMu3` in 2016 Legacy ([`data/TauID_SF_eta_antiMu3_2016.root`](data/TauID_SF_eta_antiMu3_2016.root)) are must placeholders.
