@@ -57,6 +57,7 @@ The recommended uncertainties can be retrieved as
 SF_up   = tauSFTool.getSFvsPT(pt,genmatch,unc='Up')
 SF_down = tauSFTool.getSFvsPT(pt,genmatch,unc='Down')
 ```
+Currently, the SFs are meant for 2016 Legacy (`RunIISummer16`), 2017 ReReco (`RunIIFall17`), and 2018 (`RunIIAutumn18`).
 
 
 ### DM-dependent SFs
@@ -74,4 +75,12 @@ where `genmatch` is optional.
 
 ### Eta-dependent SFs for the anti-lepton discriminators
 
-Coming soon.
+To apply SFs to electrons or muons faking taus, use e.g.
+```
+from TauPOG.TauIDSFs.TauIDSFTool import TauIDSFTool
+antiEleSFTool = TauIDSFTool(2017,'antiEle','Tight')
+antiMuSFTool  = TauIDSFTool(2017,'antiMu','Loose')
+antiEleSF     = antiEleSFTool.getSFvsEta(eta,genmatch)
+antiMuSF      = antiMuSFTool.getSFvsEta(eta,genmatch)
+```
+Note: The SFs for `againstMu3` in 2016 Legacy ([`data/TauID_SF_eta_antiMu3_2016.root`](data/TauID_SF_eta_antiMu3_2016.root)) are must placeholders.
