@@ -92,4 +92,4 @@ antiMuSFTool  = TauIDSFTool('2017ReReco','antiMu3','Tight')
 antiEleSF     = antiEleSFTool.getSFvsEta(eta,genmatch)
 antiMuSF      = antiMuSFTool.getSFvsEta(eta,genmatch)
 ```
-For the uncertainty, please seek the recommendations by the TauPOG. Note: The SFs for `againstMu3` in 2016 Legacy ([`data/TauID_SF_eta_antiMu3_2016.root`](data/TauID_SF_eta_antiMu3_2016.root)) are must placeholders.
+For the uncertainty, please seek the recommendations by the TauPOG. Note: The SFs for `againstMu3` in 2016 Legacy ([`data/TauID_SF_eta_antiMu3_2016Legacy.root`](data/TauID_SF_eta_antiMu3_2016Legacy.root)) are must placeholders.
