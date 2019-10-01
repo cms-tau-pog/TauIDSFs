@@ -56,7 +56,7 @@ if __name__ == "__main__":
   print ">>> start test tau ID SF tool"
   start2 = time.time()
   years  = ['2017ReReco'] # ['2016Legacy','2017ReReco','2018ReReco']
-  ids    = ['MVAoldDM2017v2','DeepTau2017v2p1','antiEleMVA6','antiMu3']
+  ids    = ['MVAoldDM2017v2','DeepTau2017v2p1VSjet','antiEleMVA6','antiMu3']
   for year in years:
     for id in ids:
       vslist = ['eta'] if 'anti' in id else [ 'pt', 'dm' ]

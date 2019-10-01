@@ -15,7 +15,7 @@ class TauIDSFTool:
         self.ID = id
         self.WP = wp
         
-        if id in ['MVAoldDM2017v2','DeepTau2017v2p1']:
+        if id in ['MVAoldDM2017v2','DeepTau2017v2p1VSjet']:
           if dm:
             file = ensureTFile("%s/TauID_SF_dm_%s_%s.root"%(datapath,id,year))
             self.hist = extractTH1(file,wp)

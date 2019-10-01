@@ -112,7 +112,7 @@ int main(int argc, char* argv[]){
   
   std::vector<std::string> years = {"2017ReReco"}; // {"2016Legacy","2017ReReco","2018ReReco"};
   std::vector<std::string> WPs   = {"Loose","Medium","Tight"};
-  std::vector<std::string> IDs   = {"MVAoldDM2017v2","DeepTau2017v2p1","antiEleMVA6","antiMu3"};
+  std::vector<std::string> IDs   = {"MVAoldDM2017v2","DeepTau2017v2p1VSjet","antiEleMVA6","antiMu3"};
   
   for(auto const& id: IDs){
     for(auto const& year: years){
