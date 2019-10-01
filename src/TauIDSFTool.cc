@@ -36,17 +36,29 @@ const TF1* extractTF1(const TFile* file, const std::string& funcname){
 
 
 
-TauIDSFTool::TauIDSFTool(const int year, const std::string& id, const std::string& wp, const bool dm): ID(id), WP(wp){
+TauIDSFTool::TauIDSFTool(const std::string& year, const std::string& id, const std::string& wp, const bool dm): ID(id), WP(wp){
   
   bool verbose = false;
   std::string datapath = Form("%s/src/TauPOG/TauIDSFs/data",getenv("CMSSW_BASE"));
+  std::vector<std::string> years      = {"2016Legacy","2017ReReco","2018ReReco"};
   std::vector<std::string> antiJetIDs = {"MVAoldDM2017v2","DeepTau2017v2p1"};
   std::vector<std::string> antiEleIDs = {"antiEleMVA6"};
   std::vector<std::string> antiMuIDs  = {"antiMu3"};
   
+  if(std::find(years.begin(),years.end(),year)==years.end()){
+    std::cerr << std::endl << "ERROR! '"<<year<<"' is not a valid year! Please choose from ";
+     std::vector<std::string>::iterator it = years.begin();
+    for(it=years.begin(); it!=years.end(); it++){
+      if(it!=years.begin()) std::cerr << ", ";
+      std::cerr << *it;
+    }
+    std::cerr << std::endl;
+    assert(0);
+  }
+  
   if(std::find(antiJetIDs.begin(),antiJetIDs.end(),ID)!=antiJetIDs.end()){
     if(dm){
-      TString filename = Form("%s/TauID_SF_dm_%s_%d.root",datapath.data(),ID.data(),year);
+      TString filename = Form("%s/TauID_SF_dm_%s_%s.root",datapath.data(),ID.data(),year.data());
       TFile* file = ensureTFile(filename,verbose);
       hist = extractTH1(file,WP);
       hist->SetDirectory(0);
@@ -54,7 +66,7 @@ TauIDSFTool::TauIDSFTool(const int year, const std::string& id, const std::strin
       DMs    = {0,1,10};
       isVsDM = true;
     }else{
-      TString filename = Form("%s/TauID_SF_pt_%s_%d.root",datapath.data(),ID.data(),year);
+      TString filename = Form("%s/TauID_SF_pt_%s_%s.root",datapath.data(),ID.data(),year.data());
       TFile* file = ensureTFile(filename,verbose);
       func[""]     = extractTF1(file,Form("%s_cent",WP.data()));
       func["Up"]   = extractTF1(file,Form("%s_up",  WP.data()));
@@ -63,7 +75,7 @@ TauIDSFTool::TauIDSFTool(const int year, const std::string& id, const std::strin
       isVsPT = true;
     }
   }else if(std::find(antiEleIDs.begin(),antiEleIDs.end(),ID)!=antiEleIDs.end()){
-      TString filename = Form("%s/TauID_SF_eta_%s_%d.root",datapath.data(),ID.data(),year);
+      TString filename = Form("%s/TauID_SF_eta_%s_%s.root",datapath.data(),ID.data(),year.data());
       TFile* file = ensureTFile(filename,verbose);
       hist = extractTH1(file,WP);
       hist->SetDirectory(0);
@@ -71,7 +83,7 @@ TauIDSFTool::TauIDSFTool(const int year, const std::string& id, const std::strin
       genmatches = {1,3};
       isVsEta    = true;
   }else if(std::find(antiMuIDs.begin(),antiMuIDs.end(),ID)!=antiMuIDs.end()){
-      TString filename = Form("%s/TauID_SF_eta_%s_%d.root",datapath.data(),ID.data(),year);
+      TString filename = Form("%s/TauID_SF_eta_%s_%s.root",datapath.data(),ID.data(),year.data());
       TFile* file = ensureTFile(filename,verbose);
       hist = extractTH1(file,WP);
       hist->SetDirectory(0);
@@ -86,7 +98,7 @@ TauIDSFTool::TauIDSFTool(const int year, const std::string& id, const std::strin
 
 
 
-float TauIDSFTool::getSFvsPT( double pt, int genmatch, const std::string& unc){
+float TauIDSFTool::getSFvsPT(double pt, int genmatch, const std::string& unc){
   if(!isVsPT) disabled();
   if(genmatch==5){
     float SF = func[unc]->Eval(pt);
@@ -95,13 +107,13 @@ float TauIDSFTool::getSFvsPT( double pt, int genmatch, const std::string& unc){
   return 1.0;
 }
 
-float TauIDSFTool::getSFvsPT( double pt, const std::string& unc){
+float TauIDSFTool::getSFvsPT(double pt, const std::string& unc){
   return getSFvsPT(pt,5,unc);
 }
 
 
 
-float TauIDSFTool::getSFvsDM( double pt, int dm, int genmatch, const std::string& unc) const{
+float TauIDSFTool::getSFvsDM(double pt, int dm, int genmatch, const std::string& unc) const{
   if(!isVsDM) disabled();
   if(std::find(DMs.begin(),DMs.end(),dm)!=DMs.end() or pt<=40){
     if(genmatch==5){
@@ -118,7 +130,7 @@ float TauIDSFTool::getSFvsDM( double pt, int dm, int genmatch, const std::string
   return 0.0;
 }
 
-float TauIDSFTool::getSFvsDM( double pt, int dm, const std::string& unc) const{
+float TauIDSFTool::getSFvsDM(double pt, int dm, const std::string& unc) const{
   return getSFvsDM(pt,dm,5,unc);
 }
 

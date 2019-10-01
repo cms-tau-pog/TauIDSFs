@@ -34,6 +34,16 @@ A similar C++ implementation is available ([`src/TauIDSFTool.cc`](src/TauIDSFToo
 scram b runtests -j8
 ```
 
+## Scale factor versions
+
+The SFs in [`data`](data) are meant for the following campaigns:
+
+| Year label   | MC campaign  | Data campaign |
+|:------------:|:------------:| :------------:|
+| `2016Legacy` | `RunIISummer16MiniAODv3` | `17Jul2018` |
+| `2017ReReco` | `RunIIFall17MiniAODv2`   | `31Mar2018` |
+| `2018ReReco` | `RunIIAutumn18MiniAOD`   | `17Sep2018`/`22Jan2019` |
+
 
 ## Usage
 
@@ -42,7 +52,7 @@ scram b runtests -j8
 As an example, to get the scale factors for the tight working point of the `'MVAoldDM2017v2'` tau ID in 2017, initialize the tool as
 ```
 from TauPOG.TauIDSFs.TauIDSFTool import TauIDSFTool
-tauSFTool = TauIDSFTool(2017,'MVAoldDM2017v2','Tight')
+tauSFTool = TauIDSFTool('2017ReReco','MVAoldDM2017v2','Tight')
 ```
 and to retrieve the scale factor for a given tau pT, do
 ```
@@ -57,7 +67,6 @@ The recommended uncertainties can be retrieved as
 SF_up   = tauSFTool.getSFvsPT(pt,genmatch,unc='Up')
 SF_down = tauSFTool.getSFvsPT(pt,genmatch,unc='Down')
 ```
-Currently, the SFs are meant for 2016 Legacy (`RunIISummer16MiniAODv3` MC with `17Jul2018` data), 2017 ReReco (`RunIIFall17MiniAODv2` MC with `31Mar2018`), and 2018 ReReco (`RunIIAutumn18MiniAOD` MC with `17Sep2018`/`22Jan2019` data).
 
 
 ### DM-dependent SFs
@@ -65,7 +74,7 @@ Currently, the SFs are meant for 2016 Legacy (`RunIISummer16MiniAODv3` MC with `
 Analysis using tau triggers and tau pT > 40 GeV, may use DM-dependent SFs as
 ```
 from TauPOG.TauIDSFs.TauIDSFTool import TauIDSFTool
-tauSFTool = TauIDSFTool(2017,'MVAoldDM2017v2','Tight',dm=True)
+tauSFTool = TauIDSFTool('2017ReReco','MVAoldDM2017v2','Tight',dm=True)
 SF        = tauSFTool.getSFvsDM(pt,dm,genmatch)
 SF_up     = tauSFTool.getSFvsDM(pt,dm,genmatch,unc='Up')
 SF_down   = tauSFTool.getSFvsDM(pt,dm,genmatch,unc='Down')
@@ -78,8 +87,8 @@ where `genmatch` is optional.
 To apply SFs to electrons or muons faking taus, use the eta of the reconstructed tau and the genmatch code (1 for prompt electrons, 2 for prompt muons, 3 for electrons from tau decay and 4 for muons from tau decay):
 ```
 from TauPOG.TauIDSFs.TauIDSFTool import TauIDSFTool
-antiEleSFTool = TauIDSFTool(2017,'antiEleMVA6','Loose')
-antiMuSFTool  = TauIDSFTool(2017,'antiMu3','Tight')
+antiEleSFTool = TauIDSFTool('2017ReReco','antiEleMVA6','Loose')
+antiMuSFTool  = TauIDSFTool('2017ReReco','antiMu3','Tight')
 antiEleSF     = antiEleSFTool.getSFvsEta(eta,genmatch)
 antiMuSF      = antiMuSFTool.getSFvsEta(eta,genmatch)
 ```

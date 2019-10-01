@@ -10,13 +10,14 @@ class TauIDSFTool:
         """Choose the IDs and WPs for SFs. For available tau IDs and WPs, check
         https://cms-nanoaod-integration.web.cern.ch/integration/master-102X/mc102X_doc.html#Tau"""
         
-        assert year in [2016,2017,2018], "You must choose a year from 2016, 2017, or 2018."
+        years = ['2016Legacy','2017ReReco','2018ReReco']
+        assert year in years, "You must choose a year from %s."%(', '.join(years))
         self.ID = id
         self.WP = wp
         
         if id in ['MVAoldDM2017v2','DeepTau2017v2p1']:
           if dm:
-            file = ensureTFile("%s/TauID_SF_dm_%s_%d.root"%(datapath,id,year))
+            file = ensureTFile("%s/TauID_SF_dm_%s_%s.root"%(datapath,id,year))
             self.hist = extractTH1(file,wp)
             self.hist.SetDirectory(0)
             file.Close()
@@ -24,7 +25,7 @@ class TauIDSFTool:
             self.getSFvsPT  = self.disabled
             self.getSFvsEta = self.disabled
           else:
-            file = ensureTFile("%s/TauID_SF_pt_%s_%d.root"%(datapath,id,year))
+            file = ensureTFile("%s/TauID_SF_pt_%s_%s.root"%(datapath,id,year))
             self.func         = { }
             self.func[None]   = file.Get("%s_cent"%(wp))
             self.func['Up']   = file.Get("%s_up"%(wp))
@@ -33,7 +34,7 @@ class TauIDSFTool:
             self.getSFvsDM  = self.disabled
             self.getSFvsEta = self.disabled
         elif id in ['antiMu3','antiEleMVA6']:
-            file = ensureTFile("%s/TauID_SF_eta_%s_%d.root"%(datapath,id,year))
+            file = ensureTFile("%s/TauID_SF_eta_%s_%s.root"%(datapath,id,year))
             self.hist = extractTH1(file,wp)
             self.hist.SetDirectory(0)
             file.Close()

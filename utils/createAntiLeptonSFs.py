@@ -75,21 +75,21 @@ def main():
   antiMuEtaBins = ( 0.0, 0.4, 0.8, 1.2, 1.7, 2.3 )
   antiLepSFs = { }
   antiLepSFs['antiEleMVA6'] = {
-    2016: { # https://indico.cern.ch/event/828205/contributions/3468902/attachments/1863558/3063927/EtoTauFRLegacy16.pdf
+    '2016Legacy': { # https://indico.cern.ch/event/828205/contributions/3468902/attachments/1863558/3063927/EtoTauFRLegacy16.pdf
       'VLoose': ( SF(1.175,0.003), SF1, SF(1.288,0.006), SF1 ), # LEGACY
       'Loose':  ( SF(1.38, 0.011), SF1, SF(1.24, 0.05 ), SF1 ),
       'Medium': ( SF(1.88, 0.04 ), SF1, SF(1.11, 0.10 ), SF1 ),
       'Tight':  ( SF(2.16, 0.10 ), SF1, SF(0.91, 0.20 ), SF1 ),
       'VTight': ( SF(2.04, 0.16 ), SF1, SF(0.78, 0.31 ), SF1 ),
     },
-    2017: { # https://twiki.cern.ch/twiki/bin/viewauth/CMS/TauIDRecommendation13TeV#Electron_to_tau_fake_rate
+    '2017ReReco': { # https://twiki.cern.ch/twiki/bin/viewauth/CMS/TauIDRecommendation13TeV#Electron_to_tau_fake_rate
       'VLoose': ( SF(1.09,0.01), SF1, SF(1.19,0.01), SF1 ),
       'Loose':  ( SF(1.17,0.04), SF1, SF(1.25,0.06), SF1 ),
       'Medium': ( SF(1.40,0.12), SF1, SF(1.21,0.26), SF1 ),
       'Tight':  ( SF(1.80,0.20), SF1, SF(1.53,0.60), SF1 ),
       'VTight': ( SF(1.96,0.27), SF1, SF(1.66,0.80), SF1 ),
     },
-    2018: { # https://indico.cern.ch/event/831606/contributions/3483937/attachments/1871414/3079821/EtoTauFR2018-updated.pdf
+    '2018ReReco': { # https://indico.cern.ch/event/831606/contributions/3483937/attachments/1871414/3079821/EtoTauFR2018-updated.pdf
       'VLoose': ( SF(1.130,0.005), SF1, SF(1.003,0.005), SF1 ), # PRELIMINARY
       'Loose':  ( SF(1.229,0.018), SF1, SF(0.926,0.015), SF1 ),
       'Medium': ( SF(1.36, 0.004), SF1, SF(0.91, 0.05 ), SF1 ),
@@ -98,15 +98,15 @@ def main():
     },
   }
   antiLepSFs['antiMu3'] = {
-    2016: { # https://twiki.cern.ch/twiki/bin/viewauth/CMS/TauIDRecommendation13TeV#Muon_to_tau_fake_rate
+    '2016Legacy': { # https://twiki.cern.ch/twiki/bin/viewauth/CMS/TauIDRecommendation13TeV#Muon_to_tau_fake_rate
       'Loose': ( SF(1.146,0.50), SF(1.084,0.50), SF(1.218,0.50), SF(1.490,0.50), SF(2.008,0.50), SF1 ), # WRONG; TO BE UPDATED
       'Tight': ( SF(1.470,0.50), SF(1.367,0.50), SF(1.251,0.50), SF(1.770,0.50), SF(1.713,0.50), SF1 ),
     },
-    2017: { # https://twiki.cern.ch/twiki/bin/viewauth/CMS/TauIDRecommendation13TeV#Muon_to_tau_fake_rate
+    '2017ReReco': { # https://twiki.cern.ch/twiki/bin/viewauth/CMS/TauIDRecommendation13TeV#Muon_to_tau_fake_rate
       'Loose': ( SF(1.06,0.05), SF(1.02,0.04), SF(1.10,0.04), SF(1.03,0.18), SF(1.94,0.35), SF1 ),
       'Tight': ( SF(1.17,0.12), SF(1.29,0.30), SF(1.14,0.05), SF(0.93,0.60), SF(1.61,0.60), SF1 ),
     },
-    2018: { # https://indico.cern.ch/event/814232/contributions/3397978/attachments/1831354/2999219/mu-tau_FR_2018.pdf
+    '2018ReReco': { # https://indico.cern.ch/event/814232/contributions/3397978/attachments/1831354/2999219/mu-tau_FR_2018.pdf
       'Loose': ( SF(1.05,0.05), SF(0.96,0.04), SF(1.06,0.05), SF(1.45,0.08), SF(1.75,0.16), SF1 ),
       'Tight': ( SF(1.23,0.05), SF(1.37,0.18), SF(1.12,0.04), SF(1.84,0.32), SF(2.01,0.43), SF1 ),
     },
@@ -114,7 +114,7 @@ def main():
   
   for id in antiLepSFs:
     for year in antiLepSFs[id]:
-      filename = "%s/TauID_SF_eta_%s_%d.root"%(outdir,id,year)
+      filename = "%s/TauID_SF_eta_%s_%s.root"%(outdir,id,year)
       sftable  = antiLepSFs[id][year]
       etabins  = antiEleEtaBins if 'antiEle' in id else antiMuEtaBins
       createSFFile(filename,sftable,etabins)

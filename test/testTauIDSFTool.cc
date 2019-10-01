@@ -13,9 +13,10 @@
 #include <iomanip> // std::setw
 #include <string>
 #include <vector>
+#include <chrono>
 
 
-void printSFTable(int year, std::string id, std::string wp, std::string vs){
+void printSFTable(std::string year, std::string id, std::string wp, std::string vs){
   bool dm = (vs=="dm");
   TauIDSFTool* sftool = new TauIDSFTool(year,id,wp,dm);
   std::cout << std::fixed;
@@ -107,14 +108,11 @@ void printSFTable(int year, std::string id, std::string wp, std::string vs){
 int main(int argc, char* argv[]){
   std::cout << ">>> " << std::endl;
   std::cout << ">>> testTauIDSFTool" << std::endl;
+  auto start = std::chrono::system_clock::now();
   
-  time_t time0, time1;
-  time(&time0);
-  
-  std::vector<int> years       = {2017}; //{2016,2017,2018};
-  std::vector<bool> DMs        = {true,false};
-  std::vector<std::string> WPs = {"Loose","Medium","Tight"};
-  std::vector<std::string> IDs = {"MVAoldDM2017v2","DeepTau2017v2p1","antiEleMVA6","antiMu3"};
+  std::vector<std::string> years = {"2017ReReco"}; // {"2016Legacy","2017ReReco","2018ReReco"};
+  std::vector<std::string> WPs   = {"Loose","Medium","Tight"};
+  std::vector<std::string> IDs   = {"MVAoldDM2017v2","DeepTau2017v2p1","antiEleMVA6","antiMu3"};
   
   for(auto const& id: IDs){
     for(auto const& year: years){
@@ -132,11 +130,11 @@ int main(int argc, char* argv[]){
     }
   }
   
-  time(&time1);
-  float seconds = time1 - time0;
+  auto end = std::chrono::system_clock::now();
+  std::chrono::duration<double> seconds = end-start;
   
   std::cout << ">>> " << std::endl;
-  std::cout << ">>> done after " << seconds << " seconds" << std::endl;
+  std::cout << ">>> done after " << seconds.count() << " seconds" << std::endl;
   
   return 0;
 }
