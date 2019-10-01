@@ -6,7 +6,7 @@ datapath = os.environ['CMSSW_BASE']+"/src/TauPOG/TauIDSFs/data"
 
 class TauIDSFTool:
     
-    def __init__(self, year, id, wp='Tight', dm=False):
+    def __init__(self, year, id, wp='Tight', dm=False, path=datapath):
         """Choose the IDs and WPs for SFs. For available tau IDs and WPs, check
         https://cms-nanoaod-integration.web.cern.ch/integration/master-102X/mc102X_doc.html#Tau"""
         
@@ -17,15 +17,15 @@ class TauIDSFTool:
         
         if id in ['MVAoldDM2017v2','DeepTau2017v2p1VSjet']:
           if dm:
-            file = ensureTFile("%s/TauID_SF_dm_%s_%s.root"%(datapath,id,year))
+            file = ensureTFile("%s/TauID_SF_dm_%s_%s.root"%(path,id,year))
             self.hist = extractTH1(file,wp)
             self.hist.SetDirectory(0)
             file.Close()
-            self.DMs = [0,1,10]
+            self.DMs = [0,1,10] if 'oldDM' in id else [0,1,10,11]
             self.getSFvsPT  = self.disabled
             self.getSFvsEta = self.disabled
           else:
-            file = ensureTFile("%s/TauID_SF_pt_%s_%s.root"%(datapath,id,year))
+            file = ensureTFile("%s/TauID_SF_pt_%s_%s.root"%(path,id,year))
             self.func         = { }
             self.func[None]   = file.Get("%s_cent"%(wp))
             self.func['Up']   = file.Get("%s_up"%(wp))
@@ -34,7 +34,7 @@ class TauIDSFTool:
             self.getSFvsDM  = self.disabled
             self.getSFvsEta = self.disabled
         elif id in ['antiMu3','antiEleMVA6']:
-            file = ensureTFile("%s/TauID_SF_eta_%s_%s.root"%(datapath,id,year))
+            file = ensureTFile("%s/TauID_SF_eta_%s_%s.root"%(path,id,year))
             self.hist = extractTH1(file,wp)
             self.hist.SetDirectory(0)
             file.Close()
