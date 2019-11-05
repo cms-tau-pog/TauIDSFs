@@ -63,7 +63,12 @@ TauIDSFTool::TauIDSFTool(const std::string& year, const std::string& id, const s
       hist = extractTH1(file,WP);
       hist->SetDirectory(0);
       file->Close();
+      delete file;
       DMs    = {0,1,10};
+      if (ID.find("oldDM") != std::string::npos)
+      {
+          DMs.push_back(11);
+      }
       isVsDM = true;
     }else{
       TString filename = Form("%s/TauID_SF_pt_%s_%s.root",datapath.data(),ID.data(),year.data());
@@ -72,6 +77,7 @@ TauIDSFTool::TauIDSFTool(const std::string& year, const std::string& id, const s
       func["Up"]   = extractTF1(file,Form("%s_up",  WP.data()));
       func["Down"] = extractTF1(file,Form("%s_down",WP.data()));
       file->Close();
+      delete file;
       isVsPT = true;
     }
   }else if(std::find(antiEleIDs.begin(),antiEleIDs.end(),ID)!=antiEleIDs.end()){
@@ -80,6 +86,7 @@ TauIDSFTool::TauIDSFTool(const std::string& year, const std::string& id, const s
       hist = extractTH1(file,WP);
       hist->SetDirectory(0);
       file->Close();
+      delete file;
       genmatches = {1,3};
       isVsEta    = true;
   }else if(std::find(antiMuIDs.begin(),antiMuIDs.end(),ID)!=antiMuIDs.end()){
@@ -88,6 +95,7 @@ TauIDSFTool::TauIDSFTool(const std::string& year, const std::string& id, const s
       hist = extractTH1(file,WP);
       hist->SetDirectory(0);
       file->Close();
+      delete file;
       genmatches = {2,4};
       isVsEta    = true;
   }else{
