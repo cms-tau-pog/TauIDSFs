@@ -1,6 +1,6 @@
 # Tau ID scale factors
 
-This repository contains the recommended scale factors for tau IDs. More detailed recommendations can be found on this TWiki page: https://twiki.cern.ch/twiki/bin/viewauth/CMS/TauIDRecommendation13TeV
+This repository contains the recommended scale factors for tau IDs. More detailed recommendations can be found on this TWiki page: https://twiki.cern.ch/twiki/bin/viewauth/CMS/TauIDRecommendationForRun2
 
 
 ## Installation
@@ -16,6 +16,7 @@ cmsenv
 scram b -j8
 ```
 
+
 ### Python
 
 After compiling with this respective directory hierarchy, you can acces the tool ([`python/TauIDSFTool.py`](python/TauIDSFTool.py)) in python as
@@ -27,12 +28,14 @@ A test of the tool can be run with
 ./test/testTauIDSFTool.py
 ```
 
+
 ### C++
 
 A similar C++ implementation is available ([`src/TauIDSFTool.cc`](src/TauIDSFTool.cc)). A test in C++ ([`test/testTauIDSFTool.cc`](test/testTauIDSFTool.cc)) can be compiled and run with
 ```
 scram b runtests -j8
 ```
+
 
 ## Scale factor versions
 
@@ -71,7 +74,7 @@ SF_down = tauSFTool.getSFvsPT(pt,genmatch,unc='Down')
 
 ### DM-dependent SFs
 
-Analysis using tau triggers and tau pT > 40 GeV, may use DM-dependent SFs as
+Analysis using ditau triggers and tau pT > 40 GeV, may use DM-dependent SFs as
 ```
 from TauPOG.TauIDSFs.TauIDSFTool import TauIDSFTool
 tauSFTool = TauIDSFTool('2017ReReco','MVAoldDM2017v2','Tight',dm=True)
