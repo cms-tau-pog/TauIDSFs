@@ -100,7 +100,7 @@ For the uncertainty, please seek the recommendations by the TauPOG. Note: The SF
 
 ### DM-dependent tau energy scale
 
-The tau energy scale (TES) is provided in the files [`data/TauES_dm_*.root`](data). Each file contains one histogram (`tes`) with the TES centered around `1.0`. It can be applied by multiplying the tau TLorentzVector, or equivalently, the tau energy, pT and mass as follows:
+The tau energy scale (TES) is provided in the files [`data/TauES_dm_*.root`](data). Each file contains one histogram (`'tes'`) with the TES centered around `1.0`. It should be applied to a genuine tau by multiplying the tau TLorentzVector, or equivalently, the tau energy, pT and mass as follows:
 ```
 file = TFile("data/TauES_dm_2016Legacy.root")
 hist = file.Get('tes')
@@ -119,4 +119,6 @@ A simple class, [`TauESTool`](python/TauIDSFTool.py), is provided to obtain the 
 from TauPOG.TauIDSFs.TauIDSFTool import TauESTool
 testool = TauTESTool('2017ReReco')
 tes     = testool.getTES(dm)
+tesUp   = testool.getTES(dm,unc='Up')
+tesDown = testool.getTES(dm,unc='Down')
 ```
