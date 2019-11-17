@@ -3,13 +3,15 @@ from ROOT import TFile, TH1
 modulepath = os.path.dirname(__file__)
 #print modulepath
 
-def ensureTFile(filename,option='READ'):
+def ensureTFile(filename,option='READ',verbose=False):
   """Open TFile, checking if the file in the given path exists."""
   if not os.path.isfile(filename):
-    raise OSError('File in path "%s" does not exist!'%(filename))
-  file = TFile(filename,option)
+    raise IOError("File in path '%s' does not exist!"%(filename))
+  if verbose:
+    print "Opening '%s'..."%(filename)
+  file = TFile.Open(filename,option)
   if not file or file.IsZombie():
-    raise OSError('Could not open file by name "%s"'%(filename))
+    raise IOError("Could not open file by name '%s'"%(filename))
   return file
   
 def ensureFile(*paths,**kwargs):
@@ -25,16 +27,22 @@ def ensureFile(*paths,**kwargs):
   return filepath
   
 def extractTH1(file,histname,setdir=True):
-  """Get histogram from a given file."""
+  """Get histogram by name from a given file."""
+  close = False
+  if isinstance(file,str):
+    file  = ensureTFile(file,'READ')
+    close = True
   if not file or file.IsZombie():
-    raise OSError('Could not open file!')
+    raise IOError("Could not open file for histogram '%s'!"%(histname))
   hist = file.Get(histname)
   if not hist:
-    raise OSError('Did not find histogtam "%s" in file %s!'%(histname,file.GetName()))
+    raise IOError("Did not find histogram '%s' in file '%s'!"%(histname,file.GetName()))
   if setdir and isinstance(hist,TH1):
     hist.SetDirectory(0)
+    if close:
+      file.Close()
   return hist
-
+  
 def ensureTFileAndTH1(filename,histname,verbose=True,setdir=True):
   """Open a TFile and get a histogram."""
   if verbose:
@@ -42,7 +50,7 @@ def ensureTFileAndTH1(filename,histname,verbose=True,setdir=True):
   file = ensureTFile(filename,'READ')
   hist = extractTH1(file,histname,setdir=setdir)
   return file, hist
-
+  
 def warning(string,**kwargs):
   """Print warning with color."""
   pre    = kwargs.get('pre',  "") + "\033[1m\033[93mWarning!\033[0m \033[93m"

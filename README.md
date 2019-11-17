@@ -59,16 +59,16 @@ tauSFTool = TauIDSFTool('2017ReReco','MVAoldDM2017v2','Tight')
 ```
 and to retrieve the scale factor for a given tau pT, do
 ```
-SF = tauSFTool.getSFvsPT(pt)
+sf = tauSFTool.getSFvsPT(pt)
 ```
 The scale factor should only be applied to tau objects that match "real" taus at gen-level (`genmatch==5`). You can pass the optional `genmatch` argument and the function will return the appropriate SF if `genmatch==5`, and `1.0` otherwise,
 ```
-SF = tauSFTool.getSFvsPT(pt,genmatch)
+sf = tauSFTool.getSFvsPT(pt,genmatch)
 ```
 The recommended uncertainties can be retrieved as
 ```
-SF_up   = tauSFTool.getSFvsPT(pt,genmatch,unc='Up')
-SF_down = tauSFTool.getSFvsPT(pt,genmatch,unc='Down')
+sf_up   = tauSFTool.getSFvsPT(pt,genmatch,unc='Up')
+sf_down = tauSFTool.getSFvsPT(pt,genmatch,unc='Down')
 ```
 
 
@@ -78,9 +78,9 @@ Analysis using ditau triggers and tau pT > 40 GeV, may use DM-dependent SFs as
 ```
 from TauPOG.TauIDSFs.TauIDSFTool import TauIDSFTool
 tauSFTool = TauIDSFTool('2017ReReco','MVAoldDM2017v2','Tight',dm=True)
-SF        = tauSFTool.getSFvsDM(pt,dm,genmatch)
-SF_up     = tauSFTool.getSFvsDM(pt,dm,genmatch,unc='Up')
-SF_down   = tauSFTool.getSFvsDM(pt,dm,genmatch,unc='Down')
+sf        = tauSFTool.getSFvsDM(pt,dm,genmatch)
+sf_up     = tauSFTool.getSFvsDM(pt,dm,genmatch,unc='Up')
+sf_down   = tauSFTool.getSFvsDM(pt,dm,genmatch,unc='Down')
 ```
 where `genmatch` is optional.
 
@@ -89,7 +89,7 @@ where `genmatch` is optional.
 
 To apply SFs to electrons or muons faking taus, use the eta of the reconstructed tau and the genmatch code (1 for prompt electrons, 2 for prompt muons, 3 for electrons from tau decay and 4 for muons from tau decay):
 ```
-from TauPOG.TauIDSFs.TauIDSFTool import TauIDSFTool
+python/TauIDSFTool.py
 antiEleSFTool = TauIDSFTool('2017ReReco','antiEleMVA6','Loose')
 antiMuSFTool  = TauIDSFTool('2017ReReco','antiMu3','Tight')
 antiEleSF     = antiEleSFTool.getSFvsEta(eta,genmatch)
@@ -113,4 +113,10 @@ tau_tlv  *= tes
 tau_E  *= tes
 tau_pt *= tes
 tau_m  *= tes
+```
+A simple class, [`TauESTool`](python/TauIDSFTool.py), is provided to obtain the TES as
+```
+from TauPOG.TauIDSFs.TauIDSFTool import TauESTool
+testool = TauTESTool('2017ReReco')
+tes     = testool.getTES(dm)
 ```

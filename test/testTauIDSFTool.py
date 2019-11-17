@@ -1,9 +1,8 @@
 #! /usr/bin/env python
 # Author: Izaak Neutelings (July 2019)
 import time; start0 = time.time()
-from TauPOG.TauIDSFs.TauIDSFTool import TauIDSFTool
+from TauPOG.TauIDSFs.TauIDSFTool import TauIDSFTool, TauESTool
 start1 = time.time()
-
 
 
 def printSFTable(year,id,wp,vs='pt'):
@@ -50,22 +49,35 @@ def printSFTable(year,id,wp,vs='pt'):
       ###sftool.getSFvsEta(1.5,1,5) # results in an error
   
 
+def printTESTable(year):
+  testool = TauESTool(year)
+  dmvals  = [0,1,5,6,10,11]
+  print ">>> "
+  print ">>> TES for '%s'"%(year)
+  print ">>> "
+  print ">>> %10s"%('var \ DM')+''.join("%9d"%dm for dm in dmvals)
+  print ">>> %10s"%("central") +''.join("%9.5f"%testool.getTES(dm,5)        for dm in dmvals)
+  print ">>> %10s"%("up")      +''.join("%9.5f"%testool.getTES(dm,5,'Up')   for dm in dmvals)
+  print ">>> %10s"%("down")    +''.join("%9.5f"%testool.getTES(dm,5,'Down') for dm in dmvals)
+  print ">>> "
+  
 
 if __name__ == "__main__":  
   print ">>> "
   print ">>> start test tau ID SF tool"
   start2 = time.time()
-  years  = ['2017ReReco'] # ['2016Legacy','2017ReReco','2018ReReco']
+  years  = ['2016Legacy','2017ReReco','2018ReReco'] #['2017ReReco'] # ['2016Legacy','2017ReReco','2018ReReco']
   ids    = ['MVAoldDM2017v2','DeepTau2017v2p1VSjet','antiEleMVA6','antiMu3']
   for year in years:
     for id in ids:
-      vslist = ['eta'] if 'anti' in id else [ 'pt', 'dm' ]
+      vslist = ['eta'] if 'anti' in id else [ 'dm' ]
       for vs in vslist:
         for wp in ['Loose','Medium','Tight']:
           if 'antiMu' in id and wp=='Medium': continue
           printSFTable(year,id,wp,vs)
+    printTESTable(year)
+  
   start3 = time.time()
   print ">>> "
   print ">>> done after %.1f seconds (%.1f for imports, %.1f for loops)"%(time.time()-start0,start1-start0,start3-start2)
   
-
