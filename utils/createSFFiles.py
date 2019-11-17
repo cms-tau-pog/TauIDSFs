@@ -1,3 +1,4 @@
+#! /usr/bin/env python
 # Author: Izaak Neutelings (September 2019)
 # Description: Create root files with SFs for the anti-lepton discriminators
 import os
@@ -5,18 +6,35 @@ from array import array
 from collections import namedtuple
 from ROOT import TFile, TH1F, kFullDotLarge
 
+# SF CONTAINER
 SF  = namedtuple('SF',['val','unc'])
 SF1 = SF(1,0) # default
 
 
-def createSFTH1(histname,sflist,etabins):
-  """Create histogram from SF list."""
+def createSFTH1(histname,sflist,bins,xtitle,ytitle="SF",overflow=False):
+  """Create histogram with variable bin sizes from SF list."""
   print ">>>   Creating hisogram '%s'..."%histname
-  nxbins = len(etabins)-1
-  xbins  = array('d',list(etabins))
-  hist   = TH1F(histname,histname,nxbins,xbins)
-  hist.GetYaxis().SetTitle("SF")
-  hist.GetXaxis().SetTitle("#tau_{h} |#eta|")
+  sflist = list(sflist)
+  
+  # ASSUME (nbins,xmin,xmax)
+  if len(bins)==3 and isinstance(bins[0],int):
+    nxbins = bins[0]
+    hist   = TH1F(histname,histname,*bins)
+  
+  # VARIABLE BINS
+  else:
+    nxbins = len(bins)-1
+    xbins  = array('d',list(bins))
+    hist   = TH1F(histname,histname,nxbins,xbins)
+  
+  # APPEND LIST WITH LAST VALUE
+  if overflow:
+    while len(sflist)<=nxbins:
+      sflist.append(sflist[-1])
+  
+  # STYLE
+  hist.GetYaxis().SetTitle(ytitle)
+  hist.GetXaxis().SetTitle(xtitle)
   hist.GetXaxis().SetLabelSize(0.04)
   hist.GetYaxis().SetLabelSize(0.04)
   hist.GetXaxis().SetTitleSize(0.05)
@@ -27,9 +45,8 @@ def createSFTH1(histname,sflist,etabins):
   hist.SetMarkerStyle(kFullDotLarge)
   hist.SetMarkerSize(0.8)
   hist.SetOption('PEHIST')
-  sflist = list(sflist)
-  while len(sflist)<len(etabins):
-    sflist.append(sflist[-1])
+  
+  # FILL
   for i, sf in enumerate(sflist,1):
     if i>nxbins:
       binstr = "[%4.2f, inf]"%(hist.GetXaxis().GetBinLowEdge(i))
@@ -40,10 +57,11 @@ def createSFTH1(histname,sflist,etabins):
     print ">>>     Bin %s, %s:  SF = %6.3f +- %.3f %s"%(i,binstr,sf.val,sf.unc,ofstr)
     hist.SetBinContent(i,sf.val)
     hist.SetBinError(i,sf.unc)
+  
   return hist
   
 
-def createSFFile(filename,sftable,etabins):
+def createSFFile(filename,sftable,*args,**kwargs):
   """Create histogram from table."""
   print ">>> Creating '%s'..."%filename
   file = TFile(filename,'RECREATE')
@@ -51,7 +69,7 @@ def createSFFile(filename,sftable,etabins):
     print ">>>  %s working point"%wp
     histname = wp
     sflist   = sftable[wp]
-    hist     = createSFTH1(histname,sflist,etabins)
+    hist     = createSFTH1(histname,sflist,*args,**kwargs)
     hist.Write(histname,TH1F.kOverwrite)
   file.Close()
   return file
@@ -70,10 +88,14 @@ def wporder(key):
 
 def main():
   
-  outdir = "../data"
+  outdir         = "../data"
+  
+  # ANTI-LEPTON SFs
+  tag            = "_test"
+  etatitle       = "#tau_{h} |#eta|"
   antiEleEtaBins = ( 0.0, 1.460, 1.558, 2.3 )
-  antiMuEtaBins = ( 0.0, 0.4, 0.8, 1.2, 1.7, 2.3 )
-  antiLepSFs = { }
+  antiMuEtaBins  = ( 0.0, 0.4, 0.8, 1.2, 1.7, 2.3 )
+  antiLepSFs     = { }
   antiLepSFs['antiEleMVA6'] = {
     '2016Legacy': { # https://indico.cern.ch/event/828205/contributions/3468902/attachments/1863558/3063927/EtoTauFRLegacy16.pdf
       'VLoose': ( SF(1.175,0.003), SF1, SF(1.288,0.006), SF1 ), # LEGACY
@@ -111,13 +133,28 @@ def main():
       'Tight': ( SF(1.23,0.05), SF(1.37,0.18), SF(1.12,0.04), SF(1.84,0.32), SF(2.01,0.43), SF1 ),
     },
   }
-  
   for id in antiLepSFs:
     for year in antiLepSFs[id]:
-      filename = "%s/TauID_SF_eta_%s_%s.root"%(outdir,id,year)
+      filename = "%s/TauID_SF_eta_%s_%s%s.root"%(outdir,id,year,tag)
       sftable  = antiLepSFs[id][year]
       etabins  = antiEleEtaBins if 'antiEle' in id else antiMuEtaBins
-      createSFFile(filename,sftable,etabins)
+      createSFFile(filename,sftable,etabins,etatitle,overflow=True)
+  
+  # TAU ENERGY SCALES
+  dmbins  = (13,0,13)
+  dmtitle = "#tau_{h} decay modes"
+  TESs    = { # units of percentage
+    '2016Legacy': { 0: (-0.6,1.0), 1: (-0.5,0.9), 10: ( 0.0,1.1), },
+    '2017ReReco': { 0: ( 0.7,0.8), 1: (-0.2,0.8), 10: ( 0.1,0.9), 11: (-0.1,1.0), },
+    '2018ReReco': { 0: (-1.3,1.1), 1: (-0.5,0.9), 10: (-1.2,0.8), },
+  }
+  for year in TESs:
+    filename = "%s/TauES_dm_%s.root"%(outdir,year)
+    tesvals  = { 'tes': [ ] }
+    for dm in xrange(0,dmbins[0]+1):
+      tes, unc = TESs[year].get(dm,(0,0))
+      tesvals['tes'].append(SF(1.+tes/100.,unc/100.))
+    createSFFile(filename,tesvals,dmbins,dmtitle,overflow=False)
   
 
 if __name__ == '__main__':

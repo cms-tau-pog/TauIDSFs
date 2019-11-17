@@ -96,3 +96,21 @@ antiEleSF     = antiEleSFTool.getSFvsEta(eta,genmatch)
 antiMuSF      = antiMuSFTool.getSFvsEta(eta,genmatch)
 ```
 For the uncertainty, please seek the recommendations by the TauPOG. Note: The SFs for `againstMu3` in 2016 Legacy ([`data/TauID_SF_eta_antiMu3_2016Legacy.root`](data/TauID_SF_eta_antiMu3_2016Legacy.root)) are must placeholders.
+
+
+### DM-dependent tau energy scale
+
+The tau energy scale (TES) is provided in the files [`data/TauES_dm_*.root`](data). Each file contains one histogram (`tes`) with the TES centered around `1.0`. It can be applied by multiplying the tau TLorentzVector, or equivalently, the tau energy, pT and mass as follows:
+```
+file = TFile("data/TauES_dm_2016Legacy.root")
+hist = file.Get('tes')
+tes  = hist.GetBinContent(hist.GetXaxis().FindBin(dm))
+
+# scale the tau's TLorentzVector
+tau_tlv  *= tes
+
+# OR, scale the energy, mass and pT
+tau_E  *= tes
+tau_pt *= tes
+tau_m  *= tes
+```
