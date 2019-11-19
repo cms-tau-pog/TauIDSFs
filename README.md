@@ -1,6 +1,7 @@
 # Tau ID scale factors
 
-This repository contains the recommended scale factors for tau IDs. More detailed recommendations can be found on this TWiki page: https://twiki.cern.ch/twiki/bin/viewauth/CMS/TauIDRecommendationForRun2
+This repository contains the recommended scale factors for tau IDs. More detailed recommendations can be found on this TWiki page:
+https://twiki.cern.ch/twiki/bin/viewauth/CMS/TauIDRecommendationForRun2
 
 
 ## Installation
