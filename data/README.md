@@ -2,7 +2,7 @@
 
 This repository contains the recommended scale factors for tau discriminators.
 More detailed recommendations can be found on [this TWiki page](https://twiki.cern.ch/twiki/bin/viewauth/CMS/TauIDRecommendationForRun2)
-and instructions how to use these can be found in the [README in the parent directory](https://github.com/cms-tau-pog/TauIDSFs#tau-id-scale-factors).
+and instructions on how to use these can be found in the [README in the parent directory](https://github.com/cms-tau-pog/TauIDSFs#tau-id-scale-factors).
 
 
 ## Files
