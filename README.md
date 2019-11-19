@@ -73,7 +73,7 @@ sf_down = tauSFTool.getSFvsPT(pt,genmatch,unc='Down')
 ```
 or, all three in one go:
 ```
-sf_down, sf, sf_down = tauSFTool.getSFvsPT(pt,genmatch,unc='All')
+sf_down, sf, sf_up = tauSFTool.getSFvsPT(pt,genmatch,unc='All')
 ```
 
 
