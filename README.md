@@ -71,6 +71,10 @@ The recommended uncertainties can be retrieved as
 sf_up   = tauSFTool.getSFvsPT(pt,genmatch,unc='Up')
 sf_down = tauSFTool.getSFvsPT(pt,genmatch,unc='Down')
 ```
+or, all three in one go:
+```
+sf_down, sf, sf_down = tauSFTool.getSFvsPT(pt,genmatch,unc='All')
+```
 
 
 ### DM-dependent SFs
