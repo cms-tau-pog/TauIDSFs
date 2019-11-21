@@ -122,7 +122,7 @@ tau_m  *= tes
 A simple class, [`TauESTool`](python/TauIDSFTool.py), is provided to obtain the TES as
 ```
 from TauPOG.TauIDSFs.TauIDSFTool import TauESTool
-testool = TauTESTool('2017ReReco')
+testool = TauESTool('2017ReReco')
 tes     = testool.getTES(dm)
 tesUp   = testool.getTES(dm,unc='Up')
 tesDown = testool.getTES(dm,unc='Down')
