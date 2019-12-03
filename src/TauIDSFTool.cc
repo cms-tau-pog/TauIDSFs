@@ -65,7 +65,7 @@ TauIDSFTool::TauIDSFTool(const std::string& year, const std::string& id, const s
       file->Close();
       delete file;
       DMs    = {0,1,10};
-      if (ID.find("oldDM") != std::string::npos)
+      if (ID.find("oldDM") == std::string::npos)
       {
           DMs.push_back(11);
       }
