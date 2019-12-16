@@ -8,6 +8,7 @@ from ROOT import TFile, TH1F, kFullDotLarge
 
 # SF CONTAINER
 SF  = namedtuple('SF',['val','unc'])
+SF0 = SF(0,0) # default
 SF1 = SF(1,0) # default
 
 
@@ -91,7 +92,7 @@ def main():
   outdir         = "../data"
   
   # ANTI-LEPTON SFs
-  tag            = "_test"
+  tag            = ""
   etatitle       = "#tau_{h} |#eta|"
   antiEleEtaBins = ( 0.0, 1.460, 1.558, 2.3 )
   antiMuEtaBins  = ( 0.0, 0.4, 0.8, 1.2, 1.7, 2.3 )
@@ -120,9 +121,9 @@ def main():
     },
   }
   antiLepSFs['antiMu3'] = {
-    '2016Legacy': { # https://twiki.cern.ch/twiki/bin/viewauth/CMS/TauIDRecommendation13TeV#Muon_to_tau_fake_rate
-      'Loose': ( SF(1.146,0.50), SF(1.084,0.50), SF(1.218,0.50), SF(1.490,0.50), SF(2.008,0.50), SF1 ), # WRONG; TO BE UPDATED
-      'Tight': ( SF(1.470,0.50), SF(1.367,0.50), SF(1.251,0.50), SF(1.770,0.50), SF(1.713,0.50), SF1 ),
+    '2016Legacy': { # https://indico.cern.ch/event/862376/contributions/3633007/attachments/1942593/3221852/mutauFRRun2_Yiwen.pdf (slide 6)
+      'Loose': ( SF(1.106,0.033), SF(1.121,0.034), SF(1.225,0.026), SF(1.115,0.198), SF(2.425,0.229), SF1 ),
+      'Tight': ( SF(1.274,0.108), SF(1.144,0.231), SF(1.261,0.035), SF(1.159,0.663), SF(3.310,0.554), SF1 ),
     },
     '2017ReReco': { # https://twiki.cern.ch/twiki/bin/viewauth/CMS/TauIDRecommendation13TeV#Muon_to_tau_fake_rate
       'Loose': ( SF(1.06,0.05), SF(1.02,0.04), SF(1.10,0.04), SF(1.03,0.18), SF(1.94,0.35), SF1 ),
