@@ -100,7 +100,7 @@ antiMuSFTool  = TauIDSFTool('2017ReReco','antiMu3','Tight')
 antiEleSF     = antiEleSFTool.getSFvsEta(eta,genmatch)
 antiMuSF      = antiMuSFTool.getSFvsEta(eta,genmatch)
 ```
-The uncertainty id obtained in a similar way.
+The uncertainty is obtained in a similar way as above.
 
 
 ### DM-dependent tau energy scale
