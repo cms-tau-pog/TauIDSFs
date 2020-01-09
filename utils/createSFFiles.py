@@ -3,36 +3,36 @@
 # Description: Create root files with SFs for the anti-lepton discriminators
 import os
 from array import array
+import numpy as np
 from collections import namedtuple
-from ROOT import TFile, TH1F, kFullDotLarge
+from ROOT import TFile, TH1F, kFullDotLarge, TGraphAsymmErrors
 
 # SF CONTAINER
 SF  = namedtuple('SF',['val','unc'])
 SF0 = SF(0,0) # default
 SF1 = SF(1,0) # default
 
-
 def createSFTH1(histname,sflist,bins,xtitle,ytitle="SF",overflow=False):
   """Create histogram with variable bin sizes from SF list."""
   print ">>>   Creating hisogram '%s'..."%histname
   sflist = list(sflist)
-  
+
   # ASSUME (nbins,xmin,xmax)
   if len(bins)==3 and isinstance(bins[0],int):
     nxbins = bins[0]
     hist   = TH1F(histname,histname,*bins)
-  
+
   # VARIABLE BINS
   else:
     nxbins = len(bins)-1
     xbins  = array('d',list(bins))
     hist   = TH1F(histname,histname,nxbins,xbins)
-  
+
   # APPEND LIST WITH LAST VALUE
   if overflow:
     while len(sflist)<=nxbins:
       sflist.append(sflist[-1])
-  
+
   # STYLE
   hist.GetYaxis().SetTitle(ytitle)
   hist.GetXaxis().SetTitle(xtitle)
@@ -46,7 +46,7 @@ def createSFTH1(histname,sflist,bins,xtitle,ytitle="SF",overflow=False):
   hist.SetMarkerStyle(kFullDotLarge)
   hist.SetMarkerSize(0.8)
   hist.SetOption('PEHIST')
-  
+
   # FILL
   for i, sf in enumerate(sflist,1):
     if i>nxbins:
@@ -58,9 +58,9 @@ def createSFTH1(histname,sflist,bins,xtitle,ytitle="SF",overflow=False):
     print ">>>     Bin %s, %s:  SF = %6.3f +- %.3f %s"%(i,binstr,sf.val,sf.unc,ofstr)
     hist.SetBinContent(i,sf.val)
     hist.SetBinError(i,sf.unc)
-  
+
   return hist
-  
+
 
 def createSFFile(filename,sftable,*args,**kwargs):
   """Create histogram from table."""
@@ -74,7 +74,7 @@ def createSFFile(filename,sftable,*args,**kwargs):
     hist.Write(histname,TH1F.kOverwrite)
   file.Close()
   return file
-  
+
 
 def wporder(key):
   """Custom ordering of WPs."""
@@ -85,12 +85,36 @@ def wporder(key):
   else:
     index = 100
   return index
-  
+
+def createAssymSFFile(filename, sftable, name):
+  """Create histogram from table."""
+  print ">>> Creating '%s'..." % filename
+  file = TFile(filename, 'RECREATE')
+  file.cd()
+  x = [float(i) + 0.5 for i in range(len(sftable.keys()))]
+  ex = [0.0] * len(sftable.keys())
+  x_names = sorted(sftable.keys())
+  y = [sftable[k]['val'] for k in x_names]
+  eyl = [sftable[k]['down'] for k in x_names]
+  eyh = [sftable[k]['up'] for k in x_names]
+  g = TGraphAsymmErrors(len(x), np.array(x), np.array(y), np.array(ex), np.array(ex), np.array(eyl), np.array(eyh))
+
+  g.GetXaxis().SetNdivisions(len(x) * 2)
+  g.GetXaxis().ChangeLabel(0, -1, 0, -1, -1, -1, "")
+  for i in x:
+    print 1 + int(i), x_names[int(i)]
+    g.GetXaxis().ChangeLabel(2 + int(i) * 2, -1, 0)
+    g.GetXaxis().ChangeLabel(1 + int(i) * 2, -1, -1, -1, -1, -1, x_names[int(i)])
+
+  g.Write(name)
+  # file.ls() ; g.Draw("A*") ; raw_input()
+  file.Close()
+  return file
 
 def main():
-  
+
   outdir         = "../data"
-  
+
   # ANTI-LEPTON SFs
   tag            = ""
   etatitle       = "#tau_{h} |#eta|"
@@ -140,7 +164,7 @@ def main():
       sftable  = antiLepSFs[id][year]
       etabins  = antiEleEtaBins if 'antiEle' in id else antiMuEtaBins
       createSFFile(filename,sftable,etabins,etatitle,overflow=True)
-  
+
   # TAU ENERGY SCALES
   dmbins  = (13,0,13)
   dmtitle = "#tau_{h} decay modes"
@@ -156,10 +180,42 @@ def main():
       tes, unc = TESs[year].get(dm,(0,0))
       tesvals['tes'].append(SF(1.+tes/100.,unc/100.))
     createSFFile(filename,tesvals,dmbins,dmtitle,overflow=False)
-  
+
+  # FAKE e->tau ENERGY SCALES
+  FESs = {
+      'DeepTau2017v2p1':
+      {
+          '2016Legacy':
+          {
+              'barrel_dm0': {"val": 1.00679, "down": 0.982 / 100, "up": 0.806 / 100},
+              'barrel_dm1': {"val": 1.03389, "down": 2.475 / 100, "up":1.168 / 100},
+              'endcap_dm0': {"val": 0.965, "down": 1.102 / 100, "up": 1.808 / 100},
+              'endcap_dm1': {"val": 1.05, "down": 5.694 / 100, "up":6.57 / 100},
+          },
+          '2017ReReco':
+          {
+              'barrel_dm0': {"val": 1.00911, "down": 0.882 / 100, "up": 1.343 / 100},
+              'barrel_dm1': {"val": 1.01154, "down": 0.973 / 100, "up": 2.162 / 100},
+              'endcap_dm0': {"val": 0.97396, "down": 1.43 / 100, "up": 2.249 / 100},
+              'endcap_dm1': {"val": 1.015, "down": 4.969 / 100, "up": 6.461 / 100},
+          },
+          '2018ReReco':
+          {
+              'barrel_dm0': {"val": 1.01362, "down": 0.474 / 100, "up": 0.904 / 100},
+              'barrel_dm1': {"val": 1.01945, "down": 1.598 / 100, "up": 1.226 / 100},
+              'endcap_dm0': {"val": 0.96903, "down": 1.25 / 100, "up": 3.404 / 100},
+              'endcap_dm1': {"val": 0.985, "down": 4.309 / 100, "up": 5.499 / 100},
+          },
+      }
+  }
+
+  for discriminator in FESs.keys():
+    for year, fesvals in FESs[discriminator].iteritems():
+      filename = "%s/TauFES_eta_dm_%s_%s.root" % (outdir, discriminator, year)
+      createAssymSFFile(filename, fesvals, name='fes')
+
 
 if __name__ == '__main__':
   print ">>> "
   main()
   print ">>> Done"
-  
