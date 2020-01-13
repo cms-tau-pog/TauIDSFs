@@ -51,6 +51,8 @@ class TauIDSFTool:
           if unc=='All':
             return self.func['Down'].Eval(pt), self.func[None].Eval(pt), self.func['Up'].Eval(pt)
           return self.func[unc].Eval(pt)
+        elif unc=='All':
+          return 1.0, 1.0, 1.0
         return 1.0
         
     def getSFvsDM(self, pt, dm, genmatch=5, unc=None):
@@ -66,7 +68,11 @@ class TauIDSFTool:
             elif unc=='All':
               return sf-self.hist.GetBinError(bin), sf, sf+self.hist.GetBinError(bin)
             return sf
+          elif unc=='All':
+            return 1.0, 1.0, 1.0
           return 1.0
+        elif unc=='All':
+          return 0.0, 0.0, 0.0
         return 0.0
         
     def getSFvsEta(self, eta, genmatch, unc=None):
@@ -82,6 +88,8 @@ class TauIDSFTool:
           elif unc=='All':
             return sf-self.hist.GetBinError(bin), sf, sf+self.hist.GetBinError(bin)
           return sf
+        elif unc=='All':
+          return 1.0, 1.0, 1.0
         return 1.0
         
     @staticmethod
@@ -91,7 +99,7 @@ class TauIDSFTool:
 
 class TauESTool:
     
-    def __init__(self, year, path=datapath):
+    def __init__(self, year, id='MVAoldDM2017v2', path=datapath):
         """Choose the IDs and WPs for SFs."""
         assert year in campaigns, "You must choose a year from %s."%(', '.join(campaigns))
         file = ensureTFile(os.path.join(datapath,"TauES_dm_%s.root"%year))
@@ -100,7 +108,7 @@ class TauESTool:
         file.Close()
         
     def getTES(self, dm, genmatch=5, unc=None):
-        """Get tau ID SF vs. tau DM."""
+        """Get tau ES vs. tau DM."""
         if genmatch==5:
           bin = self.hist.GetXaxis().FindBin(dm)
           tes = self.hist.GetBinContent(bin)
@@ -111,5 +119,46 @@ class TauESTool:
           elif unc=='All':
             return tes-self.hist.GetBinError(bin), tes, tes+self.hist.GetBinError(bin)
           return tes
+        elif unc=='All':
+          return 1.0, 1.0, 1.0
+        return 1.0
+    
+
+class TauFESTool:
+    
+    def __init__(self, year, id='DeepTau2017v2p1VSe', path=datapath):
+        """Choose the IDs and WPs for SFs."""
+        assert year in campaigns, "You must choose a year from %s."%(', '.join(campaigns))
+        file  = ensureTFile(os.path.join(datapath,"TauFES_eta-dm_%s_%s.root"%(id,year)))
+        graph = file.Get('fes')
+        FESs  = { 'barrel':  { }, 'endcap': { } }
+        DMs   = [0,1]
+        i     = 0
+        for region in ['barrel','endcap']:
+          for dm in DMs:
+            y    = graph.GetY()[i]
+            yup  = graph.GetErrorYhigh(i)
+            ylow = graph.GetErrorYlow(i)
+            FESs[region][dm] = (y-ylow,y,y+yup)
+            i += 1
+        file.Close()
+        self.FESs       = FESs
+        self.DMs        = [0,1]
+        self.genmatches = [1,3]
+        
+    def getFES(self, eta, dm, genmatch=1, unc=None):
+        """Get electron -> tau FES vs. tau DM."""
+        if dm in self.DMs and genmatch in self.genmatches:
+          region = 'barrel' if abs(eta)<1.5 else 'endcap'
+          fes    = self.FESs[region][dm]
+          if unc=='Up':
+            fes = fes[2]
+          elif unc=='Down':
+            fes = fes[0]
+          elif unc!='All':
+            fes = fes[1]
+          return fes
+        elif unc=='All':
+          return 1.0, 1.0, 1.0
         return 1.0
     

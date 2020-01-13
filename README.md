@@ -105,7 +105,9 @@ The uncertainty is obtained in a similar way as above.
 
 ### DM-dependent tau energy scale
 
-The tau energy scale (TES) is provided in the files [`data/TauES_dm_*.root`](data). Each file contains one histogram (`'tes'`) with the TES centered around `1.0`. It should be applied to a genuine tau by multiplying the tau TLorentzVector, or equivalently, the tau energy, pT and mass as follows:
+The tau energy scale (TES) is provided in the files [`data/TauES_dm_*.root`](data).
+Each file contains one histogram (`'tes'`) with the TES centered around `1.0`.
+It should be applied to a genuine tau by multiplying the tau TLorentzVector, or equivalently, the tau energy, pT and mass as follows:
 ```
 file = TFile("data/TauES_dm_2016Legacy.root")
 hist = file.Get('tes')
@@ -123,7 +125,25 @@ A simple class, [`TauESTool`](python/TauIDSFTool.py), is provided to obtain the 
 ```
 from TauPOG.TauIDSFs.TauIDSFTool import TauESTool
 testool = TauESTool('2017ReReco')
-tes     = testool.getTES(dm)
-tesUp   = testool.getTES(dm,unc='Up')
-tesDown = testool.getTES(dm,unc='Down')
+tes     = testool.getTES(dm,genmatch)
+tesUp   = testool.getTES(dm,genmatch,unc='Up')
+tesDown = testool.getTES(dm,genmatch,unc='Down')
 ```
+
+
+### Eta- & DM-dependent e -> tau fake energy scale
+
+The e -> tau fake energy scale (FES) is provided in the files [`data/TauFES_eta-dm_*.root`](data).
+Each file contains one graph (`'fes'`) with the FES centered around `1.0`.
+It should only be applied to reconstructed taus that are faked by electrons (i.e. `genmatch`, or `Tau_GenPartFlav`, `1` or `3`) and have DM 0 or 1.
+The application is the similar as for the TES above.
+A simple class, [`TauFESTool`](python/TauIDSFTool.py), is provided to obtain the FES as
+```
+from TauPOG.TauIDSFs.TauIDSFTool import TauFESTool
+festool = TauESTool('2017ReReco')
+fes     = festool.getFES(eta,dm,genmatch)
+fesUp   = festool.getFES(eta,dm,genmatch,unc='Up')
+fesDown = festool.getFES(eta,dm,genmatch,unc='Down')
+```
+
+

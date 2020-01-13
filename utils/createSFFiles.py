@@ -183,7 +183,7 @@ def main():
 
   # FAKE e->tau ENERGY SCALES
   FESs = {
-      'DeepTau2017v2p1':
+      'DeepTau2017v2p1VSe':
       {
           '2016Legacy':
           {
@@ -211,7 +211,7 @@ def main():
 
   for discriminator in FESs.keys():
     for year, fesvals in FESs[discriminator].iteritems():
-      filename = "%s/TauFES_eta_dm_%s_%s.root" % (outdir, discriminator, year)
+      filename = "%s/TauFES_eta-dm_%s_%s.root" % (outdir, discriminator, year)
       createAssymSFFile(filename, fesvals, name='fes')
 
 
