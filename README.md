@@ -109,7 +109,7 @@ The tau energy scale (TES) is provided in the files [`data/TauES_dm_*.root`](dat
 Each file contains one histogram (`'tes'`) with the TES centered around `1.0`.
 It should be applied to a genuine tau by multiplying the tau TLorentzVector, or equivalently, the tau energy, pT and mass as follows:
 ```
-file = TFile("data/TauES_dm_2016Legacy.root")
+file = TFile("data/TauES_dm_MVAoldDM2017v2_2016Legacy.root")
 hist = file.Get('tes')
 tes  = hist.GetBinContent(hist.GetXaxis().FindBin(dm))
 

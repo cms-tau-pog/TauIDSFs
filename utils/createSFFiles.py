@@ -169,17 +169,20 @@ def main():
   dmbins  = (13,0,13)
   dmtitle = "#tau_{h} decay modes"
   TESs    = { # units of percentage
-    '2016Legacy': { 0: (-0.6,1.0), 1: (-0.5,0.9), 10: ( 0.0,1.1), },
-    '2017ReReco': { 0: ( 0.7,0.8), 1: (-0.2,0.8), 10: ( 0.1,0.9), 11: (-0.1,1.0), },
-    '2018ReReco': { 0: (-1.3,1.1), 1: (-0.5,0.9), 10: (-1.2,0.8), },
+    'MVAoldDM2017v2': {
+      '2016Legacy': { 0: (-0.6,1.0), 1: (-0.5,0.9), 10: ( 0.0,1.1), 11: ( 0.0,1.1), },
+      '2017ReReco': { 0: ( 0.7,0.8), 1: (-0.2,0.8), 10: ( 0.1,0.9), 11: (-0.1,1.0), },
+      '2018ReReco': { 0: (-1.3,1.1), 1: (-0.5,0.9), 10: (-1.2,0.8), 11: (-1.2,0.8), },
+    },
   }
-  for year in TESs:
-    filename = "%s/TauES_dm_%s.root"%(outdir,year)
-    tesvals  = { 'tes': [ ] }
-    for dm in xrange(0,dmbins[0]+1):
-      tes, unc = TESs[year].get(dm,(0,0))
-      tesvals['tes'].append(SF(1.+tes/100.,unc/100.))
-    createSFFile(filename,tesvals,dmbins,dmtitle,overflow=False)
+  for id in TESs:
+    for year in TESs[id]:
+      filename = "%s/TauES_dm_%s_%s.root"%(outdir,id,year)
+      tesvals  = { 'tes': [ ] }
+      for dm in xrange(0,dmbins[0]+1):
+        tes, unc = TESs[id][year].get(dm,(0,0))
+        tesvals['tes'].append(SF(1.+tes/100.,unc/100.))
+      createSFFile(filename,tesvals,dmbins,dmtitle,overflow=False)
 
   # FAKE e->tau ENERGY SCALES
   FESs = {

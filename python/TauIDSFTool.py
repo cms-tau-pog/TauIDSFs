@@ -102,7 +102,7 @@ class TauESTool:
     def __init__(self, year, id='MVAoldDM2017v2', path=datapath):
         """Choose the IDs and WPs for SFs."""
         assert year in campaigns, "You must choose a year from %s."%(', '.join(campaigns))
-        file = ensureTFile(os.path.join(datapath,"TauES_dm_%s.root"%year))
+        file = ensureTFile(os.path.join(datapath,"TauES_dm_%s_%s.root"%(id,year)))
         self.hist = extractTH1(file,'tes')
         self.hist.SetDirectory(0)
         file.Close()

@@ -80,8 +80,8 @@ def printFESTable(year):
 if __name__ == "__main__":  
   print ">>> "
   print ">>> start test tau ID SF tool"
-  testIDTool  = True and False
-  testTESTool = True and False
+  testIDTool  = True #and False
+  testTESTool = True #and False
   testFESTool = True #and False
   start2 = time.time()
   years  = ['2016Legacy','2017ReReco','2018ReReco'] #['2017ReReco'] # ['2016Legacy','2017ReReco','2018ReReco']
