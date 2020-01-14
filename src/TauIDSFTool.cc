@@ -103,6 +103,10 @@ TauIDSFTool::TauIDSFTool(const std::string& year, const std::string& id, const s
       isVsPT = true;
     }
   }else if(std::find(antiEleIDs.begin(),antiEleIDs.end(),ID)!=antiEleIDs.end()){
+      if (embedding){
+          std::cerr << "SF for ID " << ID << " not available for the embedded samples!" << std::endl;
+          assert(0);
+      }
       TString filename = Form("%s/TauID_SF_eta_%s_%s.root",datapath.data(),ID.data(),year.data());
       TFile* file = ensureTFile(filename,verbose);
       hist = extractTH1(file,WP);
@@ -112,6 +116,10 @@ TauIDSFTool::TauIDSFTool(const std::string& year, const std::string& id, const s
       genmatches = {1,3};
       isVsEta    = true;
   }else if(std::find(antiMuIDs.begin(),antiMuIDs.end(),ID)!=antiMuIDs.end()){
+      if (embedding){
+          std::cerr << "SF for ID " << ID << " not available for the embedded samples!" << std::endl;
+          assert(0);
+      }
       TString filename = Form("%s/TauID_SF_eta_%s_%s.root",datapath.data(),ID.data(),year.data());
       TFile* file = ensureTFile(filename,verbose);
       hist = extractTH1(file,WP);
