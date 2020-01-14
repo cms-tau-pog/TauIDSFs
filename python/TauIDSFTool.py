@@ -7,7 +7,7 @@ campaigns = ['2016Legacy','2017ReReco','2018ReReco']
 
 class TauIDSFTool:
     
-    def __init__(self, year, id, wp='Tight', dm=False, path=datapath, verbose=False):
+    def __init__(self, year, id, wp='Tight', dm=False, embedding=False, path=datapath, verbose=False):
         """Choose the IDs and WPs for SFs. For available tau IDs and WPs, check
         https://cms-nanoaod-integration.web.cern.ch/integration/master-102X/mc102X_doc.html#Tau"""
         
@@ -18,7 +18,13 @@ class TauIDSFTool:
         
         if id in ['MVAoldDM2017v2','DeepTau2017v2p1VSjet']:
           if dm:
-            file = ensureTFile(os.path.join(path,"TauID_SF_dm_%s_%s.root"%(id,year)),verbose=verbose)
+            if embedding:
+              if 'oldDM' in id:
+                raise IOError("Scale factors for embedded samples not available for ID '%s'!"%id)
+              else:
+                file = ensureTFile(os.path.join(path, "TauID_SF_dm_%s_%s_EMB.root"%(id,year)),verbose=verbose)
+            else:
+              file = ensureTFile(os.path.join(path,"TauID_SF_dm_%s_%s.root"%(id,year)),verbose=verbose)
             self.hist = extractTH1(file,wp)
             self.hist.SetDirectory(0)
             file.Close()
@@ -26,7 +32,13 @@ class TauIDSFTool:
             self.getSFvsPT  = self.disabled
             self.getSFvsEta = self.disabled
           else:
-            file = ensureTFile(os.path.join(path,"TauID_SF_pt_%s_%s.root"%(id,year)),verbose=verbose)
+            if embedding:
+              if 'oldDM' in id:
+                raise IOError("Scale factors for embedded samples not available for ID '%s'!"%id)
+              else:
+                file = ensureTFile(os.path.join(path, "TauID_SF_pt_%s_%s_EMB.root"%(id,year)),verbose=verbose)
+            else:
+              file = ensureTFile(os.path.join(path,"TauID_SF_pt_%s_%s.root"%(id,year)),verbose=verbose)
             self.func         = { }
             self.func[None]   = file.Get("%s_cent"%(wp))
             self.func['Up']   = file.Get("%s_up"%(wp))
@@ -35,7 +47,10 @@ class TauIDSFTool:
             self.getSFvsDM  = self.disabled
             self.getSFvsEta = self.disabled
         elif id in ['antiMu3','antiEleMVA6']:
-            file = ensureTFile(os.path.join(path,"TauID_SF_eta_%s_%s.root"%(id,year)),verbose=verbose)
+            if embedding:
+              raise IOError("Scale factors for embedded samples not available for ID '%s'!"%id)
+            else:
+              file = ensureTFile(os.path.join(path,"TauID_SF_eta_%s_%s.root"%(id,year)),verbose=verbose)
             self.hist = extractTH1(file,wp)
             self.hist.SetDirectory(0)
             file.Close()
