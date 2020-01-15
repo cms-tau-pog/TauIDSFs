@@ -122,14 +122,25 @@ int main(int argc, char* argv[]){
   std::cout << ">>> testTauIDSFTool" << std::endl;
   auto start = std::chrono::system_clock::now();
   
-  std::vector<std::string> years = {"2017ReReco"}; // {"2016Legacy","2017ReReco","2018ReReco"};
+  std::vector<std::string> years = {
+    //"2016Legacy",
+    "2017ReReco",
+    //"2018ReReco"
+  };
   std::vector<std::string> WPs   = {"Loose","Medium","Tight"};
-  std::vector<std::string> IDs   = {"MVAoldDM2017v2","DeepTau2017v2p1VSjet","antiEleMVA6","antiMu3"};
+  std::vector<std::string> IDs   = {
+    "MVAoldDM2017v2",
+    "DeepTau2017v2p1VSjet",
+    "antiEleMVA6",
+    "antiMu3",
+    "DeepTau2017v2p1VSe",
+    "DeepTau2017v2p1VSmu",
+  };
   
   for(auto const& id: IDs){
     for(auto const& year: years){
       std::vector<std::string> vslist;
-      if(id.find("anti")!=std::string::npos)
+      if(id.find("anti")!=std::string::npos or id.find("VSe")!=std::string::npos or id.find("VSmu")!=std::string::npos)
         vslist = {"eta"};
       else
         vslist = {"pt","dm"};
@@ -137,8 +148,8 @@ int main(int argc, char* argv[]){
         for(auto const& wp: WPs){
           if(id=="antiMu3" and wp=="Medium") continue;
           printSFTable(year,id,wp,vs);
-          if(id=="MVAoldDM2017v2" || id=="antiEleMVA6" || id=="antiMu3") continue;
-          printSFTable(year,id,wp,vs,true);
+          if(id=="DeepTau2017v2p1VSjet")
+            printSFTable(year,id,wp,vs,true);
         }
       }
     }

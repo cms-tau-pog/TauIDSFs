@@ -46,7 +46,7 @@ class TauIDSFTool:
             file.Close()
             self.getSFvsDM  = self.disabled
             self.getSFvsEta = self.disabled
-        elif id in ['antiMu3','antiEleMVA6']:
+        elif id in ['antiMu3','antiEleMVA6','DeepTau2017v2p1VSmu','DeepTau2017v2p1VSe']:
             if embedding:
               raise IOError("Scale factors for embedded samples not available for ID '%s'!"%id)
             else:

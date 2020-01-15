@@ -24,7 +24,7 @@ After compiling with this respective directory hierarchy, you can acces the tool
 ```
 from TauPOG.TauIDSFs.TauIDSFTool import TauIDSFTool
 ```
-A test of the tool can be run with
+A test of the tool in python can be run with
 ```
 ./test/testTauIDSFTool.py
 ```
@@ -32,7 +32,9 @@ A test of the tool can be run with
 
 ### C++
 
-A similar C++ implementation is available ([`src/TauIDSFTool.cc`](src/TauIDSFTool.cc)). A test in C++ ([`test/testTauIDSFTool.cc`](test/testTauIDSFTool.cc)) can be compiled and run with
+A similar C++ implementation is available in [`src/TauIDSFTool.cc`](src/TauIDSFTool.cc),
+with a simple example of usage in ([`test/testTauIDSFTool.cc`](test/testTauIDSFTool.cc)).
+This is also an installation test that can be compiled and run with
 ```
 scram b runtests -j8
 ```
@@ -51,12 +53,15 @@ The SFs in [`data`](data) are meant for the following campaigns:
 
 ## Usage
 
+For more info on gen-matching of taus, please look [here](https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsToTauTauWorking2016#MC_Matching).
+Note that in nanoAOD this is available as `Tau_GenPartFlav`, but jet or no match correspond to `Tau_GenPartFlav==0` instead of `6`.
+
 ### pT-dependent SFs
 
-As an example, to get the scale factors for the tight working point of the `'MVAoldDM2017v2'` tau ID in 2017, initialize the tool as
+As an example, to get the scale factors for the tight working point of the `'DeepTau2017v2p1VSjet'` tau ID in 2017, initialize the tool as
 ```
 from TauPOG.TauIDSFs.TauIDSFTool import TauIDSFTool
-tauSFTool = TauIDSFTool('2017ReReco','MVAoldDM2017v2','Tight')
+tauSFTool = TauIDSFTool('2017ReReco','DeepTau2017v2p1VSjet','Tight')
 ```
 and to retrieve the scale factor for a given tau pT, do
 ```
@@ -75,6 +80,10 @@ or, all three in one go:
 ```
 sf_down, sf, sf_up = tauSFTool.getSFvsPT(pt,genmatch,unc='All')
 ```
+For the tau ID scale factor of the **embedded samples**, set the `emb` flag to `True`:
+```
+tauSFTool = TauIDSFTool('2017ReReco','DeepTau2017v2p1VSjet','Tight',emb=True)
+```
 
 
 ### DM-dependent SFs
@@ -92,7 +101,8 @@ where `genmatch` is optional.
 
 ### Eta-dependent SFs for the anti-lepton discriminators
 
-To apply SFs to electrons or muons faking taus, use the eta of the reconstructed tau and the genmatch code (1 for prompt electrons, 2 for prompt muons, 3 for electrons from tau decay and 4 for muons from tau decay):
+To apply SFs to electrons or muons faking taus, use the eta of the reconstructed tau and the `genmatch` code
+(`1` for prompt electrons, `2` for prompt muons, `3` for electrons from tau decay and `4` for muons from tau decay):
 ```
 python/TauIDSFTool.py
 antiEleSFTool = TauIDSFTool('2017ReReco','antiEleMVA6','Loose')
@@ -135,7 +145,7 @@ tesDown = testool.getTES(dm,genmatch,unc='Down')
 
 The e -> tau fake energy scale (FES) is provided in the files [`data/TauFES_eta-dm_*.root`](data).
 Each file contains one graph (`'fes'`) with the FES centered around `1.0`.
-It should only be applied to reconstructed taus that are faked by electrons (i.e. `genmatch`, or `Tau_GenPartFlav`, `1` or `3`) and have DM 0 or 1.
+It should only be applied to reconstructed taus that are faked by electrons (i.e. `genmatch==1` or `3`) and have DM 0 or 1.
 The application is the similar as for the TES above.
 A simple class, [`TauFESTool`](python/TauIDSFTool.py), is provided to obtain the FES as
 ```

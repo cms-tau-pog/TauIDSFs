@@ -8,7 +8,7 @@ start1 = time.time()
 def printSFTable(year,id,wp,vs='pt',emb=False):
   assert vs in ['pt','dm','eta'], "'vs' argument should be pt', 'dm' or 'eta'!"
   dm = (vs=='dm')
-  if emb and not 'DeepTau' in id:
+  if emb and 'VSjet' not in id:
       print "SFs for ID '%s' not available for embedded samples. Skipping..."%id
       return
   sftool = TauIDSFTool(year,id,wp,dm=dm,embedding=emb)
@@ -89,13 +89,24 @@ if __name__ == "__main__":
   testIDTool  = True #and False
   testTESTool = True #and False
   testFESTool = True #and False
-  emb = False or True
-  start2 = time.time()
-  years  = ['2016Legacy','2017ReReco','2018ReReco'] #['2017ReReco'] # ['2016Legacy','2017ReReco','2018ReReco']
-  ids    = ['MVAoldDM2017v2','DeepTau2017v2p1VSjet','antiEleMVA6','antiMu3']
+  emb         = True and False
+  start2      = time.time()
+  years       = [
+    #'2016Legacy',
+    '2017ReReco',
+    #'2018ReReco',
+  ]
+  tauIDs      = [
+    'MVAoldDM2017v2',
+    'DeepTau2017v2p1VSjet',
+    'antiEleMVA6',
+    'antiMu3',
+    'DeepTau2017v2p1VSmu',
+    'DeepTau2017v2p1VSe'
+  ]
   for year in years:
-    for id in ids:
-      vslist = ['eta'] if 'anti' in id else [ 'dm' ]
+    for id in tauIDs:
+      vslist = ['eta'] if any(s in id for s in ['anti','VSe','VSmu']) else ['dm']
       for vs in vslist:
         for wp in ['Loose','Medium','Tight']:
           if 'antiMu' in id and wp=='Medium': continue
