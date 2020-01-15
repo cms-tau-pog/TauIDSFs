@@ -11,7 +11,8 @@ The files contain:
 * `TauID_SF_dm_*_*.root`: DM-dependent SFs, with tau pT > 40 GeV.
 * `TauID_SF_pt_*_*.root`: pT-dependent SFs.
 * `TauID_SF_eta_*_*.root`: eta-dependent SFs for anti-lepton discriminators
-* `TauES_dm_*.root`: Tau energy scales.
+* `TauES_dm_*_*.root`: Tau energy scales.
+* `TauFES_eta-dm_*_*.root`: Electron to tau fake energy scales.
 
 
 ## Scale factor versions
