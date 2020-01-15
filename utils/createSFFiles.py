@@ -2,16 +2,31 @@
 # Author: Izaak Neutelings (September 2019)
 # Description: Create root files with SFs for the anti-lepton discriminators
 import os
+from math import sqrt
 from array import array
 import numpy as np
-from collections import namedtuple
+#from collections import namedtuple
 from ROOT import TFile, TH1F, kFullDotLarge, TGraphAsymmErrors
 
 
 # SF CONTAINER
-SF  = namedtuple('SF',['val','unc'])
-SF0 = SF(0,0) # default
-SF1 = SF(1,0) # default
+###SF  = namedtuple('SF',['val','unc'])
+class SF:
+  """Simple container class, that allows for multiplication."""
+  def __init__(self,val,*args):
+    self.val     = val
+    self.unc     = args[0]
+    self.uncUp   = args[0]
+    self.uncDown = args[1] if len(args)>=2 else args[0]
+  def __mul__(self,osf):
+    if isinstance(osf,SF):
+      val = self.val*osf.val
+      unc = val*sqrt((self.unc/float(self.val))**2 + (osf.unc/float(osf.val))**2)
+      return SF(val,unc)
+    else:
+      return SF(osf*val,osf*unc)
+SF0 = SF(0,0) # default 0
+SF1 = SF(1,0) # default 1
 
 
 def createSFTH1(histname,sflist,bins,xtitle,ytitle="SF",overflow=False):
@@ -200,22 +215,22 @@ def main():
     antiLepSFs['DeepTau2017v2p1VSmu'] = {
       # https://indico.cern.ch/event/866243/contributions/3650016/attachments/1950974/3238736/mutauFRRun2_Yiwen_20191121.pdf (slides 8-10)
       '2016Legacy': {
-        'VLoose': ( SF(1.311,0.057), SF(0.995,0.116), SF(1.275,0.081), SF(0.892,0.156), SF(5.111,0.282), SF1 ),
-        'Loose':  ( SF(1.411,0.084), SF(0.952,0.210), SF(1.337,0.145), SF(1.037,0.329), SF(6.191,0.386), SF1 ),
-        'Medium': ( SF(1.442,0.097), SF(0.941,0.272), SF(1.288,0.204), SF(1.054,0.469), SF(5.341,0.616), SF1 ),
-        'Tight':  ( SF(1.463,0.097), SF(0.722,0.289), SF(1.337,0.239), SF(0.966,0.650), SF(5.451,0.846), SF1 ),
+        'VLoose': ( SF(0.978,0.029)*SF(1.311,0.057), SF(1.003,0.037)*SF(0.995,0.116), SF(0.992,0.052)*SF(1.275,0.081), SF(1.003,0.037)*SF(0.892,0.156), SF(0.966,0.040)*SF(5.111,0.282), SF1 ),
+        'Loose':  ( SF(0.978,0.029)*SF(1.411,0.084), SF(1.003,0.037)*SF(0.952,0.210), SF(0.992,0.052)*SF(1.337,0.145), SF(1.003,0.037)*SF(1.037,0.329), SF(0.966,0.040)*SF(6.191,0.386), SF1 ),
+        'Medium': ( SF(0.978,0.029)*SF(1.442,0.097), SF(1.003,0.037)*SF(0.941,0.272), SF(0.992,0.052)*SF(1.288,0.204), SF(1.003,0.037)*SF(1.054,0.469), SF(0.966,0.040)*SF(5.341,0.616), SF1 ),
+        'Tight':  ( SF(0.978,0.029)*SF(1.463,0.097), SF(1.003,0.037)*SF(0.722,0.289), SF(0.992,0.052)*SF(1.337,0.239), SF(1.003,0.037)*SF(0.966,0.650), SF(0.966,0.040)*SF(5.451,0.846), SF1 ),
       },
       '2017ReReco': {
-        'VLoose': ( SF(1.117,0.067), SF(0.952,0.070), SF(0.952,0.070), SF(0.744,0.126), SF(4.592,0.247), SF1 ),
-        'Loose':  ( SF(1.076,0.112), SF(0.940,0.140), SF(0.940,0.140), SF(0.916,0.272), SF(5.596,0.422), SF1 ),
-        'Medium': ( SF(1.062,0.149), SF(0.819,0.206), SF(0.819,0.206), SF(1.021,0.375), SF(4.235,0.617), SF1 ),
-        'Tight':  ( SF(0.991,0.152), SF(0.675,0.259), SF(0.675,0.259), SF(1.098,0.457), SF(4.175,0.779), SF1 ),
+        'VLoose': ( SF(0.979,0.033)*SF(1.117,0.067), SF(0.953,0.034)*SF(0.952,0.070), SF(0.983,0.037)*SF(0.952,0.070), SF(0.988,0.038)*SF(0.744,0.126), SF(1.004,0.052)*SF(4.592,0.247), SF1 ),
+        'Loose':  ( SF(0.979,0.033)*SF(1.076,0.112), SF(0.953,0.034)*SF(0.940,0.140), SF(0.983,0.037)*SF(0.940,0.140), SF(0.988,0.038)*SF(0.916,0.272), SF(1.004,0.052)*SF(5.596,0.422), SF1 ),
+        'Medium': ( SF(0.979,0.033)*SF(1.062,0.149), SF(0.953,0.034)*SF(0.819,0.206), SF(0.983,0.037)*SF(0.819,0.206), SF(0.988,0.038)*SF(1.021,0.375), SF(1.004,0.052)*SF(4.235,0.617), SF1 ),
+        'Tight':  ( SF(0.979,0.033)*SF(0.991,0.152), SF(0.953,0.034)*SF(0.675,0.259), SF(0.983,0.037)*SF(0.675,0.259), SF(0.988,0.038)*SF(1.098,0.457), SF(1.004,0.052)*SF(4.175,0.779), SF1 ),
       },
       '2018ReReco': {
-        'VLoose': ( SF(1.019,0.060), SF(1.154,0.106), SF(1.128,0.073), SF(0.974,0.147), SF(5.342,0.339), SF1 ),
-        'Loose':  ( SF(0.993,0.097), SF(1.371,0.202), SF(1.165,0.135), SF(0.860,0.265), SF(6.631,0.473), SF1 ),
-        'Medium': ( SF(0.940,0.120), SF(1.519,0.269), SF(1.032,0.193), SF(0.817,0.392), SF(5.597,0.691), SF1 ),
-        'Tight':  ( SF(0.820,0.130), SF(1.436,0.292), SF(0.989,0.220), SF(0.875,0.434), SF(4.739,0.848), SF1 ),
+        'VLoose': ( SF(0.936,0.040)*SF(1.019,0.060), SF(0.874,0.028)*SF(1.154,0.106), SF(0.912,0.030)*SF(1.128,0.073), SF(0.953,0.040)*SF(0.974,0.147), SF(0.936,0.038)*SF(5.342,0.339), SF1 ),
+        'Loose':  ( SF(0.936,0.040)*SF(0.993,0.097), SF(0.874,0.028)*SF(1.371,0.202), SF(0.912,0.030)*SF(1.165,0.135), SF(0.953,0.040)*SF(0.860,0.265), SF(0.936,0.038)*SF(6.631,0.473), SF1 ),
+        'Medium': ( SF(0.936,0.040)*SF(0.940,0.120), SF(0.874,0.028)*SF(1.519,0.269), SF(0.912,0.030)*SF(1.032,0.193), SF(0.953,0.040)*SF(0.817,0.392), SF(0.936,0.038)*SF(5.597,0.691), SF1 ),
+        'Tight':  ( SF(0.936,0.040)*SF(0.820,0.130), SF(0.874,0.028)*SF(1.436,0.292), SF(0.912,0.030)*SF(0.989,0.220), SF(0.953,0.040)*SF(0.875,0.434), SF(0.936,0.038)*SF(4.739,0.848), SF1 ),
       },
     }
     for id in antiLepSFs:
