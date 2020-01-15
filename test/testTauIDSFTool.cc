@@ -16,15 +16,21 @@
 #include <chrono>
 
 
-void printSFTable(std::string year, std::string id, std::string wp, std::string vs){
+void printSFTable(std::string year, std::string id, std::string wp, std::string vs, const bool emb=false){
   bool dm = (vs=="dm");
-  TauIDSFTool* sftool = new TauIDSFTool(year,id,wp,dm);
+  TauIDSFTool* sftool = new TauIDSFTool(year,id,wp,dm,emb);
   std::cout << std::fixed;
   std::cout.precision(5);
   if(vs=="pt"){
       std::vector<int> ptvals = {10,20,21,25,26,30,31,35,40,50,70,100,200,500,600,700,800,1000,1500,2000,};
       std::cout << ">>>  " << std::endl;
-      std::cout << ">>> SF for "<<wp<<" WP of "<<id<<" in "<<year<< std::endl;
+      std::cout << ">>> SF for "<<wp<<" WP of "<<id<<" in "<<year;
+      if (emb){
+          std::cout << " for the embedded samples. " << std::endl;
+      }
+      else {
+          std::cout << std::endl;
+      }
       std::cout << ">>>  " << std::endl;
       std::cout << ">>>  " << std::setw(9) << "var \\ pt";
       for(auto const& pt: ptvals)
@@ -51,7 +57,13 @@ void printSFTable(std::string year, std::string id, std::string wp, std::string 
     std::vector<int> ptvals = {25,50};
     for(auto const& pt: ptvals){
       std::cout << ">>>  " << std::endl;
-      std::cout << ">>> SF for "<<wp<<" WP of "<<id<<" in "<<year<<" with pT = "<<pt<<" GeV" << std::endl;
+      std::cout << ">>> SF for "<<wp<<" WP of "<<id<<" in "<<year<<" with pT = "<<pt<<" GeV";
+      if (emb) {
+          std::cout << " for the embedded samples." << std::endl;
+      }
+      else {
+          std::cout << std::endl;
+      }
       std::cout << ">>>  " << std::endl;
       std::cout << ">>>  " << std::setw(9) << "var \\ DM";
       for(auto const& dm_: DMs)
@@ -125,6 +137,8 @@ int main(int argc, char* argv[]){
         for(auto const& wp: WPs){
           if(id=="antiMu3" and wp=="Medium") continue;
           printSFTable(year,id,wp,vs);
+          if(id=="MVAoldDM2017v2" || id=="antiEleMVA6" || id=="antiMu3") continue;
+          printSFTable(year,id,wp,vs,true);
         }
       }
     }

@@ -5,10 +5,13 @@ from TauPOG.TauIDSFs.TauIDSFTool import TauIDSFTool, TauESTool, TauFESTool
 start1 = time.time()
 
 
-def printSFTable(year,id,wp,vs='pt'):
+def printSFTable(year,id,wp,vs='pt',emb=False):
   assert vs in ['pt','dm','eta'], "'vs' argument should be pt', 'dm' or 'eta'!"
   dm = (vs=='dm')
-  sftool = TauIDSFTool(year,id,wp,dm=dm)
+  if emb and not 'DeepTau' in id:
+      print "SFs for ID '%s' not available for embedded samples. Skipping..."%id
+      return
+  sftool = TauIDSFTool(year,id,wp,dm=dm,embedding=emb)
   if vs=='pt':
       ptvals = [10,20,21,25,26,30,31,35,40,50,70,100,200,500,600,700,800,1000,1500,2000,]
       print ">>> "
@@ -35,6 +38,9 @@ def printSFTable(year,id,wp,vs='pt'):
       ###sftool.getSFvsPT(pt,5)     # results in an error
       ###sftool.getSFvsEta(1.5,1,5) # results in an error
   elif vs=='eta':
+    if emb:
+      print "vsEta binned SFs not available for embedded samples. Skipping..."
+      return
     etavals = [0,0.2,0.5,1.0,1.5,2.0,2.2,2.3,2.4]
     for genmatch in [1,2]:
       print ">>> "
@@ -83,6 +89,7 @@ if __name__ == "__main__":
   testIDTool  = True #and False
   testTESTool = True #and False
   testFESTool = True #and False
+  emb = False or True
   start2 = time.time()
   years  = ['2016Legacy','2017ReReco','2018ReReco'] #['2017ReReco'] # ['2016Legacy','2017ReReco','2018ReReco']
   ids    = ['MVAoldDM2017v2','DeepTau2017v2p1VSjet','antiEleMVA6','antiMu3']
@@ -93,7 +100,7 @@ if __name__ == "__main__":
         for wp in ['Loose','Medium','Tight']:
           if 'antiMu' in id and wp=='Medium': continue
           if testIDTool:
-            printSFTable(year,id,wp,vs)
+            printSFTable(year,id,wp,vs,emb)
     if testTESTool:
       printTESTable(year)
     if testFESTool:
