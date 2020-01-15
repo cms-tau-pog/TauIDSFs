@@ -23,8 +23,7 @@ class SF:
       val = self.val*osf.val
       unc = val*sqrt((self.unc/float(self.val))**2 + (osf.unc/float(osf.val))**2)
       return SF(val,unc)
-    else:
-      return SF(osf*val,osf*unc)
+    return SF(osf*val,osf*unc)
 SF0 = SF(0,0) # default 0
 SF1 = SF(1,0) # default 1
 
@@ -33,23 +32,23 @@ def createSFTH1(histname,sflist,bins,xtitle,ytitle="SF",overflow=False):
   """Create histogram with variable bin sizes from SF list."""
   print ">>>   Creating hisogram '%s'..."%histname
   sflist = list(sflist)
-
+  
   # ASSUME (nbins,xmin,xmax)
   if len(bins)==3 and isinstance(bins[0],int):
     nxbins = bins[0]
     hist   = TH1F(histname,histname,*bins)
-
+  
   # VARIABLE BINS
   else:
     nxbins = len(bins)-1
     xbins  = array('d',list(bins))
     hist   = TH1F(histname,histname,nxbins,xbins)
-
+  
   # APPEND LIST WITH LAST VALUE
   if overflow:
     while len(sflist)<=nxbins:
       sflist.append(sflist[-1])
-
+  
   # STYLE
   hist.GetYaxis().SetTitle(ytitle)
   hist.GetXaxis().SetTitle(xtitle)
@@ -75,7 +74,7 @@ def createSFTH1(histname,sflist,bins,xtitle,ytitle="SF",overflow=False):
     print ">>>     Bin %s, %s:  SF = %6.3f +- %.3f %s"%(i,binstr,sf.val,sf.unc,ofstr)
     hist.SetBinContent(i,sf.val)
     hist.SetBinError(i,sf.unc)
-
+  
   return hist
   
 
@@ -116,14 +115,14 @@ def createAssymSFFile(filename, sftable, name):
   eyl = [sftable[k]['down'] for k in x_names]
   eyh = [sftable[k]['up'] for k in x_names]
   g = TGraphAsymmErrors(len(x), np.array(x), np.array(y), np.array(ex), np.array(ex), np.array(eyl), np.array(eyh))
-
+  
   g.GetXaxis().SetNdivisions(len(x) * 2)
   g.GetXaxis().ChangeLabel(0, -1, 0, -1, -1, -1, "")
   for i in x:
     print 1 + int(i), x_names[int(i)]
     g.GetXaxis().ChangeLabel(2 + int(i) * 2, -1, 0)
     g.GetXaxis().ChangeLabel(1 + int(i) * 2, -1, -1, -1, -1, -1, x_names[int(i)])
-
+  
   g.Write(name)
   # file.ls() ; g.Draw("A*") ; raw_input()
   file.Close()
@@ -131,7 +130,7 @@ def createAssymSFFile(filename, sftable, name):
   
 
 def main():
-
+  
   outdir         = "../data"
   
   doVSLep        = True #and False
