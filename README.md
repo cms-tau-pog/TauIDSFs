@@ -39,6 +39,13 @@ This is also an installation test that can be compiled and run with
 scram b runtests -j8
 ```
 
+### Python without CMSSW
+
+Alternatively, if used just with python (no CMSSW), clone the repository and assure that your `PYTHONPATH` points to the `TauIDSFTool` module. Afterwards, one should be able to do:
+```
+from TauIDSFTool import TauIDSFTool
+```
+
 
 ## Scale factor versions
 
