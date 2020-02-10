@@ -133,8 +133,8 @@ def main():
   
   outdir         = "../data"
   
-  doVSLep        = True #and False
-  doTES          = True and False
+  doVSLep        = True and False
+  doTES          = True #and False
   doFES          = True and False
   
   # ANTI-LEPTON SFs
@@ -144,43 +144,43 @@ def main():
     antiEleEtaBins = ( 0.0, 1.460, 1.558, 2.3 )
     antiMuEtaBins  = ( 0.0, 0.4, 0.8, 1.2, 1.7, 2.3 )
     antiLepSFs     = { }
-#     antiLepSFs['antiEleMVA6'] = {
-#       '2016Legacy': { # https://indico.cern.ch/event/828205/contributions/3468902/attachments/1863558/3063927/EtoTauFRLegacy16.pdf
-#         'VLoose': ( SF(1.175,0.003), SF1, SF(1.288,0.006), SF1 ), # LEGACY
-#         'Loose':  ( SF(1.38, 0.011), SF1, SF(1.24, 0.05 ), SF1 ),
-#         'Medium': ( SF(1.88, 0.04 ), SF1, SF(1.11, 0.10 ), SF1 ),
-#         'Tight':  ( SF(2.16, 0.10 ), SF1, SF(0.91, 0.20 ), SF1 ),
-#         'VTight': ( SF(2.04, 0.16 ), SF1, SF(0.78, 0.31 ), SF1 ),
-#       },
-#       '2017ReReco': { # https://twiki.cern.ch/twiki/bin/viewauth/CMS/TauIDRecommendation13TeV#Electron_to_tau_fake_rate
-#         'VLoose': ( SF(1.09,0.01), SF1, SF(1.19,0.01), SF1 ),
-#         'Loose':  ( SF(1.17,0.04), SF1, SF(1.25,0.06), SF1 ),
-#         'Medium': ( SF(1.40,0.12), SF1, SF(1.21,0.26), SF1 ),
-#         'Tight':  ( SF(1.80,0.20), SF1, SF(1.53,0.60), SF1 ),
-#         'VTight': ( SF(1.96,0.27), SF1, SF(1.66,0.80), SF1 ),
-#       },
-#       '2018ReReco': { # https://indico.cern.ch/event/831606/contributions/3483937/attachments/1871414/3079821/EtoTauFR2018-updated.pdf
-#         'VLoose': ( SF(1.130,0.005), SF1, SF(1.003,0.005), SF1 ), # PRELIMINARY
-#         'Loose':  ( SF(1.229,0.018), SF1, SF(0.926,0.015), SF1 ),
-#         'Medium': ( SF(1.36, 0.004), SF1, SF(0.91, 0.05 ), SF1 ),
-#         'Tight':  ( SF(1.46, 0.008), SF1, SF(1.02, 0.14 ), SF1 ),
-#         'VTight': ( SF(1.56, 0.16 ), SF1, SF(1.03, 0.24 ), SF1 ),
-#       },
-#     }
-#     antiLepSFs['antiMu3'] = {
-#       '2016Legacy': { # https://indico.cern.ch/event/862376/contributions/3633007/attachments/1942593/3221852/mutauFRRun2_Yiwen.pdf (slide 6)
-#         'Loose': ( SF(1.106,0.033), SF(1.121,0.034), SF(1.225,0.026), SF(1.115,0.198), SF(2.425,0.229), SF1 ),
-#         'Tight': ( SF(1.274,0.108), SF(1.144,0.231), SF(1.261,0.035), SF(1.159,0.663), SF(3.310,0.554), SF1 ),
-#       },
-#       '2017ReReco': { # https://twiki.cern.ch/twiki/bin/viewauth/CMS/TauIDRecommendation13TeV#Muon_to_tau_fake_rate
-#         'Loose': ( SF(1.06,0.05), SF(1.02,0.04), SF(1.10,0.04), SF(1.03,0.18), SF(1.94,0.35), SF1 ),
-#         'Tight': ( SF(1.17,0.12), SF(1.29,0.30), SF(1.14,0.05), SF(0.93,0.60), SF(1.61,0.60), SF1 ),
-#       },
-#       '2018ReReco': { # https://indico.cern.ch/event/814232/contributions/3397978/attachments/1831354/2999219/mu-tau_FR_2018.pdf
-#         'Loose': ( SF(1.05,0.05), SF(0.96,0.04), SF(1.06,0.05), SF(1.45,0.08), SF(1.75,0.16), SF1 ),
-#         'Tight': ( SF(1.23,0.05), SF(1.37,0.18), SF(1.12,0.04), SF(1.84,0.32), SF(2.01,0.43), SF1 ),
-#       },
-#     }
+    #antiLepSFs['antiEleMVA6'] = {
+    #  '2016Legacy': { # https://indico.cern.ch/event/828205/contributions/3468902/attachments/1863558/3063927/EtoTauFRLegacy16.pdf
+    #    'VLoose': ( SF(1.175,0.003), SF1, SF(1.288,0.006), SF1 ), # LEGACY
+    #    'Loose':  ( SF(1.38, 0.011), SF1, SF(1.24, 0.05 ), SF1 ),
+    #    'Medium': ( SF(1.88, 0.04 ), SF1, SF(1.11, 0.10 ), SF1 ),
+    #    'Tight':  ( SF(2.16, 0.10 ), SF1, SF(0.91, 0.20 ), SF1 ),
+    #    'VTight': ( SF(2.04, 0.16 ), SF1, SF(0.78, 0.31 ), SF1 ),
+    #  },
+    #  '2017ReReco': { # https://twiki.cern.ch/twiki/bin/viewauth/CMS/TauIDRecommendation13TeV#Electron_to_tau_fake_rate
+    #    'VLoose': ( SF(1.09,0.01), SF1, SF(1.19,0.01), SF1 ),
+    #    'Loose':  ( SF(1.17,0.04), SF1, SF(1.25,0.06), SF1 ),
+    #    'Medium': ( SF(1.40,0.12), SF1, SF(1.21,0.26), SF1 ),
+    #    'Tight':  ( SF(1.80,0.20), SF1, SF(1.53,0.60), SF1 ),
+    #    'VTight': ( SF(1.96,0.27), SF1, SF(1.66,0.80), SF1 ),
+    #  },
+    #  '2018ReReco': { # https://indico.cern.ch/event/831606/contributions/3483937/attachments/1871414/3079821/EtoTauFR2018-updated.pdf
+    #    'VLoose': ( SF(1.130,0.005), SF1, SF(1.003,0.005), SF1 ), # PRELIMINARY
+    #    'Loose':  ( SF(1.229,0.018), SF1, SF(0.926,0.015), SF1 ),
+    #    'Medium': ( SF(1.36, 0.004), SF1, SF(0.91, 0.05 ), SF1 ),
+    #    'Tight':  ( SF(1.46, 0.008), SF1, SF(1.02, 0.14 ), SF1 ),
+    #    'VTight': ( SF(1.56, 0.16 ), SF1, SF(1.03, 0.24 ), SF1 ),
+    #  },
+    #}
+    #antiLepSFs['antiMu3'] = {
+    #  '2016Legacy': { # https://indico.cern.ch/event/862376/contributions/3633007/attachments/1942593/3221852/mutauFRRun2_Yiwen.pdf (slide 6)
+    #    'Loose': ( SF(1.106,0.033), SF(1.121,0.034), SF(1.225,0.026), SF(1.115,0.198), SF(2.425,0.229), SF1 ),
+    #    'Tight': ( SF(1.274,0.108), SF(1.144,0.231), SF(1.261,0.035), SF(1.159,0.663), SF(3.310,0.554), SF1 ),
+    #  },
+    #  '2017ReReco': { # https://twiki.cern.ch/twiki/bin/viewauth/CMS/TauIDRecommendation13TeV#Muon_to_tau_fake_rate
+    #    'Loose': ( SF(1.06,0.05), SF(1.02,0.04), SF(1.10,0.04), SF(1.03,0.18), SF(1.94,0.35), SF1 ),
+    #    'Tight': ( SF(1.17,0.12), SF(1.29,0.30), SF(1.14,0.05), SF(0.93,0.60), SF(1.61,0.60), SF1 ),
+    #  },
+    #  '2018ReReco': { # https://indico.cern.ch/event/814232/contributions/3397978/attachments/1831354/2999219/mu-tau_FR_2018.pdf
+    #    'Loose': ( SF(1.05,0.05), SF(0.96,0.04), SF(1.06,0.05), SF(1.45,0.08), SF(1.75,0.16), SF1 ),
+    #    'Tight': ( SF(1.23,0.05), SF(1.37,0.18), SF(1.12,0.04), SF(1.84,0.32), SF(2.01,0.43), SF1 ),
+    #  },
+    #}
     antiLepSFs['DeepTau2017v2p1VSe'] = {
       # https://indico.cern.ch/event/865792/contributions/3659828/attachments/1954858/3246751/ETauFR-update2Dec.pdf (slides 15, 26, 37)
       '2016Legacy': {
@@ -244,10 +244,15 @@ def main():
     dmbins  = (13,0,13)
     dmtitle = "#tau_{h} decay modes"
     TESs    = { # units of percentage
-      'MVAoldDM2017v2': {
-        '2016Legacy': { 0: (-0.6,1.0), 1: (-0.5,0.9), 10: ( 0.0,1.1), 11: ( 0.0,1.1), },
-        '2017ReReco': { 0: ( 0.7,0.8), 1: (-0.2,0.8), 10: ( 0.1,0.9), 11: (-0.1,1.0), },
-        '2018ReReco': { 0: (-1.3,1.1), 1: (-0.5,0.9), 10: (-1.2,0.8), 11: (-1.2,0.8), },
+      #'MVAoldDM2017v2': {
+      #  '2016Legacy': { 0: (-0.6,1.0), 1: (-0.5,0.9), 10: ( 0.0,1.1), 11: ( 0.0,1.1), },
+      #  '2017ReReco': { 0: ( 0.7,0.8), 1: (-0.2,0.8), 10: ( 0.1,0.9), 11: (-0.1,1.0), },
+      #  '2018ReReco': { 0: (-1.3,1.1), 1: (-0.5,0.9), 10: (-1.2,0.8), 11: (-1.2,0.8), },
+      #},
+      'DeepTau2017v2p1VSjet': {
+        '2016Legacy': { 0: (-0.9,0.8), 1: (-0.1,0.6), 10: ( 0.3,0.8), 11: (-0.2,1.1), },
+        '2017ReReco': { 0: ( 0.4,1.0), 1: ( 0.2,0.6), 10: ( 0.1,0.7), 11: (-1.3,1.4), },
+        '2018ReReco': { 0: (-1.6,0.9), 1: (-0.5,0.6), 10: (-1.2,0.7), 11: (-0.4,1.2), },
       },
     }
     for id in TESs:
@@ -262,30 +267,26 @@ def main():
   # FAKE e->tau ENERGY SCALES
   if doFES:
     FESs = {
-        'DeepTau2017v2p1VSe':
-        {
-            '2016Legacy':
-            {
-                'barrel_dm0': {"val": 1.00679, "down": 0.982 / 100, "up": 0.806 / 100},
-                'barrel_dm1': {"val": 1.03389, "down": 2.475 / 100, "up":1.168 / 100},
-                'endcap_dm0': {"val": 0.965, "down": 1.102 / 100, "up": 1.808 / 100},
-                'endcap_dm1': {"val": 1.05, "down": 5.694 / 100, "up":6.57 / 100},
-            },
-            '2017ReReco':
-            {
-                'barrel_dm0': {"val": 1.00911, "down": 0.882 / 100, "up": 1.343 / 100},
-                'barrel_dm1': {"val": 1.01154, "down": 0.973 / 100, "up": 2.162 / 100},
-                'endcap_dm0': {"val": 0.97396, "down": 1.43 / 100, "up": 2.249 / 100},
-                'endcap_dm1': {"val": 1.015, "down": 4.969 / 100, "up": 6.461 / 100},
-            },
-            '2018ReReco':
-            {
-                'barrel_dm0': {"val": 1.01362, "down": 0.474 / 100, "up": 0.904 / 100},
-                'barrel_dm1': {"val": 1.01945, "down": 1.598 / 100, "up": 1.226 / 100},
-                'endcap_dm0': {"val": 0.96903, "down": 1.25 / 100, "up": 3.404 / 100},
-                'endcap_dm1': {"val": 0.985, "down": 4.309 / 100, "up": 5.499 / 100},
-            },
-        }
+      'DeepTau2017v2p1VSe': {
+        '2016Legacy': {
+          'barrel_dm0': {"val": 1.00679, "down": 0.982 / 100, "up": 0.806 / 100},
+          'barrel_dm1': {"val": 1.03389, "down": 2.475 / 100, "up":1.168 / 100},
+          'endcap_dm0': {"val": 0.965, "down": 1.102 / 100, "up": 1.808 / 100},
+          'endcap_dm1': {"val": 1.05, "down": 5.694 / 100, "up":6.57 / 100},
+        },
+        '2017ReReco': {
+          'barrel_dm0': {"val": 1.00911, "down": 0.882 / 100, "up": 1.343 / 100},
+          'barrel_dm1': {"val": 1.01154, "down": 0.973 / 100, "up": 2.162 / 100},
+          'endcap_dm0': {"val": 0.97396, "down": 1.43 / 100, "up": 2.249 / 100},
+          'endcap_dm1': {"val": 1.015, "down": 4.969 / 100, "up": 6.461 / 100},
+        },
+        '2018ReReco': {
+          'barrel_dm0': {"val": 1.01362, "down": 0.474 / 100, "up": 0.904 / 100},
+          'barrel_dm1': {"val": 1.01945, "down": 1.598 / 100, "up": 1.226 / 100},
+          'endcap_dm0': {"val": 0.96903, "down": 1.25 / 100, "up": 3.404 / 100},
+          'endcap_dm1': {"val": 0.985, "down": 4.309 / 100, "up": 5.499 / 100},
+        },
+      }
     }
     for discriminator in FESs.keys():
       for year, fesvals in FESs[discriminator].iteritems():
