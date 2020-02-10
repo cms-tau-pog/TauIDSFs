@@ -9,13 +9,13 @@ campaigns = ['2016Legacy','2017ReReco','2018ReReco']
 class TauIDSFTool:
     
     def __init__(self, year, id, wp='Tight', dm=False, emb=False,
-                 otherVSlepWPs=False, path=datapath, verbose=False):
+                 otherVSlepWP=False, path=datapath, verbose=False):
         """Choose the IDs and WPs for SFs. For available tau IDs and WPs, check
         https://cms-nanoaod-integration.web.cern.ch/integration/master-102X/mc102X_doc.html#Tau
         Options:
-          dm:            use decay mode-dependent SFs
-          emb:           use SFs for embedded samples
-          otherVSlepWPs: extra uncertainty if you are using a different DeepTauVSe/mu WP than used in the measurement
+          dm:           use decay mode-dependent SFs
+          emb:          use SFs for embedded samples
+          otherVSlepWP: extra uncertainty if you are using a different DeepTauVSe/mu WP than used in the measurement
         """
         assert year in campaigns, "You must choose a year from %s."%(', '.join(campaigns))
         self.ID       = id
@@ -38,7 +38,7 @@ class TauIDSFTool:
             self.DMs = [0,1,10] if 'oldDM' in id else [0,1,10,11]
             self.getSFvsPT  = self.disabled
             self.getSFvsEta = self.disabled
-            if otherVSlepWPs:
+            if otherVSlepWP:
               if emb:
                 self.extraUnc = 0.05
               else:
@@ -58,7 +58,7 @@ class TauIDSFTool:
             file.Close()
             self.getSFvsDM  = self.disabled
             self.getSFvsEta = self.disabled
-            if otherVSlepWPs:
+            if otherVSlepWP:
               if emb:
                 self.extraUnc = lambda pt: (0.05 if pt<100 else 0.15)
               else:
@@ -83,8 +83,8 @@ class TauIDSFTool:
           if self.extraUnc:
             sf       = self.func[None].Eval(pt)
             extraUnc = self.extraUnc(pt)
-            errDown  = sqrt( (sf-self.func['Down'])**2 + (sf*extraUnc)**2 )
-            errUp    = sqrt( (sf-self.func['Up'  ])**2 + (sf*extraUnc)**2 )
+            errDown  = sqrt( (sf-self.func['Down'].Eval(pt))**2 + (sf*extraUnc)**2 )
+            errUp    = sqrt( (sf-self.func['Up'  ].Eval(pt))**2 + (sf*extraUnc)**2 )
             if unc=='All':
               return sf-errDown, sf, sf+errUp
             elif unc=='Up':

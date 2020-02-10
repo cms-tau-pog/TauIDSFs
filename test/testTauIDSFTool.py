@@ -5,13 +5,13 @@ from TauPOG.TauIDSFs.TauIDSFTool import TauIDSFTool, TauESTool, TauFESTool
 start1 = time.time()
 
 
-def printSFTable(year,id,wp,vs='pt',emb=False):
+def printSFTable(year,id,wp,vs='pt',emb=False,otherVSlepWP=False):
   assert vs in ['pt','dm','eta'], "'vs' argument should be pt', 'dm' or 'eta'!"
   dm = (vs=='dm')
   if emb and 'VSjet' not in id:
       print "SFs for ID '%s' not available for embedded samples. Skipping..."%id
       return
-  sftool = TauIDSFTool(year,id,wp,dm=dm,embedding=emb)
+  sftool = TauIDSFTool(year,id,wp,dm=dm,emb=emb,otherVSlepWP=otherVSlepWP)
   if vs=='pt':
       ptvals = [10,20,21,25,26,30,31,35,40,50,70,100,200,500,600,700,800,1000,1500,2000,]
       print ">>> "
@@ -86,32 +86,40 @@ def printFESTable(year):
 if __name__ == "__main__":  
   print ">>> "
   print ">>> start test tau ID SF tool"
-  testIDTool  = True #and False
-  testTESTool = True #and False
-  testFESTool = True #and False
-  emb         = True and False
-  start2      = time.time()
-  years       = [
+  
+  testIDTool   = True #and False
+  testTESTool  = True and False
+  testFESTool  = True and False
+  emb          = True and False
+  otherVSlepWP = True #and False
+  
+  start2       = time.time()
+  years        = [
     #'2016Legacy',
     '2017ReReco',
     #'2018ReReco',
   ]
   tauIDs      = [
-    'MVAoldDM2017v2',
+    #'MVAoldDM2017v2',
     'DeepTau2017v2p1VSjet',
-    'antiEleMVA6',
-    'antiMu3',
+    #'antiEleMVA6',
+    #'antiMu3',
     'DeepTau2017v2p1VSmu',
     'DeepTau2017v2p1VSe'
   ]
+  WPs         = [
+    #'Loose',
+    'Medium',
+    #'Tight'
+  ]
   for year in years:
     for id in tauIDs:
-      vslist = ['eta'] if any(s in id for s in ['anti','VSe','VSmu']) else ['dm']
+      vslist = ['eta'] if any(s in id for s in ['anti','VSe','VSmu']) else ['pt','dm']
       for vs in vslist:
-        for wp in ['Loose','Medium','Tight']:
+        for wp in WPs:
           if 'antiMu' in id and wp=='Medium': continue
           if testIDTool:
-            printSFTable(year,id,wp,vs,emb)
+            printSFTable(year,id,wp,vs,emb,otherVSlepWP)
     if testTESTool:
       printTESTable(year)
     if testFESTool:

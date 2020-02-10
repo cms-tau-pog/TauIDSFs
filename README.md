@@ -126,9 +126,9 @@ For the tau ID SF of the **embedded samples**, set the `emb` flag to `True`:
 tauSFTool = TauIDSFTool('2017ReReco','DeepTau2017v2p1VSjet','Medium',emb=True)
 ```
 If your analysis uses a DeepTauVSe WP looser than VLoose and/or DeepTauVSmu looser than medium discriminators,
-should add additional uncertainty using the `otherVSlepWPs` flag:
+should add additional uncertainty using the `otherVSlepWP` flag:
 ```
-tauSFTool = TauIDSFTool('2017ReReco','DeepTau2017v2p1VSjet','Medium',otherVSlepWPs=True)
+tauSFTool = TauIDSFTool('2017ReReco','DeepTau2017v2p1VSjet','Medium',otherVSlepWP=True)
 ```
 
 
