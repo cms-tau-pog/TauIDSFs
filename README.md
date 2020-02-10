@@ -1,12 +1,12 @@
 # Tau ID scale factors
 
-This repository contains the recommended scale factors for several tau discriminators, and tools to read them.
+This repository contains the recommended scale factors (SFs) for several tau discriminators, and tools to read them.
 More detailed recommendations can be found on this TWiki page: https://twiki.cern.ch/twiki/bin/viewauth/CMS/TauIDRecommendationForRun2
 
 
-## Installation
+## Installation of the tool
 
-To install the tool for reading the tau ID scale factors, do
+To install the tool for reading the tau ID SFs, do
 ```
 export SCRAM_ARCH=slc6_amd64_gcc700 # for CMSSW_10_3_3, check "scram list"
 CMSSW_BASE=CMSSW_10_3_3             # or whichever release you desire
@@ -20,7 +20,8 @@ scram b -j8
 
 ### Python
 
-After compiling with this respective directory hierarchy, you can acces the tool ([`python/TauIDSFTool.py`](python/TauIDSFTool.py)) in python as
+After compiling with this respective directory hierarchy, you can acces the tool
+([`python/TauIDSFTool.py`](python/TauIDSFTool.py)) in python as
 ```
 from TauPOG.TauIDSFs.TauIDSFTool import TauIDSFTool
 ```
@@ -39,42 +40,75 @@ This is also an installation test that can be compiled and run with
 scram b runtests -j8
 ```
 
+
 ### Python without CMSSW
 
-Alternatively, if used just with python (no CMSSW), clone the repository and assure that your `PYTHONPATH` points to the `TauIDSFTool` module. Afterwards, one should be able to do:
+Alternatively, if you want to use the python tool standalone without CMSSW,
+clone the repository and assure that your `PYTHONPATH` points to the `TauIDSFTool` module.
+```
+export PYTHONPATH=<path to python directory>:$PYTHONPATH
+```
+Afterwards, you should be able to do:
 ```
 from TauIDSFTool import TauIDSFTool
 ```
 
 
-## Scale factor versions
+## Summary of available SFs
 
-The SFs in [`data`](data) are meant for the following campaigns:
+This is a rough summary of the available SFs for `DeepTau2017v2p1` in [`data`](data):
 
-| Year label   | MC campaign  | Data campaign |
-|:------------:|:------------:| :------------:|
-| `2016Legacy` | `RunIISummer16MiniAODv3` | `17Jul2018` |
-| `2017ReReco` | `RunIIFall17MiniAODv2`   | `31Mar2018` |
+| Tau component  | `genmatch`  | `DeepTau2017v2p1VSjet`  | `DeepTau2017v2p1VSe`  | `DeepTau2017v2p1VSmu`  | energy scale   |
+|:--------------:|:-----------:|:-----------------------:|:---------------------:|:----------------------:|:--------------:|
+| real tau       | `5`         | vs. pT or DM            | – (*)                 | – (*)                  | vs. DM         |
+| e -> tau fake  | `1`, `3`    | –                       | vs. eta               | –                      | vs. DM and eta |
+| mu -> tau fake | `2`, `4`    | –                       | –                     | vs. eta                | – (±1% unc.)   |
+
+(*) An extra uncertainty is recommended if you use a different working point (WP) combination than was used to measure the SFs,
+see the [TWiki](https://twiki.cern.ch/twiki/bin/viewauth/CMS/TauIDRecommendationForRun2).
+The tool should take this automatically into account.
+
+The gen-matching is defined as:
+* `1` for prompt electrons
+* `2` for prompt muons
+* `3` for electrons from tau decay
+* `4` for muons from tau decay
+* `5` for real taus
+* `6` for no match, or jets faking taus.
+For more info on gen-matching of taus, please see [here](https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsToTauTauWorking2016#MC_Matching).
+Note that in nanoAOD this is available as `Tau_GenPartFlav`, but jet or no match correspond to `Tau_GenPartFlav==0` instead of `6`.
+
+The SFs are meant for the following campaigns:
+
+| Year label   | MC campaign              | Data campaign           |
+|:------------:|:------------------------:| :----------------------:|
+| `2016Legacy` | `RunIISummer16MiniAODv3` | `17Jul2018`             |
+| `2017ReReco` | `RunIIFall17MiniAODv2`   | `31Mar2018`             |
 | `2018ReReco` | `RunIIAutumn18MiniAOD`   | `17Sep2018`/`22Jan2019` |
+
 
 
 ## Usage
 
-For more info on gen-matching of taus, please look [here](https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsToTauTauWorking2016#MC_Matching).
-Note that in nanoAOD this is available as `Tau_GenPartFlav`, but jet or no match correspond to `Tau_GenPartFlav==0` instead of `6`.
-
 ### pT-dependent SFs
 
-As an example, to get the scale factors for the tight working point of the `'DeepTau2017v2p1VSjet'` tau ID in 2017, initialize the tool as
+The pT-dependent SFs are provided as `TF1` functions. For example, to obtain those for the medium WP of the `'DeepTau2017v2p1VSjet'` discriminator for 2016, use
+```
+file = TFile("data/TauID_SF_pt_DeepTau2017v2p1VSjet_2016Legacy.root")
+func = file.Get('Medium_cent')
+sf   = sf.Eval(pt)
+```
+The tool can be used as
 ```
 from TauPOG.TauIDSFs.TauIDSFTool import TauIDSFTool
-tauSFTool = TauIDSFTool('2017ReReco','DeepTau2017v2p1VSjet','Tight')
+tauSFTool = TauIDSFTool('2016Legacy','DeepTau2017v2p1VSjet','Medium')
 ```
-and to retrieve the scale factor for a given tau pT, do
+and to retrieve the SF for a given tau pT, do
 ```
 sf = tauSFTool.getSFvsPT(pt)
 ```
-The scale factor should only be applied to tau objects that match "real" taus at gen-level (`genmatch==5`). You can pass the optional `genmatch` argument and the function will return the appropriate SF if `genmatch==5`, and `1.0` otherwise,
+The SF should only be applied to tau objects that match "real" taus at gen-level (`genmatch==5`).
+You can pass the optional `genmatch` argument and the function will return the appropriate SF if `genmatch==5`, and `1.0` otherwise,
 ```
 sf = tauSFTool.getSFvsPT(pt,genmatch)
 ```
@@ -87,15 +121,27 @@ or, all three in one go:
 ```
 sf_down, sf, sf_up = tauSFTool.getSFvsPT(pt,genmatch,unc='All')
 ```
-For the tau ID scale factor of the **embedded samples**, set the `emb` flag to `True`:
+For the tau ID SF of the **embedded samples**, set the `emb` flag to `True`:
 ```
-tauSFTool = TauIDSFTool('2017ReReco','DeepTau2017v2p1VSjet','Tight',emb=True)
+tauSFTool = TauIDSFTool('2017ReReco','DeepTau2017v2p1VSjet','Medium',emb=True)
+```
+If your analysis uses a DeepTauVSe WP looser than VLoose and/or DeepTauVSmu looser than medium discriminators,
+should add additional uncertainty using the `otherVSlepWPs` flag:
+```
+tauSFTool = TauIDSFTool('2017ReReco','DeepTau2017v2p1VSjet','Medium',otherVSlepWPs=True)
 ```
 
 
 ### DM-dependent SFs
 
-Analysis using ditau triggers and tau pT > 40 GeV, may use DM-dependent SFs as
+Analyses using ditau triggers and tau pT > 40 GeV, may use DM-dependent SFs.
+They are provided as `TH1` histograms. For example, to obtain those for the medium WP of the `'DeepTau2017v2p1VSjet'` discriminator for 2016, use
+```
+file = TFile("data/TauID_SF_dm_DeepTau2017v2p1VSjet_2016Legacy.root")
+hist = file.Get('Medium')
+sf   = hist.GetBinContent(hist.GetXaxis().FindBin(dm))
+```
+or with the tool,
 ```
 from TauPOG.TauIDSFs.TauIDSFTool import TauIDSFTool
 tauSFTool = TauIDSFTool('2017ReReco','MVAoldDM2017v2','Tight',dm=True)
@@ -106,10 +152,16 @@ sf_down   = tauSFTool.getSFvsDM(pt,dm,genmatch,unc='Down')
 where `genmatch` is optional.
 
 
-### Eta-dependent SFs for the anti-lepton discriminators
+### Eta-dependent fake rate SFs for the anti-lepton discriminators
 
-To apply SFs to electrons or muons faking taus, use the eta of the reconstructed tau and the `genmatch` code
-(`1` for prompt electrons, `2` for prompt muons, `3` for electrons from tau decay and `4` for muons from tau decay):
+To apply SFs to electrons or muons faking taus, use the eta of the reconstructed tau and the `genmatch` code.
+They are provided as `TH1` histograms:
+```
+file = TFile("data/TauID_SF_eta_DeepTau2017v2p1VSmu_2016Legacy.root")
+hist = file.Get('Medium')
+sf   = hist.GetBinContent(hist.GetXaxis().FindBin(eta))
+```
+or with the tool,
 ```
 python/TauIDSFTool.py
 antiEleSFTool = TauIDSFTool('2017ReReco','antiEleMVA6','Loose')
@@ -124,14 +176,14 @@ The uncertainty is obtained in a similar way as above.
 
 The tau energy scale (TES) is provided in the files [`data/TauES_dm_*.root`](data).
 Each file contains one histogram (`'tes'`) with the TES centered around `1.0`.
-It should be applied to a genuine tau by multiplying the tau TLorentzVector, or equivalently, the tau energy, pT and mass as follows:
+It should be applied to a genuine tau by multiplying the tau `TLorentzVector`, or equivalently, the tau energy, pT and mass as follows:
 ```
 file = TFile("data/TauES_dm_MVAoldDM2017v2_2016Legacy.root")
 hist = file.Get('tes')
 tes  = hist.GetBinContent(hist.GetXaxis().FindBin(dm))
 
 # scale the tau's TLorentzVector
-tau_tlv  *= tes
+tau_tlv *= tes
 
 # OR, scale the energy, mass and pT
 tau_E  *= tes
@@ -162,5 +214,4 @@ fes     = festool.getFES(eta,dm,genmatch)
 fesUp   = festool.getFES(eta,dm,genmatch,unc='Up')
 fesDown = festool.getFES(eta,dm,genmatch,unc='Down')
 ```
-
 
