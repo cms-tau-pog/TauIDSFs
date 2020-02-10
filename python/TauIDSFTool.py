@@ -1,21 +1,20 @@
 # Author: Izaak Neutelings (July 2019)
 # https://twiki.cern.ch/twiki/bin/viewauth/CMS/TauIDRecommendationForRun2
 import os
-from TauPOG.TauIDSFs import ensureTFile, extractTH1
+from helpers import ensureTFile, extractTH1
 datapath  = os.path.join(os.environ['CMSSW_BASE'],"src/TauPOG/TauIDSFs/data")
 campaigns = ['2016Legacy','2017ReReco','2018ReReco']
 
 class TauIDSFTool:
-    
+
     def __init__(self, year, id, wp='Tight', dm=False, embedding=False, path=datapath, verbose=False):
         """Choose the IDs and WPs for SFs. For available tau IDs and WPs, check
         https://cms-nanoaod-integration.web.cern.ch/integration/master-102X/mc102X_doc.html#Tau"""
-        
         assert year in campaigns, "You must choose a year from %s."%(', '.join(campaigns))
         self.ID      = id
         self.WP      = wp
         self.verbose = verbose
-        
+
         if id in ['MVAoldDM2017v2','DeepTau2017v2p1VSjet']:
           if dm:
             if embedding:
@@ -59,7 +58,7 @@ class TauIDSFTool:
             self.getSFvsDM  = self.disabled
         else:
           raise IOError("Did not recognize tau ID '%s'!"%id)
-        
+
     def getSFvsPT(self, pt, genmatch=5, unc=None):
         """Get tau ID SF vs. tau pT."""
         if genmatch==5:
@@ -69,7 +68,7 @@ class TauIDSFTool:
         elif unc=='All':
           return 1.0, 1.0, 1.0
         return 1.0
-        
+
     def getSFvsDM(self, pt, dm, genmatch=5, unc=None):
         """Get tau ID SF vs. tau DM."""
         if dm in self.DMs or pt<40:
@@ -89,7 +88,7 @@ class TauIDSFTool:
         elif unc=='All':
           return 0.0, 0.0, 0.0
         return 0.0
-        
+
     def getSFvsEta(self, eta, genmatch, unc=None):
         """Get tau ID SF vs. tau eta."""
         eta = abs(eta)
@@ -106,14 +105,13 @@ class TauIDSFTool:
         elif unc=='All':
           return 1.0, 1.0, 1.0
         return 1.0
-        
+
     @staticmethod
     def disabled(*args,**kwargs):
         raise AttributeError("Disabled method.")
-    
+
 
 class TauESTool:
-    
     def __init__(self, year, id='MVAoldDM2017v2', path=datapath):
         """Choose the IDs and WPs for SFs."""
         assert year in campaigns, "You must choose a year from %s."%(', '.join(campaigns))
@@ -121,7 +119,7 @@ class TauESTool:
         self.hist = extractTH1(file,'tes')
         self.hist.SetDirectory(0)
         file.Close()
-        
+
     def getTES(self, dm, genmatch=5, unc=None):
         """Get tau ES vs. tau DM."""
         if genmatch==5:
@@ -137,10 +135,10 @@ class TauESTool:
         elif unc=='All':
           return 1.0, 1.0, 1.0
         return 1.0
-    
+
 
 class TauFESTool:
-    
+
     def __init__(self, year, id='DeepTau2017v2p1VSe', path=datapath):
         """Choose the IDs and WPs for SFs."""
         assert year in campaigns, "You must choose a year from %s."%(', '.join(campaigns))
@@ -160,7 +158,7 @@ class TauFESTool:
         self.FESs       = FESs
         self.DMs        = [0,1]
         self.genmatches = [1,3]
-        
+
     def getFES(self, eta, dm, genmatch=1, unc=None):
         """Get electron -> tau FES vs. tau DM."""
         if dm in self.DMs and genmatch in self.genmatches:
@@ -176,4 +174,3 @@ class TauFESTool:
         elif unc=='All':
           return 1.0, 1.0, 1.0
         return 1.0
-    
