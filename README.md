@@ -60,13 +60,13 @@ This is a rough summary of the available SFs for `DeepTau2017v2p1` in [`data`](d
 
 | Tau component  | `genmatch`  | `DeepTau2017v2p1VSjet`  | `DeepTau2017v2p1VSe`  | `DeepTau2017v2p1VSmu`  | energy scale   |
 |:--------------:|:-----------:|:-----------------------:|:---------------------:|:----------------------:|:--------------:|
-| real tau       | `5`         | vs. pT or DM            | – (*)                 | – (*)                  | vs. DM         |
+| real tau       | `5`         | vs. pT, or vs. DM       | – (*)                 | – (*)                  | vs. DM         |
 | e -> tau fake  | `1`, `3`    | –                       | vs. eta               | –                      | vs. DM and eta |
 | mu -> tau fake | `2`, `4`    | –                       | –                     | vs. eta                | – (±1% unc.)   |
 
 (*) An extra uncertainty is recommended if you use a different working point (WP) combination than was used to measure the SFs,
 see the [TWiki](https://twiki.cern.ch/twiki/bin/viewauth/CMS/TauIDRecommendationForRun2).
-The tool should take this automatically into account.
+The tool should take this automatically into account with the `otherVSlepWP` flag.
 
 The gen-matching is defined as:
 * `1` for prompt electrons
