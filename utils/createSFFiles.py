@@ -131,10 +131,11 @@ def createAssymSFFile(filename, sftable, name):
 
 def main():
   
-  outdir         = "../data"
+  outdir         = "data" #"../data"
   
-  doVSLep        = True and False
-  doTES          = True #and False
+  doVSLep        = True #and False
+  doTES          = True and False
+  doTES_highpt   = True and False
   doFES          = True and False
   
   # ANTI-LEPTON SFs
@@ -190,7 +191,7 @@ def main():
         'Medium':  ( SF(1.44,0.13), SF1, SF(1.08,0.21), SF1 ),
         'Tight':   ( SF(1.22,0.38), SF1, SF(1.47,0.32), SF1 ),
         'VTight':  ( SF(1.52,0.36), SF1, SF(1.59,0.60), SF1 ),
-        'VTight':  ( SF(2.42,0.43), SF1, SF(2.40,1.04), SF1 ),
+        'VVTight': ( SF(2.42,0.43), SF1, SF(2.40,1.04), SF1 ),
       },
       '2017ReReco': {
         'VVLoose': ( SF(1.11,0.09), SF1, SF(1.03,0.09), SF1 ),
@@ -199,7 +200,7 @@ def main():
         'Medium':  ( SF(1.18,0.20), SF1, SF(0.86,0.21), SF1 ),
         'Tight':   ( SF(1.22,0.32), SF1, SF(0.93,0.38), SF1 ),
         'VTight':  ( SF(1.18,0.47), SF1, SF(0.95,0.78), SF1 ),
-        'VTight':  ( SF(0.85,2.39), SF1, SF(1.07,1.41), SF1 ),
+        'VVTight': ( SF(0.85,2.39), SF1, SF(1.07,1.41), SF1 ),
       },
       '2018ReReco': {
         'VVLoose': ( SF(0.91,0.06), SF1, SF(0.91,0.07), SF1 ),
@@ -208,7 +209,7 @@ def main():
         'Medium':  ( SF(1.25,0.14), SF1, SF(0.65,0.15), SF1 ),
         'Tight':   ( SF(1.47,0.27), SF1, SF(0.66,0.20), SF1 ),
         'VTight':  ( SF(1.79,0.42), SF1, SF(0.91,0.50), SF1 ),
-        'VTight':  ( SF(2.46,0.90), SF1, SF(0.46,1.00), SF1 ),
+        'VVTight': ( SF(2.46,0.90), SF1, SF(0.46,1.00), SF1 ),
       },
     }
     antiLepSFs['DeepTau2017v2p1VSmu'] = {
@@ -239,8 +240,8 @@ def main():
         etabins  = antiEleEtaBins if any(s in id for s in ['antiEle','VSe']) else antiMuEtaBins
         createSFFile(filename,sftable,etabins,etatitle,overflow=True)
 
-  # TAU ENERGY SCALES
-  if doTES:
+  # TAU ENERGY SCALES low pT (Z -> tautau)
+  if doTES or doTES_highpt:
     dmbins  = (13,0,13)
     dmtitle = "#tau_{h} decay modes"
     TESs    = { # units of percentage
@@ -255,9 +256,31 @@ def main():
         '2018ReReco': { 0: (-1.6,0.9), 1: (-0.4,0.6), 10: (-1.2,0.7), 11: (-0.4,1.2), },
       },
     }
+    
     for id in TESs:
       for year in TESs[id]:
         filename = "%s/TauES_dm_%s_%s.root"%(outdir,id,year)
+        tesvals  = { 'tes': [ ] }
+        for dm in xrange(0,dmbins[0]+1):
+          tes, unc = TESs[id][year].get(dm,(0,0))
+          tesvals['tes'].append(SF(1.+tes/100.,unc/100.))
+        createSFFile(filename,tesvals,dmbins,dmtitle,overflow=False)
+  
+  # TAU ENERGY SCALES at high pT (W* + jets)
+  if doTES_highpt:
+    dmbins  = (13,0,13)
+    dmtitle = "#tau_{h} decay modes"
+    TESs    = { # units of percentage
+      # https://indico.cern.ch/event/871696/contributions/3687829/attachments/1968053/3276394/TauES_WStar_Run2.pdf
+      'DeepTau2017v2p1VSjet': {
+        '2016Legacy': { 0: (0.991,0.008), 1: (1.042,0.020), 10: (1.004,0.012), 11: (0.970,0.027), },
+        '2017ReReco': { 0: (1.004,0.010), 1: (1.014,0.027), 10: (0.978,0.017), 11: (0.944,0.040), },
+        '2018ReReco': { 0: (0.984,0.009), 1: (1.004,0.020), 10: (1.006,0.011), 11: (0.955,0.039), },
+      },
+    }
+    for id in TESs:
+      for year in TESs[id]:
+        filename = "%s/TauES_dm_%s_%s_ptgt100.root"%(outdir,id,year)
         tesvals  = { 'tes': [ ] }
         for dm in xrange(0,dmbins[0]+1):
           tes, unc = TESs[id][year].get(dm,(0,0))
