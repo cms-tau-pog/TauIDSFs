@@ -66,12 +66,12 @@ def createSFTH1(histname,sflist,bins,xtitle,ytitle="SF",overflow=False):
   # FILL
   for i, sf in enumerate(sflist,1):
     if i>nxbins:
-      binstr = "[%4.2f, inf]"%(hist.GetXaxis().GetBinLowEdge(i))
+      binstr = "[%5.2f, inf ]"%(hist.GetXaxis().GetBinLowEdge(i))
       ofstr  = "(overflow)"
     else:
-     binstr = "[%4.2f,%4.2f]"%(hist.GetXaxis().GetBinLowEdge(i),hist.GetXaxis().GetBinUpEdge(i))
+     binstr = "[%5.2f,%5.2f]"%(hist.GetXaxis().GetBinLowEdge(i),hist.GetXaxis().GetBinUpEdge(i))
      ofstr  = ""
-    print ">>>     Bin %s, %s:  SF = %6.3f +- %.3f %s"%(i,binstr,sf.val,sf.unc,ofstr)
+    print ">>>     Bin %2s, %s:  SF = %6.3f +- %.3f %s"%(i,binstr,sf.val,sf.unc,ofstr)
     hist.SetBinContent(i,sf.val)
     hist.SetBinError(i,sf.unc)
   
@@ -133,9 +133,9 @@ def main():
   
   outdir         = "data" #"../data"
   
-  doVSLep        = True #and False
-  doTES          = True and False
-  doTES_highpt   = True and False
+  doVSLep        = True and False
+  doTES          = True #and False
+  doTES_highpt   = True #and False
   doFES          = True and False
   
   # ANTI-LEPTON SFs
@@ -241,15 +241,16 @@ def main():
         createSFFile(filename,sftable,etabins,etatitle,overflow=True)
 
   # TAU ENERGY SCALES low pT (Z -> tautau)
-  if doTES or doTES_highpt:
+  if doTES:
     dmbins  = (13,0,13)
     dmtitle = "#tau_{h} decay modes"
     TESs    = { # units of percentage
-      #'MVAoldDM2017v2': {
-      #  '2016Legacy': { 0: (-0.6,1.0), 1: (-0.5,0.9), 10: ( 0.0,1.1), 11: ( 0.0,1.1), },
-      #  '2017ReReco': { 0: ( 0.7,0.8), 1: (-0.2,0.8), 10: ( 0.1,0.9), 11: (-0.1,1.0), },
-      #  '2018ReReco': { 0: (-1.3,1.1), 1: (-0.5,0.9), 10: (-1.2,0.8), 11: (-1.2,0.8), },
-      #},
+      'MVAoldDM2017v2': {
+        '2016Legacy': { 0: (-0.6,1.0), 1: (-0.5,0.9), 10: ( 0.0,1.1), 11: ( 0.0,1.1), },
+        '2017ReReco': { 0: ( 0.7,0.8), 1: (-0.2,0.8), 10: ( 0.1,0.9), 11: (-0.1,1.0), },
+        '2018ReReco': { 0: (-1.3,1.1), 1: (-0.5,0.9), 10: (-1.2,0.8), 11: (-1.2,0.8), },
+      },
+      # https://indico.cern.ch/event/887196/contributions/3743090/attachments/1984772/3306737/TauPOG_TES_20200210.pdf
       'DeepTau2017v2p1VSjet': {
         '2016Legacy': { 0: (-0.9,0.8), 1: (-0.1,0.6), 10: ( 0.3,0.8), 11: (-0.2,1.1), },
         '2017ReReco': { 0: ( 0.4,1.0), 1: ( 0.2,0.6), 10: ( 0.1,0.7), 11: (-1.3,1.4), },
@@ -262,7 +263,7 @@ def main():
         filename = "%s/TauES_dm_%s_%s.root"%(outdir,id,year)
         tesvals  = { 'tes': [ ] }
         for dm in xrange(0,dmbins[0]+1):
-          tes, unc = TESs[id][year].get(dm,(0,0))
+          tes, unc = TESs[id][year].get(dm,(0,0)) # default
           tesvals['tes'].append(SF(1.+tes/100.,unc/100.))
         createSFFile(filename,tesvals,dmbins,dmtitle,overflow=False)
   
@@ -271,11 +272,16 @@ def main():
     dmbins  = (13,0,13)
     dmtitle = "#tau_{h} decay modes"
     TESs    = { # units of percentage
+      'MVAoldDM2017v2': { # central values from Z -> tautau measurement
+        '2016Legacy': { 0: (0.991,0.030), 1: (0.995,0.030), 10: (1.000,0.030), },
+        '2017ReReco': { 0: (1.004,0.030), 1: (0.998,0.030), 10: (1.001,0.030), },
+        '2018ReReco': { 0: (0.984,0.030), 1: (0.995,0.030), 10: (0.988,0.030), },
+      },
       # https://indico.cern.ch/event/871696/contributions/3687829/attachments/1968053/3276394/TauES_WStar_Run2.pdf
       'DeepTau2017v2p1VSjet': {
-        '2016Legacy': { 0: (0.991,0.008), 1: (1.042,0.020), 10: (1.004,0.012), 11: (0.970,0.027), },
-        '2017ReReco': { 0: (1.004,0.010), 1: (1.014,0.027), 10: (0.978,0.017), 11: (0.944,0.040), },
-        '2018ReReco': { 0: (0.984,0.009), 1: (1.004,0.020), 10: (1.006,0.011), 11: (0.955,0.039), },
+        '2016Legacy': { 0: (0.991,0.030), 1: (1.042,0.020), 10: (1.004,0.012), 11: (0.970,0.027), },
+        '2017ReReco': { 0: (1.004,0.030), 1: (1.014,0.027), 10: (0.978,0.017), 11: (0.944,0.040), },
+        '2018ReReco': { 0: (0.984,0.030), 1: (1.004,0.020), 10: (1.006,0.011), 11: (0.955,0.039), },
       },
     }
     for id in TESs:
@@ -283,8 +289,8 @@ def main():
         filename = "%s/TauES_dm_%s_%s_ptgt100.root"%(outdir,id,year)
         tesvals  = { 'tes': [ ] }
         for dm in xrange(0,dmbins[0]+1):
-          tes, unc = TESs[id][year].get(dm,(0,0))
-          tesvals['tes'].append(SF(1.+tes/100.,unc/100.))
+          tes, unc = TESs[id][year].get(dm,(0,0)) # default
+          tesvals['tes'].append(SF(tes,unc))
         createSFFile(filename,tesvals,dmbins,dmtitle,overflow=False)
   
   # FAKE e->tau ENERGY SCALES

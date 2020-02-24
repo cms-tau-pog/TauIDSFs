@@ -55,17 +55,19 @@ def printSFTable(year,id,wp,vs='pt',emb=False,otherVSlepWP=False):
       ###sftool.getSFvsEta(1.5,1,5) # results in an error
   
 
-def printTESTable(year):
-  testool = TauESTool(year)
+def printTESTable(year,id):
+  testool = TauESTool(year,id)
+  ptvals  = [25,102,175] #[25,30,102,170,175]
   dmvals  = [0,1,5,10,11]
-  print ">>> "
-  print ">>> TES for '%s'"%(year)
-  print ">>> "
-  print ">>> %10s"%('var \ DM')+''.join("%9d"%dm for dm in dmvals)
-  print ">>> %10s"%("central") +''.join("%9.5f"%testool.getTES(dm,5)        for dm in dmvals)
-  print ">>> %10s"%("up")      +''.join("%9.5f"%testool.getTES(dm,5,'Up')   for dm in dmvals)
-  print ">>> %10s"%("down")    +''.join("%9.5f"%testool.getTES(dm,5,'Down') for dm in dmvals)
-  print ">>> "
+  for pt in ptvals:
+    print ">>> "
+    print ">>> TES for '%s' ('%s') and pT = %s GeV"%(id,year,pt)
+    print ">>> "
+    print ">>> %10s"%('var \ DM')+''.join("%9d"%dm for dm in dmvals)
+    print ">>> %10s"%("central") +''.join("%9.5f"%testool.getTES(pt,dm,5)        for dm in dmvals)
+    print ">>> %10s"%("up")      +''.join("%9.5f"%testool.getTES(pt,dm,5,'Up')   for dm in dmvals)
+    print ">>> %10s"%("down")    +''.join("%9.5f"%testool.getTES(pt,dm,5,'Down') for dm in dmvals)
+    print ">>> "
   
 
 def printFESTable(year):
@@ -87,11 +89,11 @@ if __name__ == "__main__":
   print ">>> "
   print ">>> start test tau ID SF tool"
   
-  testIDTool   = True #and False
-  testTESTool  = True and False
+  testIDTool   = True and False
+  testTESTool  = True #and False
   testFESTool  = True and False
   emb          = True and False
-  otherVSlepWP = True #and False
+  otherVSlepWP = True and False
   
   start2       = time.time()
   years        = [
@@ -121,7 +123,8 @@ if __name__ == "__main__":
           if testIDTool:
             printSFTable(year,id,wp,vs,emb,otherVSlepWP)
     if testTESTool:
-      printTESTable(year)
+      for id in ['MVAoldDM2017v2','DeepTau2017v2p1VSjet']:
+        printTESTable(year,id)
     if testFESTool:
       printFESTable(year)
   

@@ -144,25 +144,43 @@ class TauIDSFTool:
     
 
 class TauESTool:
-    def __init__(self, year, id='MVAoldDM2017v2', path=datapath):
+    def __init__(self, year, id='DeepTau2017v2p1VSjet', path=datapath):
         """Choose the IDs and WPs for SFs."""
         assert year in campaigns, "You must choose a year from %s."%(', '.join(campaigns))
-        file = ensureTFile(os.path.join(datapath,"TauES_dm_%s_%s.root"%(id,year)))
-        self.hist = extractTH1(file,'tes')
-        self.hist.SetDirectory(0)
-        file.Close()
+        file_lowpt  = ensureTFile(os.path.join(datapath,"TauES_dm_%s_%s.root"%(id,year)))
+        file_highpt = ensureTFile(os.path.join(datapath,"TauES_dm_%s_%s_ptgt100.root"%(id,year)))
+        self.hist_lowpt  = extractTH1(file_lowpt,'tes')
+        self.hist_highpt = extractTH1(file_highpt,'tes')
+        self.hist_lowpt.SetDirectory(0)
+        self.hist_highpt.SetDirectory(0)
+        self.pt_low  = 34  # average pT in Z -> tautau measurement (incl. in DM)
+        self.pt_high = 170 # average pT in W* -> taunu measurement (incl. in DM)
+        self.DMs     = [0,1,10] if "oldDM" in id else [0,1,10,11]
+        file_lowpt.Close()
+        file_highpt.Close()
     
-    def getTES(self, dm, genmatch=5, unc=None):
+    def getTES(self, pt, dm, genmatch=5, unc=None):
         """Get tau ES vs. tau DM."""
-        if genmatch==5:
-          bin = self.hist.GetXaxis().FindBin(dm)
-          tes = self.hist.GetBinContent(bin)
-          if unc=='Up':
-            tes += self.hist.GetBinError(bin)
-          elif unc=='Down':
-            tes -= self.hist.GetBinError(bin)
-          elif unc=='All':
-            return tes-self.hist.GetBinError(bin), tes, tes+self.hist.GetBinError(bin)
+        if genmatch==5 and dm in self.DMs:
+          bin = self.hist_lowpt.GetXaxis().FindBin(dm)
+          tes = self.hist_lowpt.GetBinContent(bin)
+          if unc!=None:
+            if pt>=self.pt_high: # high pT
+              bin_high = self.hist_highpt.GetXaxis().FindBin(dm)
+              err      = self.hist_highpt.GetBinError(bin_high)
+            elif pt>self.pt_low: # linearly interpolate between low and high pT
+              bin_high = self.hist_highpt.GetXaxis().FindBin(dm)
+              err_high = self.hist_highpt.GetBinError(bin_high)
+              err_low  = self.hist_lowpt.GetBinError(bin)
+              err      = err_low + (err_high-err_low)/(self.pt_high-self.pt_low)*(pt-self.pt_low)
+            else: # low pT
+              err      = self.hist_lowpt.GetBinError(bin)
+            if unc=='Up':
+              tes += err
+            elif unc=='Down':
+              tes -= err
+            elif unc=='All':
+              return tes-err, tes, tes+err
           return tes
         elif unc=='All':
           return 1.0, 1.0, 1.0
