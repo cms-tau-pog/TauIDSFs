@@ -58,11 +58,11 @@ from TauIDSFTool import TauIDSFTool
 
 This is a rough summary of the available SFs for `DeepTau2017v2p1` in [`data`](data):
 
-| Tau component  | `genmatch`  | `DeepTau2017v2p1VSjet`  | `DeepTau2017v2p1VSe`  | `DeepTau2017v2p1VSmu`  | energy scale   |
-|:--------------:|:-----------:|:-----------------------:|:---------------------:|:----------------------:|:--------------:|
-| real tau       | `5`         | vs. pT, or vs. DM       | – (*)                 | – (*)                  | vs. DM         |
-| e -> tau fake  | `1`, `3`    | –                       | vs. eta               | –                      | vs. DM and eta |
-| mu -> tau fake | `2`, `4`    | –                       | –                     | vs. eta                | – (±1% unc.)   |
+| Tau component  | `genmatch`  | `DeepTau2017v2p1` `VSjet`  | `DeepTau2017v2p1` `VSe`  | `DeepTau2017v2p1` `VSmu`  | energy scale   |
+|:--------------:|:-----------:|:--------------------------:|:------------------------:|:-------------------------:|:--------------:|
+| real tau       | `5`         | vs. pT, or vs. DM          | – (*)                    | – (*)                     | vs. DM         |
+| e -> tau fake  | `1`, `3`    | –                          | vs. eta                  | –                         | vs. DM and eta |
+| mu -> tau fake | `2`, `4`    | –                          | –                        | vs. eta                   | – (±1% unc.)   |
 
 (*) An extra uncertainty is recommended if you use a different working point (WP) combination than was used to measure the SFs,
 see the [TWiki](https://twiki.cern.ch/twiki/bin/viewauth/CMS/TauIDRecommendationForRun2).
@@ -197,6 +197,11 @@ testool = TauESTool('2017ReReco','DeepTau2017v2p1VSjet')
 tes     = testool.getTES(pt,dm,genmatch)
 tesUp   = testool.getTES(pt,dm,genmatch,unc='Up')
 tesDown = testool.getTES(pt,dm,genmatch,unc='Down')
+```
+This method computes the right uncertainty at intermediate (33 GeV < pT < 170 GeV) and higher pT values (pT > 170 GeV).
+Analyses that only want to use the TES at high pT, can use the following instead:
+```
+tes     = testool.getTES_highpt(dm,genmatch)
 ```
 
 
