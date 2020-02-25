@@ -186,6 +186,22 @@ class TauESTool:
           return 1.0, 1.0, 1.0
         return 1.0
     
+    def getTES_highpt(self, dm, genmatch=5, unc=None):
+        """Get tau ES vs. tau DM for pt > 100 GeV"""
+        if genmatch==5 and dm in self.DMs:
+          bin = self.hist_highpt.GetXaxis().FindBin(dm)
+          tes = self.hist_highpt.GetBinContent(bin)
+          if unc=='Up':
+            tes += self.hist_highpt.GetBinError(bin)
+          elif unc=='Down':
+            tes -= self.hist_highpt.GetBinError(bin)
+          elif unc=='All':
+            return tes-self.hist_highpt.GetBinError(bin), tes, tes+self.hist_highpt.GetBinError(bin)
+          return tes
+        elif unc=='All':
+          return 1.0, 1.0, 1.0
+        return 1.0
+    
 
 class TauFESTool:
     
