@@ -198,7 +198,7 @@ tes     = testool.getTES(pt,dm,genmatch)
 tesUp   = testool.getTES(pt,dm,genmatch,unc='Up')
 tesDown = testool.getTES(pt,dm,genmatch,unc='Down')
 ```
-This method computes the right uncertainty at intermediate (33 GeV < pT < 170 GeV) and higher pT values (pT > 170 GeV).
+This method computes the right uncertainty at intermediate (34 GeV < pT < 170 GeV) and higher pT values (pT > 170 GeV).
 Analyses that only want to use the TES at high pT, can use the following instead:
 ```
 tes     = testool.getTES_highpt(dm,genmatch)
