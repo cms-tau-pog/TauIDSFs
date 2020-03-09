@@ -56,7 +56,7 @@ from TauIDSFTool import TauIDSFTool
 
 ## Summary of available SFs
 
-This is a rough summary of the available SFs for `DeepTau2017v2p1` in [`data`](data):
+This is a rough summary of the available SFs for `DeepTau2017v2p1` in [`data/`](data):
 
 | Tau component  | `genmatch`  | `DeepTau2017v2p1` `VSjet`  | `DeepTau2017v2p1` `VSe`  | `DeepTau2017v2p1` `VSmu`  | energy scale   |
 |:--------------:|:-----------:|:--------------------------:|:------------------------:|:-------------------------:|:--------------:|
