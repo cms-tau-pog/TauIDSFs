@@ -1,6 +1,6 @@
 #include "TauPOG/TauIDSFs/interface/TauIDSFTool.h"
 #include <iostream> // std::cerr, std::endl
-#include <iomanip> 
+#include <iomanip>
 #include <assert.h> // assert
 
 
@@ -36,15 +36,22 @@ const TF1* extractTF1(const TFile* file, const std::string& funcname){
 
 
 
+void TauIDSFTool::disabled() const {
+  std::cerr << std::endl << "ERROR! Method has been disabled! isVsPT = "<<isVsPT<<", isVsDM = "
+            << isVsDM<<", isVsEta = "<<isVsEta<< std::endl;
+  assert(0);
+}
+
+
 TauIDSFTool::TauIDSFTool(const std::string& year, const std::string& id, const std::string& wp, const bool dm, const bool embedding): ID(id), WP(wp){
-  
+
   bool verbose = false;
   std::string datapath                = Form("%s/src/TauPOG/TauIDSFs/data",getenv("CMSSW_BASE"));
   std::vector<std::string> years      = {"2016Legacy","2017ReReco","2018ReReco"};
   std::vector<std::string> antiJetIDs = {"MVAoldDM2017v2","DeepTau2017v2p1VSjet"};
   std::vector<std::string> antiEleIDs = {"antiEleMVA6",   "DeepTau2017v2p1VSe"};
   std::vector<std::string> antiMuIDs  = {"antiMu3",       "DeepTau2017v2p1VSmu"};
-  
+
   if(std::find(years.begin(),years.end(),year)==years.end()){
     std::cerr << std::endl << "ERROR! '"<<year<<"' is not a valid year! Please choose from ";
      std::vector<std::string>::iterator it = years.begin();
@@ -55,7 +62,7 @@ TauIDSFTool::TauIDSFTool(const std::string& year, const std::string& id, const s
     std::cerr << std::endl;
     assert(0);
   }
-  
+
   if(std::find(antiJetIDs.begin(),antiJetIDs.end(),ID)!=antiJetIDs.end()){
     if(dm){
       TString filename;
@@ -72,7 +79,7 @@ TauIDSFTool::TauIDSFTool(const std::string& year, const std::string& id, const s
       }
       TFile* file = ensureTFile(filename,verbose);
       hist = extractTH1(file,WP);
-      hist->SetDirectory(0);
+      hist->SetDirectory(nullptr);
       file->Close();
       delete file;
       DMs    = {0,1,10};
@@ -110,7 +117,7 @@ TauIDSFTool::TauIDSFTool(const std::string& year, const std::string& id, const s
       TString filename = Form("%s/TauID_SF_eta_%s_%s.root",datapath.data(),ID.data(),year.data());
       TFile* file = ensureTFile(filename,verbose);
       hist = extractTH1(file,WP);
-      hist->SetDirectory(0);
+      hist->SetDirectory(nullptr);
       file->Close();
       delete file;
       genmatches = {1,3};
@@ -123,7 +130,7 @@ TauIDSFTool::TauIDSFTool(const std::string& year, const std::string& id, const s
       TString filename = Form("%s/TauID_SF_eta_%s_%s.root",datapath.data(),ID.data(),year.data());
       TFile* file = ensureTFile(filename,verbose);
       hist = extractTH1(file,WP);
-      hist->SetDirectory(0);
+      hist->SetDirectory(nullptr);
       file->Close();
       delete file;
       genmatches = {2,4};
@@ -139,7 +146,7 @@ TauIDSFTool::TauIDSFTool(const std::string& year, const std::string& id, const s
 float TauIDSFTool::getSFvsPT(double pt, int genmatch, const std::string& unc){
   if(!isVsPT) disabled();
   if(genmatch==5){
-    float SF = func[unc]->Eval(pt);
+    float SF = static_cast<float>(func[unc]->Eval(pt));
     return SF;
   }
   return 1.0;
@@ -156,7 +163,7 @@ float TauIDSFTool::getSFvsDM(double pt, int dm, int genmatch, const std::string&
   if(std::find(DMs.begin(),DMs.end(),dm)!=DMs.end() or pt<=40){
     if(genmatch==5){
       Int_t bin = hist->GetXaxis()->FindBin(dm);
-      float SF  = hist->GetBinContent(bin);
+      float SF  = static_cast<float>(hist->GetBinContent(bin));
       if(unc=="Up")
         SF += hist->GetBinError(bin);
       else if(unc=="Down")
@@ -178,7 +185,7 @@ float TauIDSFTool::getSFvsEta(double eta, int genmatch, const std::string& unc) 
   if(!isVsEta) disabled();
   if(std::find(genmatches.begin(),genmatches.end(),genmatch)!=genmatches.end()){
     Int_t bin = hist->GetXaxis()->FindBin(eta);
-    float SF  = hist->GetBinContent(bin);
+    float SF  = static_cast<float>(hist->GetBinContent(bin));
     if(unc=="Up")
       SF += hist->GetBinError(bin);
     else if(unc=="Down")
