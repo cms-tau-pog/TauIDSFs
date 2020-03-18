@@ -1,11 +1,15 @@
 #! /usr/bin/env python
-# Author: Izaak Neutelings (July 2019)
+# Author: Izaak Neutelings (March 2020)
+# Usage:
+#   ./test/dumpTauIDSFs.py data/TauID_*_DeepTau2017v2p1VSjet_*.root
+#   ./test/dumpTauIDSFs.py data/TauES_*_DeepTau2017v2p1VSjet_*.root
 import os, re
 import ROOT; ROOT.PyConfig.IgnoreCommandLineOptions = True
 from ROOT import gROOT
 from TauPOG.TauIDSFs.helpers import ensureTFile, extractTH1
 from argparse import ArgumentParser
-parser = ArgumentParser()
+epilog ="""example: ./test/dumpTauIDSFs.py data/TauID_*_DeepTau2017v2p1VSjet_*.root"""
+parser = ArgumentParser(epilog=epilog) #usage=usage)
 parser.add_argument('filenames', nargs='+', default=False,
                                  help="TauPOG root file with histogram (TH1) or function (TF1)" )
 args = parser.parse_args()
