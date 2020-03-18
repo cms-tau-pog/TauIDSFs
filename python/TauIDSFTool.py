@@ -71,7 +71,7 @@ class TauIDSFTool:
             self.hist = extractTH1(file,wp)
             self.hist.SetDirectory(0)
             file.Close()
-            self.genmatches = [1,3] if ['ele' in id.lower() or 'VSe' in id.lower()] else [2,4]
+            self.genmatches = [1,3] if any(s in id.lower() for s in ['ele','vse']) else [2,4]
             self.getSFvsPT  = self.disabled
             self.getSFvsDM  = self.disabled
         else:
