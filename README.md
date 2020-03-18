@@ -90,6 +90,11 @@ The SFs are meant for the following campaigns:
 
 ## Usage
 
+A simple script is given to dump the corrections saved in histograms or functions of the files in [`data/`](data). Use for example
+```
+./test/dumpTauIDSFs.py data/TauID_SF_*_DeepTau2017v2p1VSjet_*.root
+```
+
 ### pT-dependent SFs
 
 The pT-dependent SFs are provided as `TF1` functions. For example, to obtain those for the medium WP of the `'DeepTau2017v2p1VSjet'` discriminator for 2016, use

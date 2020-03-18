@@ -21,6 +21,11 @@ What they should be applied to is summarized in [README of the parent directory]
 
 More complete instructions are provided in the [README of the parent directory](../../../#tau-id-scale-factors).
 
+A simple script is given to dump the corrections saved in histograms or functions of the files above. Use for example
+```
+./test/dumpTauIDSFs.py data/TauID_SF_*_DeepTau2017v2p1VSjet_*.root
+```
+
 ### pT-dependent SFs
 ```
 file = TFile("data/TauID_SF_pt_DeepTau2017v2p1VSjet_2016Legacy.root")
