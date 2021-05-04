@@ -3,7 +3,7 @@
 import os
 from math import sqrt
 from helpers import ensureTFile, extractTH1
-datapath  = os.path.join(os.environ['CMSSW_BASE'],"src/TauPOG/TauIDSFs/data")
+datapath  = os.path.join(os.environ.get('CMSSW_BASE',""),"src/TauPOG/TauIDSFs/data")
 campaigns = ['2016Legacy','2017ReReco','2018ReReco']
 
 class TauIDSFTool:
