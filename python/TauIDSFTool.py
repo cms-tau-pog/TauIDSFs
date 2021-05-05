@@ -147,8 +147,8 @@ class TauESTool:
     def __init__(self, year, id='DeepTau2017v2p1VSjet', path=datapath):
         """Choose the IDs and WPs for SFs."""
         assert year in campaigns, "You must choose a year from %s."%(', '.join(campaigns))
-        file_lowpt  = ensureTFile(os.path.join(datapath,"TauES_dm_%s_%s.root"%(id,year)))
-        file_highpt = ensureTFile(os.path.join(datapath,"TauES_dm_%s_%s_ptgt100.root"%(id,year)))
+        file_lowpt  = ensureTFile(os.path.join(path,"TauES_dm_%s_%s.root"%(id,year)))
+        file_highpt = ensureTFile(os.path.join(path,"TauES_dm_%s_%s_ptgt100.root"%(id,year)))
         self.hist_lowpt  = extractTH1(file_lowpt,'tes')
         self.hist_highpt = extractTH1(file_highpt,'tes')
         self.hist_lowpt.SetDirectory(0)
@@ -208,7 +208,7 @@ class TauFESTool:
     def __init__(self, year, id='DeepTau2017v2p1VSe', path=datapath):
         """Choose the IDs and WPs for SFs."""
         assert year in campaigns, "You must choose a year from %s."%(', '.join(campaigns))
-        file  = ensureTFile(os.path.join(datapath,"TauFES_eta-dm_%s_%s.root"%(id,year)))
+        file  = ensureTFile(os.path.join(path,"TauFES_eta-dm_%s_%s.root"%(id,year)))
         graph = file.Get('fes')
         FESs  = { 'barrel':  { }, 'endcap': { } }
         DMs   = [0,1]

@@ -210,7 +210,7 @@ tes     = testool.getTES_highpt(dm,genmatch)
 ```
 
 <p align="center">
-  <img src="docs/TESunc.png" alt="Tau energy scale uncertainty treatment" width="380"/>
+  <img src="docs/TESunc.png" alt="Tau energy scale uncertainty treatment" width="390"/>
 </p>
 
 ### Eta- & DM-dependent e -> tau fake energy scale
