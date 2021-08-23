@@ -86,15 +86,15 @@ Note that in nanoAOD this is available as `Tau_GenPartFlav`, but jet or no match
 
 The SFs are meant for the following campaigns:
 
-| Year label       | MC campaign              | Data campaign           |
-|:----------------:|:------------------------:| :----------------------:|
-| `2016Legacy`     | `RunIISummer16MiniAODv3` | `17Jul2018`             |
-| `2017ReReco`     | `RunIIFall17MiniAODv2`   | `31Mar2018`             |
-| `2018ReReco`     | `RunIIAutumn18MiniAOD`   | `17Sep2018`/`22Jan2019` |
-| `UL2016_preVFP`  | `RunIISummer20UL16`      | `UL2016_MiniAODv1`      |
-| `UL2016_postVFP` | `RunIISummer20UL16*APV`  | `(HIPM_)UL2016_MiniAODv1` |
-| `UL2017`         | `RunIISummer20UL17`      | `UL2017_MiniAODv1`      |
-| `UL2018`         | `RunIISummer20UL18`      | `UL2018_MiniAODv1`      |
+| Year label       | MC campaign              | Data campaign             |
+|:----------------:|:------------------------:| :------------------------:|
+| `2016Legacy`     | `RunIISummer16MiniAODv3` | `17Jul2018`               |
+| `2017ReReco`     | `RunIIFall17MiniAODv2`   | `31Mar2018`               |
+| `2018ReReco`     | `RunIIAutumn18MiniAOD`   | `17Sep2018`/`22Jan2019`   |
+| `UL2016_preVFP`  | `RunIISummer20UL16*APV`  | `UL2016_MiniAODv1`        |
+| `UL2016_postVFP` | `RunIISummer20UL16`      | `(HIPM_)UL2016_MiniAODv1` |
+| `UL2017`         | `RunIISummer20UL17`      | `UL2017_MiniAODv1`        |
+| `UL2018`         | `RunIISummer20UL18`      | `UL2018_MiniAODv1`        |
 
 
 
