@@ -209,6 +209,9 @@ Analyses that only want to use the TES at high pT, can use the following instead
 tes     = testool.getTES_highpt(dm,genmatch)
 ```
 
+<p align="center">
+  <img src="docs/TESunc.png" alt="Tau energy scale uncertainty treatment" width="390"/>
+</p>
 
 ### Eta- & DM-dependent e -> tau fake energy scale
 
