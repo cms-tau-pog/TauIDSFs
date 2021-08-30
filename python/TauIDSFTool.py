@@ -24,7 +24,7 @@ class TauIDSFTool:
         self.extraUnc = None
         
         if id in ['MVAoldDM2017v2','DeepTau2017v2p1VSjet']:
-          if dm:
+          if dm: # DM-dependent SFs
             if emb:
               if 'oldDM' in id:
                 raise IOError("Scale factors for embedded samples not available for ID '%s'!"%id)
@@ -43,7 +43,7 @@ class TauIDSFTool:
                 self.extraUnc = 0.05
               else:
                 self.extraUnc = 0.03
-          else:
+          else: # pT-dependent SFs
             if emb:
               if 'oldDM' in id:
                 raise IOError("Scale factors for embedded samples not available for ID '%s'!"%id)
@@ -147,8 +147,13 @@ class TauESTool:
     def __init__(self, year, id='DeepTau2017v2p1VSjet', path=datapath):
         """Choose the IDs and WPs for SFs."""
         assert year in campaigns, "You must choose a year from %s."%(', '.join(campaigns))
+        if "UL" in year:
+          print "TauESTool: Warning! Using pre-UL TESs at high pT (for uncertainties only)..."
+          year_highpt = '2016Legacy' if '2016' in year else '2017ReReco' if '2017' in year else '2018ReReco'
+        else:
+          year_highpt = year
         file_lowpt  = ensureTFile(os.path.join(path,"TauES_dm_%s_%s.root"%(id,year)))
-        file_highpt = ensureTFile(os.path.join(path,"TauES_dm_%s_%s_ptgt100.root"%(id,year)))
+        file_highpt = ensureTFile(os.path.join(path,"TauES_dm_%s_%s_ptgt100.root"%(id,year_highpt)))
         self.hist_lowpt  = extractTH1(file_lowpt,'tes')
         self.hist_highpt = extractTH1(file_highpt,'tes')
         self.hist_lowpt.SetDirectory(0)
@@ -207,6 +212,8 @@ class TauFESTool:
     
     def __init__(self, year, id='DeepTau2017v2p1VSe', path=datapath):
         """Choose the IDs and WPs for SFs."""
+        if "UL" in year:
+          print "TauFESTool: Please pre-UL energy scales for e -> tau fakes."
         assert year in campaigns, "You must choose a year from %s."%(', '.join(campaigns))
         file  = ensureTFile(os.path.join(path,"TauFES_eta-dm_%s_%s.root"%(id,year)))
         graph = file.Get('fes')
