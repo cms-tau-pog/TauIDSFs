@@ -1,5 +1,7 @@
 #! /usr/bin/env python
 # Author: Izaak Neutelings (July 2019)
+# Usage:
+#   ./test/testTauIDSFTool.py
 import time; start0 = time.time()
 from TauPOG.TauIDSFs.TauIDSFTool import TauIDSFTool, TauESTool, TauFESTool
 start1 = time.time()
@@ -90,9 +92,9 @@ if __name__ == "__main__":
   print ">>> "
   print ">>> start test tau ID SF tool"
   
-  testIDTool   = True #and False
+  testIDTool   = True and False
   testTESTool  = True #and False
-  testFESTool  = True #and False
+  testFESTool  = True and False
   emb          = True and False
   otherVSlepWP = True and False
   
@@ -101,6 +103,10 @@ if __name__ == "__main__":
     '2016Legacy',
     '2017ReReco',
     '2018ReReco',
+    'UL2016_preVFP',
+    'UL2016_postVFP',
+    'UL2017',
+    'UL2018',
   ]
   tauIDs      = [
     #'MVAoldDM2017v2',
@@ -109,6 +115,10 @@ if __name__ == "__main__":
     #'antiMu3',
     'DeepTau2017v2p1VSmu',
     'DeepTau2017v2p1VSe'
+  ]
+  tauESs = [
+    #'MVAoldDM2017v2',
+    'DeepTau2017v2p1VSjet',
   ]
   WPs         = [
     #'Loose',
@@ -124,7 +134,7 @@ if __name__ == "__main__":
           if testIDTool:
             printSFTable(year,id,wp,vs,emb,otherVSlepWP)
     if testTESTool:
-      for id in ['MVAoldDM2017v2','DeepTau2017v2p1VSjet']:
+      for id in tauESs:
         printTESTable(year,id)
     if testFESTool:
       printFESTable(year)
