@@ -92,9 +92,9 @@ if __name__ == "__main__":
   print ">>> "
   print ">>> start test tau ID SF tool"
   
-  testIDTool   = True and False
+  testIDTool   = True #and False
   testTESTool  = True #and False
-  testFESTool  = True and False
+  testFESTool  = True #and False
   emb          = True and False
   otherVSlepWP = True and False
   
@@ -113,7 +113,7 @@ if __name__ == "__main__":
     'DeepTau2017v2p1VSjet',
     #'antiEleMVA6',
     #'antiMu3',
-    'DeepTau2017v2p1VSmu',
+    #'DeepTau2017v2p1VSmu',
     'DeepTau2017v2p1VSe'
   ]
   tauESs = [

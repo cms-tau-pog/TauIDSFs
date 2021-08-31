@@ -93,7 +93,8 @@ class TauIDSFTool:
             elif unc=='Up':
               return sf+errUp
             elif unc=='Down':
-              return sf-errDown
+              sfDown = (sf-errDown) if errDown<sf else 0.0 # prevent negative SF
+              return sfDown
           else:
             if unc=='All':
               return self.func['Down'].Eval(pt), self.func[None].Eval(pt), self.func['Up'].Eval(pt)
@@ -113,9 +114,10 @@ class TauIDSFTool:
           if unc=='Up':
             sf += err
           elif unc=='Down':
-            sf -= err
+            sf = (sf-err) if err<sf else 0.0 # prevent negative SF
           elif unc=='All':
-            return sf-err, sf, sf+err
+            sfDown = (sf-err) if err<sf else 0.0 # prevent negative SF
+            return sfDown, sf, sf+err
           return sf
         elif unc=='All':
           return 1.0, 1.0, 1.0
@@ -133,9 +135,10 @@ class TauIDSFTool:
           if unc=='Up':
             sf += err
           elif unc=='Down':
-            sf -= err
+            sf = (sf-err) if err<sf else 0.0 # prevent negative SF
           elif unc=='All':
-            return sf-err, sf, sf+err
+            sfDown = (sf-err) if err<sf else 0.0 # prevent negative SF
+            return sfDown, sf, sf+err
           return sf
         elif unc=='All':
           return 1.0, 1.0, 1.0
@@ -187,9 +190,10 @@ class TauESTool:
             if unc=='Up':
               tes += err
             elif unc=='Down':
-              tes -= err
+              tes = (tes-err) if err<tes else 0.0 # prevent negative TES
             elif unc=='All':
-              return tes-err, tes, tes+err
+              tesDown = (tes-err) if err<tes else 0.0 # prevent negative TES
+              return tesDown, tes, tes+err
           return tes
         elif unc=='All':
           return 1.0, 1.0, 1.0
@@ -200,12 +204,14 @@ class TauESTool:
         if genmatch==5 and dm in self.DMs:
           bin = self.hist_highpt.GetXaxis().FindBin(dm)
           tes = self.hist_highpt.GetBinContent(bin)
+          err = self.hist_highpt.GetBinError(bin)
           if unc=='Up':
-            tes += self.hist_highpt.GetBinError(bin)
+            tes += err
           elif unc=='Down':
-            tes -= self.hist_highpt.GetBinError(bin)
+            tes = (tes-err) if err<tes else 0.0 # prevent negative TES
           elif unc=='All':
-            return tes-self.hist_highpt.GetBinError(bin), tes, tes+self.hist_highpt.GetBinError(bin)
+            tesDown = (tes-err) if err<tes else 0.0 # prevent negative TES
+            return tesDown, tes, tes+err
           return tes
         elif unc=='All':
           return 1.0, 1.0, 1.0
@@ -229,7 +235,7 @@ class TauFESTool:
             y    = graph.GetY()[i]
             yup  = graph.GetErrorYhigh(i)
             ylow = graph.GetErrorYlow(i)
-            FESs[region][dm] = (y-ylow,y,y+yup)
+            FESs[region][dm] = (max(0,y-ylow),y,y+yup) # prevent negative FES
             i += 1
         file.Close()
         self.FESs       = FESs
