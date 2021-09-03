@@ -1,5 +1,6 @@
 # Author: Izaak Neutelings (July 2019)
 # https://twiki.cern.ch/twiki/bin/viewauth/CMS/TauIDRecommendationForRun2
+from __future__ import print_function
 import os
 from math import sqrt
 from helpers import ensureTFile, extractTH1
@@ -153,7 +154,7 @@ class TauESTool:
     def __init__(self, year, id='DeepTau2017v2p1VSjet', path=datapath):
         """Choose the IDs and WPs for SFs."""
         if "UL" in year:
-          print ">>> TauESTool: Warning! Using pre-UL TESs at high pT (for uncertainties only)..."
+          print(">>> TauESTool: Warning! Using pre-UL TESs at high pT (for uncertainties only)...")
           year_highpt = '2016Legacy' if '2016' in year else '2017ReReco' if '2017' in year else '2018ReReco'
         else:
           year_highpt = year
@@ -223,7 +224,7 @@ class TauFESTool:
     def __init__(self, year, id='DeepTau2017v2p1VSe', path=datapath):
         """Choose the IDs and WPs for SFs."""
         if "UL" in year:
-          print ">>> TauFESTool: Please pre-UL energy scales for e -> tau fakes."
+          print(">>> TauFESTool: Please pre-UL energy scales for e -> tau fakes.")
         assert year in campaigns, "You must choose a year from %s! Got %r."%(', '.join(campaigns),year)
         file  = ensureTFile(os.path.join(path,"TauFES_eta-dm_%s_%s.root"%(id,year)))
         graph = file.Get('fes')

@@ -3,6 +3,7 @@
 # Usage:
 #   ./test/dumpTauIDSFs.py data/TauID_*_DeepTau2017v2p1VSjet_*.root
 #   ./test/dumpTauIDSFs.py data/TauES_*_DeepTau2017v2p1VSjet_*.root
+from __future__ import print_function
 import os, re
 import ROOT; ROOT.PyConfig.IgnoreCommandLineOptions = True
 from ROOT import gROOT
@@ -21,22 +22,22 @@ def dumpContents(filename):
   hists = getObjects(file,type='TH1')
   funcs = getObjects(file,type='TF1')
   for hist in hists:
-    print ">>>"
-    print '>>>   Histogram "%s"'%(green(hist.GetName()))
+    print(">>>")
+    print('>>>   Histogram "%s"'%(green(hist.GetName())))
     printTH1(hist)
   for func in funcs:
-    print ">>>"
-    print '>>>   Function "%s"'%(green(func.GetName()))
+    print(">>>")
+    print('>>>   Function "%s"'%(green(func.GetName())))
     printTF1(func)
   file.Close()
   
 def printTH1(hist):
   nbins = hist.GetXaxis().GetNbins()
-  print ">>> %6s %7s - %6s %9s +- %7s"%("bin","xmin","xmax","content","error")
+  print(">>> %6s %7s - %6s %9s +- %7s"%("bin","xmin","xmax","content","error"))
   for bin in xrange(0,nbins+2):
     xmin = "%.2f"%hist.GetXaxis().GetBinLowEdge(bin) if bin>0 else '-Inf'
     xmax = "%.2f"%hist.GetXaxis().GetBinUpEdge(bin) if bin<nbins+1 else '+Inf'
-    print ">>> %6s %7s - %6s %9.3f +- %7.3f"%(
+    print(">>> %6s %7s - %6s %9.3f +- %7.3f"%()
       bin,xmin,xmax,hist.GetBinContent(bin),hist.GetBinError(bin))
   
 def printTF1(func):
@@ -47,8 +48,8 @@ def printTF1(func):
   sfrexp   = re.compile(r'\*(\d+\.?\d*)')
   formrexp = re.compile(r'\((\d+\.\d+)[+-](\d+\.\d+)\*\(x/(\d+\.?\d*)\)\)') # linear interpolation formula
   lastrexp = re.compile(r'\((\d+\.\d+)([+-]\d+\.\d+)\)') # last bin
-  print ">>>    '%s'"%formula
-  print ">>> %6s %7s - %6s   %-20s  %-15s"%("bin","xmin","xmax","sf","expr.")
+  print(">>>    '%s'"%formula)
+  print(">>> %6s %7s - %6s   %-20s  %-15s"%("bin","xmin","xmax","sf","expr."))
   for i, sfexp in enumerate(sfexps):
     if i!=0: sfexp = '('+sfexp
     xmins   = xminrexp.findall(sfexp)
@@ -66,7 +67,7 @@ def printTF1(func):
       sf    = "%.3f"%(float(lastsfs[0][0])+float(lastsfs[0][1]))
     else:
       sf    = '?'
-    print ">>> %6s %7s - %6s   %-20s  %-15s"%(i,xmin,xmax,sf,sfexp)
+    print(">>> %6s %7s - %6s   %-20s  %-15s"%(i,xmin,xmax,sf,sfexp))
   
 def getObjects(dir,type='TH1'):
   objs = [ ]
@@ -81,9 +82,9 @@ def getObjects(dir,type='TH1'):
 if __name__ == "__main__":
   filenames = args.filenames
   for filename in filenames:
-    print ">>> "
-    print '>>> File "%s"'%(green(filename))
+    print(">>> ")
+    print('>>> File "%s"'%(green(filename)))
     dumpContents(filename)
-  print ">>> "
-  print ">>> Done"
+  print(">>> ")
+  print(">>> Done")
   

@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 # Author: Izaak Neutelings (September 2019)
 # Description: Create root files with SFs for the anti-lepton discriminators
+from __future__ import print_function
 import os
 from math import sqrt
 from array import array
@@ -30,7 +31,7 @@ SF1 = SF(1,0) # default 1
 
 def createSFTH1(histname,sflist,bins,xtitle,ytitle="SF",overflow=False):
   """Create histogram with variable bin sizes from SF list."""
-  print ">>>   Creating hisogram '%s'..."%histname
+  print(">>>   Creating hisogram '%s'..."%histname)
   sflist = list(sflist)
   
   # ASSUME (nbins,xmin,xmax)
@@ -71,7 +72,7 @@ def createSFTH1(histname,sflist,bins,xtitle,ytitle="SF",overflow=False):
     else:
      binstr = "[%5.2f,%5.2f]"%(hist.GetXaxis().GetBinLowEdge(i),hist.GetXaxis().GetBinUpEdge(i))
      ofstr  = ""
-    print ">>>     Bin %2s, %s:  SF = %6.3f +- %.3f %s"%(i,binstr,sf.val,sf.unc,ofstr)
+    print(">>>     Bin %2s, %s:  SF = %6.3f +- %.3f %s"%(i,binstr,sf.val,sf.unc,ofstr))
     hist.SetBinContent(i,sf.val)
     hist.SetBinError(i,sf.unc)
   
@@ -80,10 +81,10 @@ def createSFTH1(histname,sflist,bins,xtitle,ytitle="SF",overflow=False):
 
 def createSFFile(filename,sftable,*args,**kwargs):
   """Create histogram from table."""
-  print ">>> Creating '%s'..."%filename
+  print(">>> Creating '%s'..."%filename)
   file = TFile(filename,'RECREATE')
   for wp in sorted(sftable,key=wporder):
-    print ">>>  %s working point"%wp
+    print(">>>  %s working point"%wp)
     histname = wp
     sflist   = sftable[wp]
     hist     = createSFTH1(histname,sflist,*args,**kwargs)
@@ -105,7 +106,7 @@ def wporder(key):
 
 def createAssymSFFile(filename, sftable, name):
   """Create histogram from table."""
-  print ">>> Creating '%s'..." % filename
+  print(">>> Creating '%s'..." % filename)
   file = TFile(filename, 'RECREATE')
   file.cd()
   x = [float(i) + 0.5 for i in range(len(sftable.keys()))]
@@ -119,7 +120,7 @@ def createAssymSFFile(filename, sftable, name):
   g.GetXaxis().SetNdivisions(len(x) * 2)
   g.GetXaxis().ChangeLabel(0, -1, 0, -1, -1, -1, "")
   for i in x:
-    print 1 + int(i), x_names[int(i)]
+    print(1 + int(i), x_names[int(i)])
     g.GetXaxis().ChangeLabel(2 + int(i) * 2, -1, 0)
     g.GetXaxis().ChangeLabel(1 + int(i) * 2, -1, -1, -1, -1, -1, x_names[int(i)])
   
@@ -364,12 +365,12 @@ def main():
       }
     }
     for discriminator in FESs.keys():
-      for year, fesvals in FESs[discriminator].iteritems():
+      for year, fesvals in FESs[discriminator].items():
         filename = "%s/TauFES_eta-dm_%s_%s.root" % (outdir, discriminator, year)
         createAssymSFFile(filename, fesvals, name='fes')
 
 
 if __name__ == '__main__':
-  print ">>> "
+  print(">>> ")
   main()
-  print ">>> Done"
+  print(">>> Done")
