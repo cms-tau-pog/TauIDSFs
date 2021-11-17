@@ -10,6 +10,20 @@ More detailed instructions for tau corrections are
 [here](https://gitlab.cern.ch/cms-tau-pog/jsonpog-integration/-/tree/master/POG/TAU#taupog-recommonded-tau-corrections).
 
 
+## Table of Contents  
+* [Installation of the tool](#installation-of-the-tool)<br>
+  * [Python](#python)<br>
+  * [C++](#c)<br>
+  * [Python without CMSSW](#python-without-cmssw)<br>
+* [Summary of available SFs](#summary-of-available-sfs)<br>
+* [Usage](#usage)<br>
+  * [pT-dependent SFs](#pt-dependent-sfs)<br>
+  * [DM-dependent SFs](#dm-dependent-sfs)<br>
+  * [Eta-dependent fake rate SFs for the anti-lepton discriminators](#eta-dependent-fake-rate-sfs-for-the-anti-lepton-discriminators)<br>
+  * [DM-dependent tau energy scale](#dm-dependent-tau-energy-scale)<br>
+  * [Eta- & DM-dependent e -> tau fake energy scale](#eta---dm-dependent-e---tau-fake-energy-scale)<br>
+
+
 ## Installation of the tool
 
 To install the tool for reading the tau ID SFs, do
