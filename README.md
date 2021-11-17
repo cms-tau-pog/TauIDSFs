@@ -150,6 +150,8 @@ tauSFTool = TauIDSFTool('2017ReReco','DeepTau2017v2p1VSjet','Medium',otherVSlepW
 ### DM-dependent SFs
 
 Analyses using ditau triggers and tau pT > 40 GeV, may use DM-dependent SFs.
+Please note that no SFs are available for decay modes 5 and 6, and the tool will return 1 by default, please read this
+[TWiki section](https://twiki.cern.ch/twiki/bin/view/CMS/TauIDRecommendationForRun2#Decay_Mode_Reconstruction).
 They are provided as `TH1` histograms. For example, to obtain those for the medium WP of the `'DeepTau2017v2p1VSjet'` discriminator for 2016, use
 ```
 file = TFile("data/TauID_SF_dm_DeepTau2017v2p1VSjet_2016Legacy.root")
