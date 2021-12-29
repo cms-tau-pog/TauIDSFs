@@ -22,9 +22,6 @@ class TauIDSFTool:
           emb:          use SFs for embedded samples
           otherVSlepWP: extra uncertainty if you are using a different DeepTauVSe/mu WP than used in the measurement
         """
-        if "UL" in year and "VSmu" in id:
-          print(">>> TauIDSFTool: Warning! Using pre-UL (%r) SFs for %s..."%(year,id))
-          year = '2016Legacy' if '2016' in year else '2017ReReco' if '2017' in year else '2018ReReco'
         assert year in campaigns, "You must choose a year from %s! Got %r."%(', '.join(campaigns),year)
         self.ID       = id
         self.WP       = wp
