@@ -31,20 +31,22 @@ class TauIDSFTool:
         self.WP       = wp
         self.verbose  = verbose
         self.extraUnc = None
+        self.filename = None
         
         if id in ['MVAoldDM2017v2','DeepTau2017v2p1VSjet']:
           if dm: # DM-dependent SFs
             if emb:
               if 'oldDM' in id:
                 raise IOError("Scale factors for embedded samples not available for ID '%s'!"%id)
-              else:
-                file = ensureTFile(os.path.join(path,"TauID_SF_dm_%s_%s_EMB.root"%(id,year)),verbose=verbose)
+              fname = os.path.join(path,"TauID_SF_dm_%s_%s_EMB.root"%(id,year))
             else:
-              file = ensureTFile(os.path.join(path,"TauID_SF_dm_%s_%s.root"%(id,year)),verbose=verbose)
+              fname = os.path.join(path,"TauID_SF_dm_%s_%s.root"%(id,year))
+            file = ensureTFile(fname,verbose=verbose)
             self.hist = extractTH1(file,wp)
             self.hist.SetDirectory(0)
             file.Close()
-            self.DMs = [0,1,10] if 'oldDM' in id else [0,1,10,11]
+            self.filename   = fname
+            self.DMs        = [0,1,10] if 'oldDM' in id else [0,1,10,11]
             self.getSFvsPT  = self.disabled
             self.getSFvsEta = self.disabled
             if otherVSlepWP:
@@ -56,15 +58,16 @@ class TauIDSFTool:
             if emb:
               if 'oldDM' in id:
                 raise IOError("Scale factors for embedded samples not available for ID '%s'!"%id)
-              else:
-                file = ensureTFile(os.path.join(path, "TauID_SF_pt_%s_%s_EMB.root"%(id,year)),verbose=verbose)
+              fname = os.path.join(path,"TauID_SF_pt_%s_%s_EMB.root"%(id,year))
             else:
-              file = ensureTFile(os.path.join(path,"TauID_SF_pt_%s_%s.root"%(id,year)),verbose=verbose)
+              fname = os.path.join(path,"TauID_SF_pt_%s_%s.root"%(id,year))
+            file = ensureTFile(fname,verbose=verbose)
             self.func         = { }
             self.func[None]   = file.Get("%s_cent"%(wp))
             self.func['Up']   = file.Get("%s_up"%(wp))
             self.func['Down'] = file.Get("%s_down"%(wp))
             file.Close()
+            self.filename   = fname
             self.getSFvsDM  = self.disabled
             self.getSFvsEta = self.disabled
             if otherVSlepWP:
@@ -75,11 +78,12 @@ class TauIDSFTool:
         elif id in ['antiMu3','antiEleMVA6','DeepTau2017v2p1VSmu','DeepTau2017v2p1VSe']:
             if emb:
               raise IOError("Scale factors for embedded samples not available for ID '%s'!"%id)
-            else:
-              file = ensureTFile(os.path.join(path,"TauID_SF_eta_%s_%s.root"%(id,year)),verbose=verbose)
+            fname = os.path.join(path,"TauID_SF_eta_%s_%s.root"%(id,year))
+            file = ensureTFile(fname,verbose=verbose)
             self.hist = extractTH1(file,wp)
             self.hist.SetDirectory(0)
             file.Close()
+            self.filename   = fname
             self.genmatches = [1,3] if any(s in id.lower() for s in ['ele','vse']) else [2,4]
             self.getSFvsPT  = self.disabled
             self.getSFvsDM  = self.disabled
@@ -156,7 +160,7 @@ class TauIDSFTool:
     
 
 class TauESTool:
-    def __init__(self, year, id='DeepTau2017v2p1VSjet', path=datapath):
+    def __init__(self, year, id='DeepTau2017v2p1VSjet', path=datapath, verbose=False):
         """Choose the IDs and WPs for SFs."""
         if "UL" in year:
           print(">>> TauESTool: Warning! Using pre-UL (%r) TESs at high pT (for uncertainties only)..."%(year))
@@ -165,17 +169,21 @@ class TauESTool:
           year_highpt = year
         assert year in campaigns, "You must choose a year from %s! Got %r."%(', '.join(campaigns),year)
         assert year_highpt in campaigns, "You must choose a year from %s! Got %r."%(', '.join(campaigns),year_highpt)
-        file_lowpt  = ensureTFile(os.path.join(path,"TauES_dm_%s_%s.root"%(id,year)))
-        file_highpt = ensureTFile(os.path.join(path,"TauES_dm_%s_%s_ptgt100.root"%(id,year_highpt)))
-        self.hist_lowpt  = extractTH1(file_lowpt,'tes')
+        fname_lowpt  = os.path.join(path,"TauES_dm_%s_%s.root"%(id,year))
+        fname_highpt = os.path.join(path,"TauES_dm_%s_%s_ptgt100.root"%(id,year_highpt))
+        file_lowpt   = ensureTFile(fname_lowpt, verbose=verbose)
+        file_highpt  = ensureTFile(fname_highpt,verbose=verbose)
+        self.hist_lowpt  = extractTH1(file_lowpt, 'tes')
         self.hist_highpt = extractTH1(file_highpt,'tes')
         self.hist_lowpt.SetDirectory(0)
         self.hist_highpt.SetDirectory(0)
+        file_lowpt.Close()
+        file_highpt.Close()
         self.pt_low  = 34  # average pT in Z -> tautau measurement (incl. in DM)
         self.pt_high = 170 # average pT in W* -> taunu measurement (incl. in DM)
         self.DMs     = [0,1,10] if "oldDM" in id else [0,1,10,11]
-        file_lowpt.Close()
-        file_highpt.Close()
+        self.filename = fname_lowpt
+        self.filename_highpt = fname_highpt
     
     def getTES(self, pt, dm, genmatch=5, unc=None):
         """Get tau ES vs. tau DM."""
@@ -226,13 +234,14 @@ class TauESTool:
 
 class TauFESTool:
     
-    def __init__(self, year, id='DeepTau2017v2p1VSe', path=datapath):
+    def __init__(self, year, id='DeepTau2017v2p1VSe', path=datapath, verbose=False):
         """Choose the IDs and WPs for SFs."""
         if "UL" in year:
           print(">>> TauFESTool: Warning! Using pre-UL (%r) energy scales for e -> tau fakes..."%(year))
           year = '2016Legacy' if '2016' in year else '2017ReReco' if '2017' in year else '2018ReReco'
         assert year in campaigns, "You must choose a year from %s! Got %r."%(', '.join(campaigns),year)
-        file  = ensureTFile(os.path.join(path,"TauFES_eta-dm_%s_%s.root"%(id,year)))
+        fname = os.path.join(path,"TauFES_eta-dm_%s_%s.root"%(id,year))
+        file  = ensureTFile(fname,verbose=verbose)
         graph = file.Get('fes')
         FESs  = { 'barrel':  { }, 'endcap': { } }
         DMs   = [0,1]
@@ -245,6 +254,7 @@ class TauFESTool:
             FESs[region][dm] = (max(0,y-ylow),y,y+yup) # prevent negative FES
             i += 1
         file.Close()
+        self.fname      = fname
         self.FESs       = FESs
         self.DMs        = [0,1]
         self.genmatches = [1,3]
