@@ -3,9 +3,13 @@
 from __future__ import print_function
 import os
 from math import sqrt
-from helpers import ensureTFile, extractTH1
-datapath  = os.path.join(os.environ.get('CMSSW_BASE',""),"src/TauPOG/TauIDSFs/data")
-campaigns = [
+if 'CMSSW_BASE' in os.environ: # assume CMSSW environment
+  from TauPOG.TauIDSFs.helpers import ensureTFile, extractTH1
+  datapath = os.path.join(os.environ.get('CMSSW_BASE',""),"src/TauPOG/TauIDSFs/data")
+else:
+  from helpers import ensureTFile, extractTH1
+  datapath = os.path.join(os.environ.get('TAUIDSFs',""),"data")
+campaigns  = [
   '2016Legacy','2017ReReco','2018ReReco',
   'UL2016_preVFP', 'UL2016_postVFP', 'UL2017', 'UL2018',
 ]
