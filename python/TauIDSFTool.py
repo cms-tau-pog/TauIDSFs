@@ -254,7 +254,7 @@ class TauFESTool:
             FESs[region][dm] = (max(0,y-ylow),y,y+yup) # prevent negative FES
             i += 1
         file.Close()
-        self.fname      = fname
+        self.filename   = fname
         self.FESs       = FESs
         self.DMs        = [0,1]
         self.genmatches = [1,3]
