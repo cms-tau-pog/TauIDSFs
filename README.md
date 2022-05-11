@@ -3,7 +3,7 @@
 This repository contains the recommended scale factors (SFs) for several tau discriminators, and tools to read them.
 More detailed recommendations can be found on this TWiki page: https://twiki.cern.ch/twiki/bin/viewauth/CMS/TauIDRecommendationForRun2
 
-Please note that in the near future the SFs in the format of ROOT files will be phased out,
+> :warning: Please note that in the near future the SFs in the format of ROOT files will be phased out,
 and in the long term superseded by the [`correctionlib` tool](https://github.com/cms-nanoAOD/correctionlib)
 and [JSON files](https://gitlab.cern.ch/cms-nanoAOD/jsonpog-integration/) provided centrally by the XPOG.
 More detailed instructions for tau corrections are
@@ -105,10 +105,10 @@ The SFs are meant for the following campaigns:
 | `2016Legacy`     | `RunIISummer16MiniAODv3` | `17Jul2018`               |
 | `2017ReReco`     | `RunIIFall17MiniAODv2`   | `31Mar2018`               |
 | `2018ReReco`     | `RunIIAutumn18MiniAOD`   | `17Sep2018`/`22Jan2019`   |
-| `UL2016_preVFP`  | `RunIISummer20UL16*APV`  | `UL2016_MiniAODv1`        |
-| `UL2016_postVFP` | `RunIISummer20UL16`      | `(HIPM_)UL2016_MiniAODv1` |
-| `UL2017`         | `RunIISummer20UL17`      | `UL2017_MiniAODv1`        |
-| `UL2018`         | `RunIISummer20UL18`      | `UL2018_MiniAODv1`        |
+| `UL2016_preVFP`  | `RunIISummer20UL16*APV`  | `(HIPM_)UL2016_MiniAODv*  |
+| `UL2016_postVFP` | `RunIISummer20UL16`      | `UL2016_MiniAODv*`        |
+| `UL2017`         | `RunIISummer20UL17`      | `UL2017_MiniAODv*`        |
+| `UL2018`         | `RunIISummer20UL18`      | `UL2018_MiniAODv*`        |
 
 
 
