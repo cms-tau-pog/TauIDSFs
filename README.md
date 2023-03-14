@@ -122,7 +122,7 @@ A simple script is given to dump the corrections saved in histograms or function
 ### DM and pT-dependent SFs
 The DM and pT dependent SFs are provided as TF1 functions in the "TauID_SF_dm_DeepTau2017v2p1VSjet_VSjetX_VSeleY_Mar07.root" ROOT files, where X corresponds to the VSjet WP and Y corresponds to the VSele WP. 
 
-The ROOT files contain several functions. The central values are obtained from the functions named like "DMZ_ERA_fit" where Z is the decay mode = 0, 1, 10, or 11, and ERA = 2016_preVFP, 2016_postVFP, 2017, or 2018.
+The ROOT files contain several functions. The central values are obtained from the functions named like "DM$DM_$ERA_fit" where $DM is the decay mode = 0, 1, 10, or 11, and $ERA = 2016_preVFP, 2016_postVFP, 2017, or 2018.
 
 For example to obtain the central value of the SFs for the Medium VSjet and VVLoose VSele WPs of the `'DeepTau2017v2p1VSjet'` discriminator for DM=1 in 2018, use
 ```
@@ -133,10 +133,10 @@ sf   = sf.Eval(pt)
 
 There are also functions that correspond to systematic variations that can be accessed in the same way. The table below gives a summary of the function names and what uncertainties they correspond to:
 
-| Uncertainty      | Function name            | Notes                     | Correlated by era | Corelated by DM |
-|:------------------------ :|:------------------------:| :------------------------:| :------------------------:| :------------------------:|
-| Statistical uncertainty 1 | DM$DM_$ERA_fit_uncert0_{up,down} | Statistical uncertainty on linear fit parameters from eigendecomposition of covariance matrix. Should be treated as uncorrelated between DMs and eras.  | &cross; | &cross; | 
-| Statistical uncertainty 2 | DM$DM_$ERA_fit_uncert1_{up,down} | Statistical uncertainty on linear fit parameters from eigendecomposition of covariance matrix. Should be treated as uncorrelated between DMs and eras. | &cross; | &cross; |
+| Uncertainty               | Function name                    | Notes                                                 | Correlated by era | Corelated by DM |
+|:------------------------ :|:--------------------------------:|:-----------------------------------------------------:|:-----------------:|:---------------:|
+| Statistical uncertainty 1 | DM$DM_$ERA_fit_uncert0_{up,down} | Statistical uncertainty on linear fit parameters from eigendecomposition of covariance matrix. | &cross; | &cross; | 
+| Statistical uncertainty 2 | DM$DM_$ERA_fit_uncert1_{up,down} | Statistical uncertainty on linear fit parameters from eigendecomposition of covariance matrix. | &cross; | &cross; |
 | Systematic alleras        | DM$DM_$ERA_syst_alleras_{up,down}_fit                      | The component of the systematic uncertainty that is correlated across DMs and eras | &check; | &check; |  
 | Systematic by-era         | DM$DM_$ERA_syst_$ERA_{up,down}_fit                      | The component of the systematic uncertainty that is correlated across DMs but uncorrelated by eras | &cross; | &check; |
 | Systematic by-era and by-DM       | DM$DM_$ERA_syst_dm$DM_$ERA_{up,down}_fit                      | The component of the systematic uncertainty that is uncorrelated across DMs and eras | &cross; | &cross; |
