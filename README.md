@@ -172,7 +172,7 @@ sf   = sf.Eval(pt)
 The tool can be used as
 ```
 from TauPOG.TauIDSFs.TauIDSFTool import TauIDSFTool
-tauSFTool = TauIDSFTool('2016Legacy','DeepTau2017v2p1VSjet','Medium')
+tauSFTool = TauIDSFTool('2016Legacy','DeepTau2017v2p1VSjet','Medium',ptdm=False)
 ```
 and to retrieve the SF for a given tau pT, do
 ```
@@ -221,7 +221,7 @@ sf   = hist.GetBinContent(hist.GetXaxis().FindBin(dm))
 or with the tool,
 ```
 from TauPOG.TauIDSFs.TauIDSFTool import TauIDSFTool
-tauSFTool = TauIDSFTool('2017ReReco','MVAoldDM2017v2','Tight',dm=True)
+tauSFTool = TauIDSFTool('2017ReReco','MVAoldDM2017v2','Tight',dm=True,ptdm=False)
 sf        = tauSFTool.getSFvsDM(pt,dm,genmatch)
 sf_up     = tauSFTool.getSFvsDM(pt,dm,genmatch,unc='Up')
 sf_down   = tauSFTool.getSFvsDM(pt,dm,genmatch,unc='Down')
