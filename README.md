@@ -133,14 +133,29 @@ sf   = sf.Eval(pt)
 
 There are also functions that correspond to systematic variations that can be accessed in the same way. The table below gives a summary of the function names and what uncertainties they correspond to:
 
-| Uncertainty      | Function name              | Notes                            | Correlated by era | Correlated by DM |
-|:----------------:|:--------------------------:| :-------------------------------:| :----------------:| :----------------:|
-| `Statistical uncertainty 1` | `DM$DM_$ERA_fit_uncert0_{up,down}` | `Statistical uncertainty on linear fit parameters from eigendecomposition of covariance matrix.` | &cross; | &cross; |
-| `Statistical uncertainty 2` | `DM$DM_$ERA_fit_uncert1_{up,down}` | `Statistical uncertainty on linear fit parameters from eigendecomposition of covariance matrix.` | &cross; | &cross; |
-| `Systematic alleras`        | `DM$DM_$ERA_syst_alleras_{up,down}_fit` | `The component of the systematic uncertainty that is correlated across DMs and eras` | &check; | &check; |
-| `Systematic by-era`         | `DM$DM_$ERA_syst_$ERA_{up,down}_fit`    | `The component of the systematic uncertainty that is correlated across DMs but uncorrelated by eras` | &cross; | &check; |
-| `Systematic by-era and by-DM` | `DM$DM_$ERA_syst_dm$DM_$ERA_{up,down}_fit` | `The component of the systematic uncertainty that is uncorrelated across DMs and eras` | &cross; | &cross; |
+| Uncertainty      | Function name in ROOT files | String to pass to the tool | Notes                            | Correlated by era | Correlated by DM |
+|:----------------:|:---------------------------:| :-------------------------:| :-------------------------------:| :----------------:| :----------------:|
+| `Statistical uncertainty 1` | `DM$DM_$ERA_fit_uncert0_{up,down}` | `uncert0_{up,down}` | `Statistical uncertainty on linear fit parameters from eigendecomposition of covariance matrix.` | &cross; | &cross; |
+| `Statistical uncertainty 2` | `DM$DM_$ERA_fit_uncert1_{up,down}` | `uncert1_{up,down}` | `Statistical uncertainty on linear fit parameters from eigendecomposition of covariance matrix.` | &cross; | &cross; |
+| `Systematic alleras`        | `DM$DM_$ERA_syst_alleras_{up,down}_fit` | `syst_alleras_{up,down}` | `The component of the systematic uncertainty that is correlated across DMs and eras` | &check; | &check; |
+| `Systematic by-era`         | `DM$DM_$ERA_syst_$ERA_{up,down}_fit`    | `syst_$ERA_{up,down}` | `The component of the systematic uncertainty that is correlated across DMs but uncorrelated by eras` | &cross; | &check; |
+| `Systematic by-era and by-DM` | `DM$DM_$ERA_syst_dm$DM_$ERA_{up,down}_fit` | `syst_dm$DM_$ERA_{up,down}` | `The component of the systematic uncertainty that is uncorrelated across DMs and eras` | &cross; | &cross; |
 
+The SFs can also be accessed using the tool:
+
+```
+from TauPOG.TauIDSFs.TauIDSFTool import TauIDSFTool
+tauSFTool = TauIDSFTool(year='UL2018',id='DeepTau2017v2p1VSjet',wp='Medium',wp_vsele='VVLoose',ptdm=True)
+sf        = tauSFTool.getSFvsDMandPT(pt,dm,genmatch)
+```
+
+And uncertainty variations can be accessed using:
+
+```
+sf        = tauSFTool.getSFvsDMandPT(pt,dm,genmatch,unc)
+```
+
+where the `unc` string is used to identify the systematic variation as given in the third column in the above table 
 
 ### pT-dependent SFs
 
