@@ -143,13 +143,13 @@ There are also functions that correspond to systematic variations that can be ac
 | `UL2017`         | `RunIISummer20UL17`      | `UL2017_MiniAODv*`        |
 | `UL2018`         | `RunIISummer20UL18`      | `UL2018_MiniAODv*`        |
 
-| Uncertainty      | Function name              | Notes             | Correlated by era | Correlated by DM |
-|:----------------:|:--------------------------:| :----------------:| :----------------:| :----------------:|
-| Statistical uncertainty 1 | DM$DM_$ERA_fit_uncert0_{up,down} | Statistical uncertainty on linear fit parameters from eigendecomposition of covariance matrix. | &cross; | &cross; |
-| Statistical uncertainty 2 | DM$DM_$ERA_fit_uncert1_{up,down} | Statistical uncertainty on linear fit parameters from eigendecomposition of covariance matrix. | &cross; | &cross; |
-| Systematic alleras        | DM$DM_$ERA_syst_alleras_{up,down}_fit                      | The component of the systematic uncertainty that is correlated across DMs and eras | &check; | &check; |
-| Systematic by-era         | DM$DM_$ERA_syst_$ERA_{up,down}_fit                      | The component of the systematic uncertainty that is correlated across DMs but uncorrelated by eras | &cross; | &check; |
-| Systematic by-era and by-DM       | DM$DM_$ERA_syst_dm$DM_$ERA_{up,down}_fit                      | The component of the systematic uncertainty that is uncorrelated across DMs and eras | &cross; | &cross; |
+| Uncertainty      | Function name              | Notes                            | Correlated by era | Correlated by DM |
+|:----------------:|:--------------------------:| :-------------------------------:| :----------------:| :----------------:|
+| `Statistical uncertainty 1` | `DM$DM_$ERA_fit_uncert0_{up,down}` | `Statistical uncertainty on linear fit parameters from eigendecomposition of covariance matrix.` | &cross; | &cross; |
+| `Statistical uncertainty 2` | `DM$DM_$ERA_fit_uncert1_{up,down}` | `Statistical uncertainty on linear fit parameters from eigendecomposition of covariance matrix.` | &cross; | &cross; |
+| `Systematic alleras`        | `DM$DM_$ERA_syst_alleras_{up,down}_fit` | `The component of the systematic uncertainty that is correlated across DMs and eras` | &check; | &check; |
+| `Systematic by-era`         | `DM$DM_$ERA_syst_$ERA_{up,down}_fit`    | `The component of the systematic uncertainty that is correlated across DMs but uncorrelated by eras` | &cross; | &check; |
+| `Systematic by-era and by-DM` | `DM$DM_$ERA_syst_dm$DM_$ERA_{up,down}_fit` | `The component of the systematic uncertainty that is uncorrelated across DMs and eras` | &cross; | &cross; |
 
 
 ### pT-dependent SFs
