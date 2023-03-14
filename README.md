@@ -80,13 +80,11 @@ This is a rough summary of the available SFs for `DeepTau2017v2p1` in [`data/`](
 
 | Tau component  | `genmatch`  | `DeepTau2017v2p1` `VSjet`  | `DeepTau2017v2p1` `VSe`  | `DeepTau2017v2p1` `VSmu`  | energy scale   |
 |:--------------:|:-----------:|:--------------------------:|:------------------------:|:-------------------------:|:--------------:|
-| real tau       | `5`         | vs. pT, or vs. DM          | – (*)                    | – (*)                     | vs. DM         |
+| real tau       | `5`         | vs pT and DM (for MC) or vs. pT, or vs. DM (for Embed.)          | – (*)                    | – (*)                     | vs. DM         |
 | e -> tau fake  | `1`, `3`    | –                          | vs. eta                  | –                         | vs. DM and eta |
 | mu -> tau fake | `2`, `4`    | –                          | –                        | vs. eta                   | – (±1% unc.)   |
 
-(*) An extra uncertainty is recommended if you use a different working point (WP) combination than was used to measure the SFs,
-see the [TWiki](https://twiki.cern.ch/twiki/bin/viewauth/CMS/TauIDRecommendationForRun2).
-The tool should take this automatically into account with the `otherVSlepWP` flag.
+(*) The scale factors are provided only for a sub-set of the working points. For the VSele discriminator, they are measured for the VVLoose and Tight WPs - users are strongly encoraged to use one of these two working points and should report to the TauPOG for approval if another working point is used. For the VSmu, they are measured for the Tight WP but we don't expect a large dependence on the chosen VSmu WP in this case so you are free to use any available WP you like for the muon rejection. 
 
 The gen-matching is defined as:
 * `1` for prompt electrons
@@ -102,13 +100,15 @@ The SFs are meant for the following campaigns:
 
 | Year label       | MC campaign              | Data campaign             |
 |:----------------:|:------------------------:| :------------------------:|
-| `2016Legacy`     | `RunIISummer16MiniAODv3` | `17Jul2018`               |
-| `2017ReReco`     | `RunIIFall17MiniAODv2`   | `31Mar2018`               |
-| `2018ReReco`     | `RunIIAutumn18MiniAOD`   | `17Sep2018`/`22Jan2019`   |
+| `2016Legacy` (*)    | `RunIISummer16MiniAODv3` | `17Jul2018`               |
+| `2017ReReco` (*)    | `RunIIFall17MiniAODv2`   | `31Mar2018`               |
+| `2018ReReco` (*)    | `RunIIAutumn18MiniAOD`   | `17Sep2018`/`22Jan2019`   |
 | `UL2016_preVFP`  | `RunIISummer20UL16*APV`  | `(HIPM_)UL2016_MiniAODv*` |
 | `UL2016_postVFP` | `RunIISummer20UL16`      | `UL2016_MiniAODv*`        |
 | `UL2017`         | `RunIISummer20UL17`      | `UL2017_MiniAODv*`        |
 | `UL2018`         | `RunIISummer20UL18`      | `UL2018_MiniAODv*`        |
+
+(*) The SFs provided for pre-UL samples follow the old conventions for the binning by either pT or DM, and follow the old uncertainty scheme where only total uncertainties are reported
 
 
 
@@ -120,6 +120,9 @@ A simple script is given to dump the corrections saved in histograms or function
 ```
 
 ### pT-dependent SFs
+
+***Dericated for UL MC - use DM and pT-dependent SFs instead!***
+The embedded scale factors still follow the old prescriptions for pT or DM binned SFs so these instructions still apply in this case
 
 The pT-dependent SFs are provided as `TF1` functions. For example, to obtain those for the medium WP of the `'DeepTau2017v2p1VSjet'` discriminator for 2016, use
 ```
@@ -162,6 +165,9 @@ tauSFTool = TauIDSFTool('2017ReReco','DeepTau2017v2p1VSjet','Medium',otherVSlepW
 
 
 ### DM-dependent SFs
+
+***Dericated for UL MC - use DM and pT-dependent SFs instead!***
+The embedded scale factors still follow the old prescriptions for pT or DM binned SFs so these instructions still apply in this case
 
 Analyses using ditau triggers and tau pT > 40 GeV, may use DM-dependent SFs.
 Please note that no SFs are available for decay modes 5 and 6, and the tool will return 1 by default, please read this

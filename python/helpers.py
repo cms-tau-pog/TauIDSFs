@@ -45,6 +45,27 @@ def extractTH1(file, histname, setdir=True):
             file.Close()
     return hist
 
+def extractTF1(file, funcname, uncerts=[]):
+    """Get function by name from a given file."""
+    close = False
+    if isinstance(file, str):
+        file = ensureTFile(file, 'READ')
+        close = True
+    if not file or file.IsZombie():
+        raise IOError("Could not open file for function '%s'!" % (funcname))
+    func = file.Get(funcname)
+    funcs = {'nom': func}
+    if len(uncerts) >0: 
+      for u in uncerts:
+        for x in ['up','down']: 
+          if 'syst' in u: syst_funcname = funcname.replace('fit', '%s_%s_fit' % (u,x))
+          else:           syst_funcname = funcname.replace('fit','fit_%s_%s' % (u,x))
+          funcs['%s_%s' %(u,x)] = file.Get(syst_funcname) 
+    if not func:
+        raise IOError("Did not find function '%s' in file '%s'!" % (funcname, file.GetName()))
+    if close: file.Close()
+    return funcs
+
 
 def ensureTFileAndTH1(filename, histname, verbose=True, setdir=True):
     """Open a TFile and get a histogram."""

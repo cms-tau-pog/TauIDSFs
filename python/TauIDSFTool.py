@@ -4,7 +4,7 @@ from __future__ import print_function
 import os
 from math import sqrt
 if 'CMSSW_BASE' in os.environ: # assume CMSSW environment
-  from TauPOG.TauIDSFs.helpers import ensureTFile, extractTH1
+  from TauPOG.TauIDSFs.helpers import ensureTFile, extractTH1, extractTF1
   datapath = os.path.join(os.environ.get('CMSSW_BASE',""),"src/TauPOG/TauIDSFs/data")
 else:
   from helpers import ensureTFile, extractTH1
@@ -17,7 +17,7 @@ campaigns  = [
 
 class TauIDSFTool:
     
-    def __init__(self, year, id, wp='Tight', dm=False, emb=False,
+    def __init__(self, year, id, wp='Medium', wp_vsele='VVLoose', dm=False, ptdm=True, emb=False,
                  otherVSlepWP=False, path=datapath, verbose=False):
         """Choose the IDs and WPs for SFs. For available tau IDs and WPs, check
         https://cms-nanoaod-integration.web.cern.ch/integration/master-102X/mc102X_doc.html#Tau
@@ -34,7 +34,29 @@ class TauIDSFTool:
         self.filename = None
         
         if id in ['MVAoldDM2017v2','DeepTau2017v2p1VSjet']:
-          if dm: # DM-dependent SFs
+          if ptdm: # DM-dependent SFs with pT-dependence fitted
+            self.DMs        = [0,1,10] if 'oldDM' in id else [0,1,10,11]
+            allowed_wp=['Loose','Medium','Tight','VTight']
+            allowed_wp_vsele=['VVLoose','Tight']
+            if id != 'DeepTau2017v2p1VSjet': raise IOError("Scale factors not available for ID '%s'!"%id)
+            if wp not in allowed_wp or wp_vsele not in allowed_wp_vsele:
+              raise IOError("Scale factors not available for this combination of WPs! Allowed WPs for VSjet are [%s]. Allowed WPs for VSele are [%s]"%(', '.join(allowed_wp),', '.join(allowed_wp_vsele)))
+            if emb: raise IOError("Scale factors for embedded samples not available in this format! Use either pT-binned or DM-binned SFs.")
+            fname = os.path.join(path,"TauID_SF_dm_%s_VSjet%s_VSele%s_Mar07.root" %(id, wp, wp_vsele))
+            file = ensureTFile(fname,verbose=verbose)
+            year_=year
+            if year_.startswith('UL'): year_=year_[2:]
+            uncerts=['uncert0','uncert1','syst_alleras','syst_%s' % year_]
+
+            self.funcs_dm0  = extractTF1(file,'DM0_%s_fit' % year_,uncerts=uncerts+['syst_dm0_%s' % year_])
+            self.funcs_dm1  = extractTF1(file,'DM1_%s_fit' % year_,uncerts=uncerts+['syst_dm1_%s' % year_])
+            self.funcs_dm10 = extractTF1(file,'DM10_%s_fit' % year_,uncerts=uncerts+['syst_dm10_%s' % year_])
+            self.funcs_dm11 = extractTF1(file,'DM11_%s_fit' % year_,uncerts=uncerts+['syst_dm11_%s' % year_])
+
+            self.getSFvsPT  = self.disabled
+            self.getSFvsDM  = self.disabled
+            self.getSFvsEta = self.disabled
+          elif dm: # DM-dependent SFs
             if emb:
               if 'oldDM' in id:
                 raise IOError("Scale factors for embedded samples not available for ID '%s'!"%id)
@@ -132,7 +154,23 @@ class TauIDSFTool:
         elif unc=='All':
           return 1.0, 1.0, 1.0
         return 1.0
-    
+   
+    def getSFvsDMandPT(self, pt, dm, genmatch=5, unc=None):
+        """Get tau ID SF vs. tau DM with pT dependence fitted"""
+        if genmatch==5 and dm in self.DMs:
+
+          # get correct functions depending on DM
+          if dm==0: funcs = self.funcs_dm0
+          elif 0<dm<=2: funcs = self.funcs_dm1
+          elif dm==10: funcs = self.funcs_dm10
+          elif dm==11: funcs = self.funcs_dm11
+          
+          if not unc: sf=funcs['nom'].Eval(max(min(pt,140.),20.))
+          else: sf=funcs[unc].Eval(max(min(pt,140.),20.))
+          return sf
+        else:
+          return 1.0
+ 
     def getSFvsEta(self, eta, genmatch, unc=None):
         """Get tau ID SF vs. tau eta."""
         eta = abs(eta)
