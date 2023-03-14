@@ -133,16 +133,6 @@ sf   = sf.Eval(pt)
 
 There are also functions that correspond to systematic variations that can be accessed in the same way. The table below gives a summary of the function names and what uncertainties they correspond to:
 
-| Year label       | MC campaign              | Data campaign             |
-|:----------------:|:------------------------:| :------------------------:|
-| `2016Legacy` (*)    | `RunIISummer16MiniAODv3` | `17Jul2018`               |
-| `2017ReReco` (*)    | `RunIIFall17MiniAODv2`   | `31Mar2018`               |
-| `2018ReReco` (*)    | `RunIIAutumn18MiniAOD`   | `17Sep2018`/`22Jan2019`   |
-| `UL2016_preVFP`  | `RunIISummer20UL16*APV`  | `(HIPM_)UL2016_MiniAODv*` |
-| `UL2016_postVFP` | `RunIISummer20UL16`      | `UL2016_MiniAODv*`        |
-| `UL2017`         | `RunIISummer20UL17`      | `UL2017_MiniAODv*`        |
-| `UL2018`         | `RunIISummer20UL18`      | `UL2018_MiniAODv*`        |
-
 | Uncertainty      | Function name              | Notes                            | Correlated by era | Correlated by DM |
 |:----------------:|:--------------------------:| :-------------------------------:| :----------------:| :----------------:|
 | `Statistical uncertainty 1` | `DM$DM_$ERA_fit_uncert0_{up,down}` | `Statistical uncertainty on linear fit parameters from eigendecomposition of covariance matrix.` | &cross; | &cross; |
