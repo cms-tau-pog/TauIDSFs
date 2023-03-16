@@ -45,7 +45,7 @@ def extractTH1(file, histname, setdir=True):
             file.Close()
     return hist
 
-def extractTF1(file, funcname, uncerts=[]):
+def extractTF1DMandPT(file, funcname, uncerts=[]):
     """Get function by name from a given file."""
     close = False
     if isinstance(file, str):

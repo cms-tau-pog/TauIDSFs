@@ -141,7 +141,7 @@ if __name__ == "__main__":
   WPs         = [
     #'Loose',
     'Medium',
-    #'Tight'
+    'Tight'
   ]
   for year in years:
     for id in tauIDs:

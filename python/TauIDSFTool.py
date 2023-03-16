@@ -4,7 +4,7 @@ from __future__ import print_function
 import os
 from math import sqrt
 if 'CMSSW_BASE' in os.environ: # assume CMSSW environment
-  from TauPOG.TauIDSFs.helpers import ensureTFile, extractTH1, extractTF1
+  from TauPOG.TauIDSFs.helpers import ensureTFile, extractTH1, extractTF1DMandPT
   datapath = os.path.join(os.environ.get('CMSSW_BASE',""),"src/TauPOG/TauIDSFs/data")
 else:
   from helpers import ensureTFile, extractTH1
@@ -48,10 +48,10 @@ class TauIDSFTool:
             if year_.startswith('UL'): year_=year_[2:]
             uncerts=['uncert0','uncert1','syst_alleras','syst_%s' % year_]
 
-            self.funcs_dm0  = extractTF1(file,'DM0_%s_fit' % year_,uncerts=uncerts+['syst_dm0_%s' % year_])
-            self.funcs_dm1  = extractTF1(file,'DM1_%s_fit' % year_,uncerts=uncerts+['syst_dm1_%s' % year_])
-            self.funcs_dm10 = extractTF1(file,'DM10_%s_fit' % year_,uncerts=uncerts+['syst_dm10_%s' % year_])
-            self.funcs_dm11 = extractTF1(file,'DM11_%s_fit' % year_,uncerts=uncerts+['syst_dm11_%s' % year_])
+            self.funcs_dm0  = extractTF1DMandPT(file,'DM0_%s_fit' % year_,uncerts=uncerts+['syst_dm0_%s' % year_])
+            self.funcs_dm1  = extractTF1DMandPT(file,'DM1_%s_fit' % year_,uncerts=uncerts+['syst_dm1_%s' % year_])
+            self.funcs_dm10 = extractTF1DMandPT(file,'DM10_%s_fit' % year_,uncerts=uncerts+['syst_dm10_%s' % year_])
+            self.funcs_dm11 = extractTF1DMandPT(file,'DM11_%s_fit' % year_,uncerts=uncerts+['syst_dm11_%s' % year_])
 
             self.getSFvsPT  = self.disabled
             self.getSFvsDM  = self.disabled
