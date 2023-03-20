@@ -16,12 +16,54 @@
 #include <chrono>
 
 
-void printSFTable(std::string year, std::string id, std::string wp, std::string vs, const bool emb=false){
+void printSFTable(std::string year, std::string id, std::string wp, std::string wp_vsele, std::string vs, const bool emb=false){
   bool dm = (vs=="dm");
-  TauIDSFTool* sftool = new TauIDSFTool(year,id,wp,dm,emb);
+  bool ptdm = (vs=="ptdm");
+  TauIDSFTool* sftool = new TauIDSFTool(year,id,wp,wp_vsele,dm,ptdm,emb);
+
   std::cout << std::fixed;
   std::cout.precision(5);
-  if(vs=="pt"){
+  if (ptdm) {
+    std::vector<int> ptvals = {10, 20, 40, 100, 140, 200};
+    std::vector<int> dmvals = {0, 1, 5, 6, 10, 11};
+    std::string year_ = year;
+    if (year_.find("UL") == 0) year_ = year_.substr(2);
+    std::vector<std::string> uncerts = {"uncert0", "uncert1", "syst_alleras", "syst_" + year_, "syst_dmX_" + year_};
+    for (auto pt : ptvals) {
+        std::cout << ">>> " << std::endl;
+        std::cout << ">>> SF for " << wp << " WP of " << id << " in " << year << " with pT = " << pt << " GeV" << std::endl;
+        std::cout << ">>> " << std::endl;
+        std::cout << std::setw(20) << ("var \\ DM") << std::setw(9) << std::left << " ";
+        for (auto dm : dmvals) {
+            std::cout << std::setw(9) << std::left << dm;
+        }
+        std::cout << std::endl;
+        std::cout << std::setw(20) << ("central") << std::setw(9) << std::left << " ";
+        for (auto dm : dmvals) {
+            std::cout << std::setw(9) << std::left << sftool->getSFvsDMandPT(pt, dm, 5);
+        }
+        std::cout << std::endl;
+        for (auto u : uncerts) {
+            std::cout << std::setw(20) << (u + "_up") << std::setw(9) << std::left << " ";
+            for (auto dm : dmvals) {
+                std::string unc=u;
+                size_t pos = unc.find("dmX"); 
+                if (pos != std::string::npos) unc.replace(pos, 3, "dm"+std::to_string(dm));
+                std::cout << std::setw(9) << std::left << sftool->getSFvsDMandPT(pt, dm, 5, unc + "_up");
+            }
+            std::cout << std::endl;
+            std::cout << std::setw(20) << (u + "_down") << std::setw(9) << std::left << " ";
+            for (auto dm : dmvals) {
+                std::string unc=u;
+                size_t pos = unc.find("dmX");
+                if (pos != std::string::npos) unc.replace(pos, 3, "dm"+std::to_string(dm));
+                std::cout << std::setw(9) << std::left << sftool->getSFvsDMandPT(pt, dm, 5, unc + "_down");
+            }
+            std::cout << std::endl;
+        }
+        std::cout << ">>> " << std::endl;
+    }
+  } else if(vs=="pt"){
       std::vector<int> ptvals = {10,20,21,25,26,30,31,35,40,50,70,100,200,500,600,700,800,1000,1500,2000,};
       std::cout << ">>>  " << std::endl;
       std::cout << ">>> SF for "<<wp<<" WP of "<<id<<" in "<<year;
@@ -123,16 +165,14 @@ int main(int argc, char* argv[]){
   auto start = std::chrono::system_clock::now();
   
   std::vector<std::string> years = {
-    //"2016Legacy",
-    "2017ReReco",
-    //"2018ReReco"
+    "UL2018"
   };
   std::vector<std::string> WPs   = {"Loose","Medium","Tight"};
   std::vector<std::string> IDs   = {
-    "MVAoldDM2017v2",
+    //"MVAoldDM2017v2",
     "DeepTau2017v2p1VSjet",
-    "antiEleMVA6",
-    "antiMu3",
+    //"antiEleMVA6",
+    //"antiMu3",
     "DeepTau2017v2p1VSe",
     "DeepTau2017v2p1VSmu",
   };
@@ -143,13 +183,14 @@ int main(int argc, char* argv[]){
       if(id.find("anti")!=std::string::npos or id.find("VSe")!=std::string::npos or id.find("VSmu")!=std::string::npos)
         vslist = {"eta"};
       else
-        vslist = {"pt","dm"};
+        vslist = {"ptdm","pt","dm"};
+      std::string wp_vsele = "VVLoose";
       for(auto const& vs: vslist){
         for(auto const& wp: WPs){
           if(id=="antiMu3" and wp=="Medium") continue;
-          printSFTable(year,id,wp,vs);
-          if(id=="DeepTau2017v2p1VSjet")
-            printSFTable(year,id,wp,vs,true);
+          if(vs!="pt" && vs!="dm") printSFTable(year,id,wp,wp_vsele,vs);
+          if(year.find("UL")==std::string::npos  && vs!="ptdm"&&id=="DeepTau2017v2p1VSjet") // do not test embed for UL at the moment as these SFs don't exist yet
+            printSFTable(year,id,wp,wp_vsele,vs,true);
         }
       }
     }

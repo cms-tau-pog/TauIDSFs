@@ -80,13 +80,11 @@ This is a rough summary of the available SFs for `DeepTau2017v2p1` in [`data/`](
 
 | Tau component  | `genmatch`  | `DeepTau2017v2p1` `VSjet`  | `DeepTau2017v2p1` `VSe`  | `DeepTau2017v2p1` `VSmu`  | energy scale   |
 |:--------------:|:-----------:|:--------------------------:|:------------------------:|:-------------------------:|:--------------:|
-| real tau       | `5`         | vs. pT, or vs. DM          | – (*)                    | – (*)                     | vs. DM         |
+| real tau       | `5`         | vs pT and DM (for MC) or vs. pT, or vs. DM (for Embed.)          | – (*)                    | – (*)                     | vs. DM         |
 | e -> tau fake  | `1`, `3`    | –                          | vs. eta                  | –                         | vs. DM and eta |
 | mu -> tau fake | `2`, `4`    | –                          | –                        | vs. eta                   | – (±1% unc.)   |
 
-(*) An extra uncertainty is recommended if you use a different working point (WP) combination than was used to measure the SFs,
-see the [TWiki](https://twiki.cern.ch/twiki/bin/viewauth/CMS/TauIDRecommendationForRun2).
-The tool should take this automatically into account with the `otherVSlepWP` flag.
+(*) The scale factors are provided only for a sub-set of the working points. For the VSele discriminator, they are measured for the VVLoose and Tight WPs - users are strongly encoraged to use one of these two working points and should report to the TauPOG for approval if another working point is used. For the VSmu, they are measured for the Tight WP but we don't expect a large dependence on the chosen VSmu WP in this case so you are free to use any available WP you like for the muon rejection. 
 
 The gen-matching is defined as:
 * `1` for prompt electrons
@@ -102,13 +100,15 @@ The SFs are meant for the following campaigns:
 
 | Year label       | MC campaign              | Data campaign             |
 |:----------------:|:------------------------:| :------------------------:|
-| `2016Legacy`     | `RunIISummer16MiniAODv3` | `17Jul2018`               |
-| `2017ReReco`     | `RunIIFall17MiniAODv2`   | `31Mar2018`               |
-| `2018ReReco`     | `RunIIAutumn18MiniAOD`   | `17Sep2018`/`22Jan2019`   |
+| `2016Legacy` (*)    | `RunIISummer16MiniAODv3` | `17Jul2018`               |
+| `2017ReReco` (*)    | `RunIIFall17MiniAODv2`   | `31Mar2018`               |
+| `2018ReReco` (*)    | `RunIIAutumn18MiniAOD`   | `17Sep2018`/`22Jan2019`   |
 | `UL2016_preVFP`  | `RunIISummer20UL16*APV`  | `(HIPM_)UL2016_MiniAODv*` |
 | `UL2016_postVFP` | `RunIISummer20UL16`      | `UL2016_MiniAODv*`        |
 | `UL2017`         | `RunIISummer20UL17`      | `UL2017_MiniAODv*`        |
 | `UL2018`         | `RunIISummer20UL18`      | `UL2018_MiniAODv*`        |
+
+(*) The SFs provided for pre-UL samples follow the old conventions for the binning by either pT or DM, and follow the old uncertainty scheme where only total uncertainties are reported
 
 
 
@@ -119,7 +119,49 @@ A simple script is given to dump the corrections saved in histograms or function
 ./test/dumpTauIDSFs.py data/TauID_SF_*_DeepTau2017v2p1VSjet_*.root
 ```
 
+### DM and pT-dependent SFs
+The DM and pT dependent SFs are provided as TF1 functions in the "TauID_SF_dm_DeepTau2017v2p1VSjet_VSjetX_VSeleY_Mar07.root" ROOT files, where X corresponds to the VSjet WP and Y corresponds to the VSele WP. 
+
+The ROOT files contain several functions. The central values are obtained from the functions named like "DM$DM_$ERA_fit" where $DM is the decay mode = 0, 1, 10, or 11, and $ERA = 2016_preVFP, 2016_postVFP, 2017, or 2018.
+
+For example to obtain the central value of the SFs for the Medium VSjet and VVLoose VSele WPs of the `'DeepTau2017v2p1VSjet'` discriminator for DM=1 in 2018, use
+```
+file = TFile("data/TauID_SF_dm_DeepTau2017v2p1VSjet_VSjetMedium_VSeleVVLoose_Mar07.root")
+func = file.Get('DM1_2018_fit')
+sf   = sf.Eval(pt)
+```
+
+There are also functions that correspond to systematic variations that can be accessed in the same way. The table below gives a summary of the function names and what uncertainties they correspond to:
+
+| Uncertainty      | Function name in ROOT files | String to pass to the tool | Notes                            | Correlated by era | Correlated by DM |
+|:----------------:|:---------------------------:| :-------------------------:| :-------------------------------:| :----------------:| :----------------:|
+| `Statistical uncertainty 1` | `DM$DM_$ERA_fit_uncert0_{up,down}` | `uncert0_{up,down}` | `Statistical uncertainty on linear fit parameters from eigendecomposition of covariance matrix.` | &cross; | &cross; |
+| `Statistical uncertainty 2` | `DM$DM_$ERA_fit_uncert1_{up,down}` | `uncert1_{up,down}` | `Statistical uncertainty on linear fit parameters from eigendecomposition of covariance matrix.` | &cross; | &cross; |
+| `Systematic alleras`        | `DM$DM_$ERA_syst_alleras_{up,down}_fit` | `syst_alleras_{up,down}` | `The component of the systematic uncertainty that is correlated across DMs and eras` | &check; | &check; |
+| `Systematic by-era`         | `DM$DM_$ERA_syst_$ERA_{up,down}_fit`    | `syst_$ERA_{up,down}` | `The component of the systematic uncertainty that is correlated across DMs but uncorrelated by eras` | &cross; | &check; |
+| `Systematic by-era and by-DM` | `DM$DM_$ERA_syst_dm$DM_$ERA_{up,down}_fit` | `syst_dm$DM_$ERA_{up,down}` | `The component of the systematic uncertainty that is uncorrelated across DMs and eras` | &cross; | &cross; |
+
+The SFs can also be accessed using the tool:
+
+```
+from TauPOG.TauIDSFs.TauIDSFTool import TauIDSFTool
+tauSFTool = TauIDSFTool(year='UL2018',id='DeepTau2017v2p1VSjet',wp='Medium',wp_vsele='VVLoose',ptdm=True)
+sf        = tauSFTool.getSFvsDMandPT(pt,dm,genmatch)
+```
+
+And uncertainty variations can be accessed using:
+
+```
+sf        = tauSFTool.getSFvsDMandPT(pt,dm,genmatch,unc)
+```
+
+where the `unc` string is used to identify the systematic variation as given in the third column in the above table 
+
 ### pT-dependent SFs
+
+***Deprecated for UL MC - use DM and pT-dependent SFs instead!***
+
+***The embedded scale factors still follow the old prescriptions for pT or DM binned SFs so these instructions still apply in this case***
 
 The pT-dependent SFs are provided as `TF1` functions. For example, to obtain those for the medium WP of the `'DeepTau2017v2p1VSjet'` discriminator for 2016, use
 ```
@@ -130,7 +172,7 @@ sf   = sf.Eval(pt)
 The tool can be used as
 ```
 from TauPOG.TauIDSFs.TauIDSFTool import TauIDSFTool
-tauSFTool = TauIDSFTool('2016Legacy','DeepTau2017v2p1VSjet','Medium')
+tauSFTool = TauIDSFTool('2016Legacy','DeepTau2017v2p1VSjet','Medium',ptdm=False)
 ```
 and to retrieve the SF for a given tau pT, do
 ```
@@ -163,6 +205,10 @@ tauSFTool = TauIDSFTool('2017ReReco','DeepTau2017v2p1VSjet','Medium',otherVSlepW
 
 ### DM-dependent SFs
 
+***Deprecated for UL MC - use DM and pT-dependent SFs instead!***
+
+***The embedded scale factors still follow the old prescriptions for pT or DM binned SFs so these instructions still apply in this case***
+
 Analyses using ditau triggers and tau pT > 40 GeV, may use DM-dependent SFs.
 Please note that no SFs are available for decay modes 5 and 6, and the tool will return 1 by default, please read this
 [TWiki section](https://twiki.cern.ch/twiki/bin/view/CMS/TauIDRecommendationForRun2#Decay_Mode_Reconstruction).
@@ -175,13 +221,12 @@ sf   = hist.GetBinContent(hist.GetXaxis().FindBin(dm))
 or with the tool,
 ```
 from TauPOG.TauIDSFs.TauIDSFTool import TauIDSFTool
-tauSFTool = TauIDSFTool('2017ReReco','MVAoldDM2017v2','Tight',dm=True)
+tauSFTool = TauIDSFTool('2017ReReco','MVAoldDM2017v2','Tight',dm=True,ptdm=False)
 sf        = tauSFTool.getSFvsDM(pt,dm,genmatch)
 sf_up     = tauSFTool.getSFvsDM(pt,dm,genmatch,unc='Up')
 sf_down   = tauSFTool.getSFvsDM(pt,dm,genmatch,unc='Down')
 ```
 where `genmatch` is optional.
-
 
 ### Eta-dependent fake rate SFs for the anti-lepton discriminators
 

@@ -32,20 +32,26 @@ class TauIDSFTool {
 
     std::map<const std::string,const TF1*> func;
     TH1* hist;
+    std::map<std::string, const TF1*> funcs_dm0;
+    std::map<std::string, const TF1*> funcs_dm1;
+    std::map<std::string, const TF1*> funcs_dm10;
+    std::map<std::string, const TF1*> funcs_dm11;
     [[noreturn]] void disabled() const;
 
   public:
 
     std::string ID;
     std::string WP;
+    std::string WP_VSELE;
     std::vector<int> DMs;
     std::vector<int> genmatches;
     bool isVsPT  = false;
     bool isVsDM  = false;
     bool isVsEta = false;
+    bool isVsDMandPT  = false;
 
-    TauIDSFTool(const std::string& year, const std::string& id="MVAoldDM2017v2", const std::string& wp="Tight",
-                const bool dm=false, const bool embedding=false);
+    TauIDSFTool(const std::string& year, const std::string& id="DeepTau2017v2p1VSjet", const std::string& wp="Medium", const std::string& wp_vsele="VVLoose",
+                const bool dm=false, const bool ptdm=true, const bool embedding=false);
     ~TauIDSFTool() { }
 
     float getSFvsPT( double pt,          int genmatch, const std::string& unc="");
@@ -53,6 +59,8 @@ class TauIDSFTool {
     float getSFvsDM( double pt,  int dm, int genmatch, const std::string& unc="") const;
     float getSFvsDM( double pt,  int dm,               const std::string& unc="") const;
     float getSFvsEta(double eta,         int genmatch, const std::string& unc="") const;
+    float getSFvsDMandPT( double pt,  int dm, int genmatch, const std::string& unc="") const;
+    float getSFvsDMandPT( double pt,  int dm,               const std::string& unc="") const;
 
 };
 

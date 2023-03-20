@@ -37,8 +37,8 @@ def printTH1(hist):
   for bin in xrange(0,nbins+2):
     xmin = "%.2f"%hist.GetXaxis().GetBinLowEdge(bin) if bin>0 else '-Inf'
     xmax = "%.2f"%hist.GetXaxis().GetBinUpEdge(bin) if bin<nbins+1 else '+Inf'
-    print(">>> %6s %7s - %6s %9.3f +- %7.3f"%()
-      bin,xmin,xmax,hist.GetBinContent(bin),hist.GetBinError(bin))
+    print(">>> %6s %7s - %6s %9.3f +- %7.3f"%(
+      bin,xmin,xmax,hist.GetBinContent(bin),hist.GetBinError(bin)))
   
 def printTF1(func):
   formula  = str(func.GetExpFormula()).replace(' ','')
