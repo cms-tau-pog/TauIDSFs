@@ -1,5 +1,6 @@
 import re
 import ROOT
+from array import array
 
 input_file = 'data/HighPT_tauIdSF_4eras.txt'
 vs_ele_wp=None
@@ -38,6 +39,7 @@ with open(input_file) as file:
  
 
 outname = 'data/TauID_SF_Highpt_DeepTau2017v2p1VSjet_VSjetXXX_VSeleYYY_Mar07.root'
+h1=ROOT.TH1D('h1','',2,array('d',[100.,200.,300.]))
 
 for key1 in sf_maps:
   for key2 in sf_maps[key1]:
@@ -63,9 +65,14 @@ for key1 in sf_maps:
         g1.SetPointError(Npoint,pt_e, pt_e, sf_e_stat, sf_e_stat) 
         g2.SetPointError(Npoint,pt_e, pt_e, sf_e_syst, sf_e_syst) 
         g3.SetPointError(Npoint,pt_e, pt_e, sf_e_syst_byera, sf_e_syst_byera) 
+        total_e = (sf_e_stat**2+sf_e_syst_byera**2+sf_e_syst**2)**.5
+        bini = h1.FindBin(pt)
+        h1.SetBinContent(bini,sf)
+        h1.SetBinError(bini,total_e)
       g1.Write(name)
       g2.Write(name+'_syst_alleras')
       g3.Write(name+'_syst_%s' % year)
+      h1.Write(name+'_hist')
 
     fout.Close()
 
