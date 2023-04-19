@@ -100,13 +100,14 @@ for wp in vs_jet_wps:
           N_2sig+=1
         print print_out
 
-#        if wp=='Medium' and wp_VSe=='VVLoose' and y == '2018':
-#          f4=ROOT.TFile('data/TauID_Highpt_DMFracts_DY_DeepTau2017v2p1VSjet_VSjetMedium_VSeleVVLoose_Mar07.root')
-#          Z_val_noextrap_alt, Z_e_noextrap_alt = GetDMAveragedSF(f4,f3,140.,y)
-#
-#          alt_dm_ratio = Z_val_noextrap/Z_val_noextrap_alt
-#          print '\n Also comparing average scale factors using W DM fractions and DR DM fractions'
-#          print 'W fracs = %(Z_val_noextrap).3f, Z fracs = %(Z_e_noextrap_alt).3f, ratio = %(alt_dm_ratio).3f \n' % vars()
+        # uncomment to compare SF for different DM mix (using DY events)
+        #if (wp=='Medium' and wp_VSe=='VVLoose'):
+        #  f4=ROOT.TFile('data/TauID_Highpt_DMFracts_DY_DeepTau2017v2p1VSjet_VSjetMedium_VSeleVVLoose_Mar07.root')
+        #  Z_val_noextrap_alt, Z_e_noextrap_alt = GetDMAveragedSF(f4,f3,140.,y)
+
+        #  alt_dm_ratio = Z_val_noextrap/Z_val_noextrap_alt
+        #  print '\n Also comparing average scale factors using W DM fractions and DR DM fractions'
+        #  print 'W fracs = %(Z_val_noextrap).3f, Z fracs = %(Z_val_noextrap_alt).3f, ratio = %(alt_dm_ratio).3f \n' % vars()
     print '-----------------------------------\n'
 
 
