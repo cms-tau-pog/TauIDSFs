@@ -79,7 +79,8 @@ for wp in vs_jet_wps:
 
 
         Z_val, Z_e = GetDMAveragedSF(f1,f3,pt,y)
-        Z_val_noextrap, Z_e_noextrap  = GetDMAveragedSF(f1,f3,140.,y)
+        max_pt=140.
+        Z_val_noextrap, Z_e_noextrap  = GetDMAveragedSF(f1,f3,max_pt,y)
         r = W_val/Z_val
         r_noextrap = W_val/Z_val_noextrap
 
@@ -89,7 +90,7 @@ for wp in vs_jet_wps:
         sig=abs(1.-r)/r_e
         sig_noextrap=abs(1.-r_noextrap)/r_e_noextrap
 
-        print_out= 'ERA = %(y)s, pT = %(pt)s GeV, W*TNu = %(W_val).3f +/- %(W_e).3f, ZTT (extrap) = %(Z_val).3f +/- %(Z_e).3f, ZTT (no extrap) %(Z_val_noextrap).3f +/- %(Z_e_noextrap).3f,  ratio (extrap) = %(r).3f +/- %(r_e).3f, ratio (no extrap) %(r_noextrap).3f +/- %(r_e_noextrap).3f, pull (extrap) = %(sig).2f, pull (no extrap) = %(sig_noextrap).2f ' % vars()
+        print_out= 'ERA = %(y)s, pT = %(pt)s GeV, W*TNu = %(W_val).3f +/- %(W_e).3f, ZTT (extrap) = %(Z_val).3f +/- %(Z_e).3f, ZTT (no extrap above %(max_pt).0f GeV) %(Z_val_noextrap).3f +/- %(Z_e_noextrap).3f,  ratio (extrap) = %(r).3f +/- %(r_e).3f, ratio (no extrap above %(max_pt).0f GeV) %(r_noextrap).3f +/- %(r_e_noextrap).3f, pull (extrap) = %(sig).2f, pull (no extrap above %(max_pt).0f GeV) = %(sig_noextrap).2f ' % vars()
 
         N_tot+=1
         if sig>1 or sig_noextrap>1: 
@@ -103,7 +104,7 @@ for wp in vs_jet_wps:
         # uncomment to compare SF for different DM mix (using DY events)
         #if (wp=='Medium' and wp_VSe=='VVLoose'):
         #  f4=ROOT.TFile('data/TauID_Highpt_DMFracts_DY_DeepTau2017v2p1VSjet_VSjetMedium_VSeleVVLoose_Mar07.root')
-        #  Z_val_noextrap_alt, Z_e_noextrap_alt = GetDMAveragedSF(f4,f3,140.,y)
+        #  Z_val_noextrap_alt, Z_e_noextrap_alt = GetDMAveragedSF(f4,f3,max_pt.,y)
 
         #  alt_dm_ratio = Z_val_noextrap/Z_val_noextrap_alt
         #  print '\n Also comparing average scale factors using W DM fractions and DR DM fractions'
