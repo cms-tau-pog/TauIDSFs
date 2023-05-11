@@ -46,7 +46,6 @@ class TauIDSFTool:
             file = ensureTFile(fname,verbose=verbose)
             year_=year
             if year_.startswith('UL'): year_=year_[2:]
-            file_extrap = ensureTFile(fname,verbose=verbose)
             self.func         = { }
             self.func[None]   = file.Get("DMinclusive_%s"%(year_))
             self.func['syst_alleras']   = file.Get("DMinclusive_%s_syst_alleras"%(year_))
@@ -164,7 +163,7 @@ class TauIDSFTool:
         if genmatch==5:
           x=ctypes.c_double(0.)
           y=ctypes.c_double(0.)
-          # only measured for 2 pT bins 100-200 and > 200 so return 1 of 2 values depending on whether pt is less than 200 or not
+          # we only measured for 2 pT bins 100-200 and > 200 so return 1 of 2 values depending on whether pt is less than 200 or not
           self.func[None].GetPoint(0 if pt<200 else 1, x,y)
           sf=float(y.value)
 
