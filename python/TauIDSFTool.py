@@ -3,6 +3,7 @@
 from __future__ import print_function
 import os
 from math import sqrt
+import ctypes
 if 'CMSSW_BASE' in os.environ: # assume CMSSW environment
   from TauPOG.TauIDSFs.helpers import ensureTFile, extractTH1, extractTF1DMandPT
   datapath = os.path.join(os.environ.get('CMSSW_BASE',""),"src/TauPOG/TauIDSFs/data")
@@ -17,7 +18,7 @@ campaigns  = [
 
 class TauIDSFTool:
     
-    def __init__(self, year, id, wp='Medium', wp_vsele='VVLoose', dm=False, ptdm=True, emb=False,
+    def __init__(self, year, id, wp='Medium', wp_vsele='VVLoose', dm=False, ptdm=True, emb=False, highpT=False,
                  otherVSlepWP=False, path=datapath, verbose=False):
         """Choose the IDs and WPs for SFs. For available tau IDs and WPs, check
         https://cms-nanoaod-integration.web.cern.ch/integration/master-102X/mc102X_doc.html#Tau
@@ -34,7 +35,30 @@ class TauIDSFTool:
         self.filename = None
         
         if id in ['MVAoldDM2017v2','DeepTau2017v2p1VSjet']:
-          if ptdm: # DM-dependent SFs with pT-dependence fitted
+          if highpT: # pT-dependent SFs from W*->taunu events
+            allowed_wp=['Loose','Medium','Tight','VTight']
+            allowed_wp_vsele=['VVLoose','Tight']
+            if id != 'DeepTau2017v2p1VSjet': raise IOError("Scale factors not available for ID '%s'!"%id)
+            if wp not in allowed_wp or wp_vsele not in allowed_wp_vsele:
+              raise IOError("Scale factors not available for this combination of WPs! Allowed WPs for VSjet are [%s]. Allowed WPs for VSele are [%s]"%(', '.join(allowed_wp),', '.join(allowed_wp_vsele)))
+            if emb: raise IOError("Scale factors for embedded samples not available in this format! Use either pT-binned or DM-binned SFs.")
+            fname = os.path.join(path,"TauID_SF_Highpt_%s_VSjet%s_VSele%s_Mar07.root" %(id, wp, wp_vsele))
+            file = ensureTFile(fname,verbose=verbose)
+            year_=year
+            if year_.startswith('UL'): year_=year_[2:]
+            file_extrap = ensureTFile(fname,verbose=verbose)
+            self.func         = { }
+            self.func[None]   = file.Get("DMinclusive_%s"%(year_))
+            self.func['syst_alleras']   = file.Get("DMinclusive_%s_syst_alleras"%(year_))
+            self.func['syst_oneera']   = file.Get("DMinclusive_%s_syst_%s"%(year_,year_))
+            file.Close()
+            fname_extrap = os.path.join(path,"TauID_SF_HighptExtrap_%s_Mar07.root" %(id))
+            file_extrap = ensureTFile(fname_extrap,verbose=verbose)
+            self.func['syst_extrap']   = file_extrap.Get("uncert_func_%sVSjet_%sVSe"%(wp,wp_vsele))
+            file_extrap.Close()
+
+
+          elif ptdm: # DM-dependent SFs with pT-dependence fitted
             self.DMs        = [0,1,10] if 'oldDM' in id else [0,1,10,11]
             allowed_wp=['Loose','Medium','Tight','VTight']
             allowed_wp_vsele=['VVLoose','Tight']
@@ -133,6 +157,42 @@ class TauIDSFTool:
           return self.func[unc].Eval(pt)
         elif unc=='All':
           return 1.0, 1.0, 1.0
+        return 1.0
+
+    def getHighPTSFvsPT(self, pt, genmatch=5, unc=None):
+        """Get High pT tau ID SF vs. tau pT."""
+        if genmatch==5:
+          x=ctypes.c_double(0.)
+          y=ctypes.c_double(0.)
+          # only measured for 2 pT bins 100-200 and > 200 so return 1 of 2 values depending on whether pt is less than 200 or not
+          self.func[None].GetPoint(0 if pt<200 else 1, x,y)
+          sf=float(y.value)
+
+          if not unc: return sf
+
+          if 'stat_bin1' in unc and pt<200:
+           # we define the stat error as the statistical error summed in quadrature with the systematic error that is uncorrelated by era
+           # in principle these could be taken as seperate uncertainties but the effect of correlating the systematic part by pT bin will be negligible overall 
+           if 'up' in unc:  sf+=sqrt(self.func[None].GetErrorY(0)**2 + self.func['syst_oneera'].GetErrorY(0)**2)
+           if 'down' in unc:  sf-=sqrt(self.func[None].GetErrorY(0)**2 + self.func['syst_oneera'].GetErrorY(0)**2)
+          if 'stat_bin2' in unc and pt>=200:
+           # we define the stat error as the statistical error summed in quadrature with the systematic error that is uncorrelated by era
+           # in principle these could be taken as seperate uncertainties but the effect of correlating the systematic part by pT bin will be negligible overall 
+           if 'up' in unc:  sf+=sqrt(self.func[None].GetErrorY(1)**2 + self.func['syst_oneera'].GetErrorY(1)**2)
+           if 'down' in unc:  sf-=sqrt(self.func[None].GetErrorY(1)**2 + self.func['syst_oneera'].GetErrorY(1)**2)
+          if 'stat' in unc and 'bin' not in unc:
+           # we define the stat error as the statistical error summed in quadrature with the systematic error that is uncorrelated by era
+           # in principle these could be taken as seperate uncertainties but the effect of correlating the systematic part by pT bin will be negligible overall 
+           if 'up' in unc:  sf+=sqrt(self.func[None].GetErrorY(0 if pt<200 else 1)**2 + self.func['syst_oneera'].GetErrorY(0 if pt<200 else 1)**2)
+           if 'down' in unc:  sf-=sqrt(self.func[None].GetErrorY(0 if pt<200 else 1)**2 + self.func['syst_oneera'].GetErrorY(0 if pt<200 else 1)**2)
+          if 'syst' in unc:
+           if 'up' in unc:  sf+=self.func['syst_alleras'].GetErrorY(0 if pt<200 else 1)
+           if 'down' in unc:  sf-=self.func['syst_alleras'].GetErrorY(0 if pt<200 else 1)
+          if 'extrap' in unc:
+            if 'up' in unc:  sf*=self.func['syst_extrap'].Eval(pt)
+            if 'down' in unc:  sf*=(2.-self.func['syst_extrap'].Eval(pt))
+
+          return sf
         return 1.0
     
     def getSFvsDM(self, pt, dm, genmatch=5, unc=None):

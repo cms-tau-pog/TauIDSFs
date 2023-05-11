@@ -1,7 +1,8 @@
 import ROOT
 import numpy as np
 
-pt_vals = [145, 250]
+#pt_vals = [145, 250]
+pt_vals = [145,250]
 
 vs_jet_wps = ['Loose','Medium','Tight','VTight']
 vs_ele_wps = ['VVLoose','Tight']
@@ -87,17 +88,22 @@ for wp in vs_jet_wps:
         r_e = r*((Z_e/Z_val)**2 + (W_e/W_val)**2)**.5
         r_e_noextrap = r_noextrap*((Z_e_noextrap/Z_val_noextrap)**2 + (W_e/W_val)**2)**.5
 
-        sig=abs(1.-r)/r_e
-        sig_noextrap=abs(1.-r_noextrap)/r_e_noextrap
+        sig=(1.-r)/r_e
+        sig_noextrap=(1.-r_noextrap)/r_e_noextrap
 
-        print_out= 'ERA = %(y)s, pT = %(pt)s GeV, W*TNu = %(W_val).3f +/- %(W_e).3f, ZTT (extrap) = %(Z_val).3f +/- %(Z_e).3f, ZTT (no extrap above %(max_pt).0f GeV) %(Z_val_noextrap).3f +/- %(Z_e_noextrap).3f,  ratio (extrap) = %(r).3f +/- %(r_e).3f, ratio (no extrap above %(max_pt).0f GeV) %(r_noextrap).3f +/- %(r_e_noextrap).3f, pull (extrap) = %(sig).2f, pull (no extrap above %(max_pt).0f GeV) = %(sig_noextrap).2f ' % vars()
+        y_str = y.ljust(12)
+
+        print_out= 'ERA = %(y_str)s, pT = %(pt)s GeV, W*TNu = %(W_val).3f +/- %(W_e).3f, ZTT (extrap) = %(Z_val).3f +/- %(Z_e).3f, ZTT (no extrap above %(max_pt).0f GeV) %(Z_val_noextrap).3f +/- %(Z_e_noextrap).3f,  ratio (extrap) = %(r).3f +/- %(r_e).3f, ratio (no extrap) %(r_noextrap).3f +/- %(r_e_noextrap).3f, pull (extrap) = %(sig).2f, pull (no extrap) = %(sig_noextrap).2f ' % vars()
+        
+       # # uncomment for short version
+       # print_out= 'ERA = %(y_str)s, pT = %(pt)s GeV, W/Z ratio (extrap) = %(r).3f +/- %(r_e).3f, W/Z ratio (no extrap) %(r_noextrap).3f +/- %(r_e_noextrap).3f, pull (extrap) = %(sig)+.2f, pull (no extrap) = %(sig_noextrap)+.2f ' % vars()
 
         N_tot+=1
-        if sig>1 or sig_noextrap>1: 
+        if abs(sig)>1 or abs(sig_noextrap)>1: 
           print_out = "\033[1;31m" + print_out + "\033[0m"
           N_1sig+=1
-        if sig>2 or sig_noextrap>2: 
-          print_out="\033[1;31;47m" + print_out + "\033[0m"  
+        if abs(sig>2) or abs(sig_noextrap)>2: 
+        #  print_out="\033[1;31;47m" + print_out + "\033[0m"  
           N_2sig+=1
         print print_out
 
