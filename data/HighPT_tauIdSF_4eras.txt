@@ -1,0 +1,137 @@
+Measurement is performed for the following pt bins :
+ - tau pT = [100,200] GeV -> mean = 143 GeV, RMS = 25 GeV (lowpt)
+ - tau pT > 200 GeV       -> mean = 250 GeV, RMS = 49 GeV (highpt)
+
+The tau ID SFs are extracted from the combined fit of UL2016APV, UL2016,
+UL2017 and UL2018 datasets. The fit is applied to mT(tau,MET) distributions
+of selected W*->tau+v decays with 8 freely floating POIs: 
+1. r_lowpt_16APV  : tau ID SF for pt range of 100 to 200 GeV in the UL2016APV dataset;
+2. r_highpt_16APV : tau ID SF for pt > 200 GeV in the UL2016APV dataset;
+3. r_lowpt_16     : tau ID SF for pt range of 100 to 200 GeV in the UL2016 dataset;
+4. r_highpt_16    : tau ID SF for pt > 200 GeV in the UL2016 dataset;
+5. r_lowpt_17     : tau ID SF for pt range of 100 to 200 GeV in the UL2017 dataset;
+6. r_highpt_17    : tau ID SF for pt > 200 GeV in the UL2017 dataset;
+7. r_lowpt_18     : tau ID SF for pt range of 100 to 200 GeV in the UL2018 dataset;
+8. r_highpt_18    : tau ID SF for pt > 200 GeV in the UL2018 dataset.
+
+The control region with W*->mu+v decays is used to constrain
+normalization of the W* production process in the high
+m(W*) phase space probed by the measurement : m(W*) >~ 200 GeV.
+The inference variable in the control region is mT(mu,MET).
+
+++++++++++++++++++++++++++++++++++++++++++++++
++++++ TightVSmu VVLooseVSe discriminants +++++
+++++++++++++++++++++++++++++++++++++++++++++++
+
+LooseVSjet 
+r_lowpt_16APV  = 0.991 +/- 0.121(sys) +/- 0.010(sys.2016) +/- 0.050(stat)
+r_highpt_16APV = 1.236 +/- 0.093(sys) +/- 0.064(sys.2016) +/- 0.140(stat)
+r_lowpt_16     = 1.131 +/- 0.112(sys) +/- 0.010(sys.2016) +/- 0.055(stat)
+r_highpt_16    = 1.080 +/- 0.082(sys) +/- 0.050(sys.2016) +/- 0.137(stat)
+r_lowpt_17     = 1.144 +/- 0.108(sys) +/- 0.007(sys.2017) +/- 0.040(stat)
+r_highpt_17    = 1.132 +/- 0.086(sys) +/- 0.044(sys.2017) +/- 0.109(stat)
+r_lowpt_18     = 1.050 +/- 0.118(sys) +/- 0.007(sys.2018) +/- 0.035(stat)
+r_highpt_18    = 1.285 +/- 0.097(sys) +/- 0.053(sys.2018) +/- 0.083(stat)
+
+
+MediumVSjet
+r_lowpt_16APV  = 0.940 +/- 0.095(sys) +/- 0.009(sys.2016) +/- 0.046(stat)
+r_highpt_16APV = 1.143 +/- 0.079(sys) +/- 0.058(sys.2016) +/- 0.130(stat)
+r_lowpt_16     = 1.086 +/- 0.086(sys) +/- 0.010(sys.2016) +/- 0.050(stat)
+r_highpt_16    = 1.069 +/- 0.068(sys) +/- 0.048(sys.2016) +/- 0.119(stat)
+r_lowpt_17     = 1.114 +/- 0.084(sys) +/- 0.007(sys.2017) +/- 0.036(stat)
+r_highpt_17    = 1.118 +/- 0.075(sys) +/- 0.042(sys.2017) +/- 0.096(stat)
+r_lowpt_18     = 1.039 +/- 0.091(sys) +/- 0.006(sys.2018) +/- 0.032(stat)
+r_highpt_18    = 1.230 +/- 0.083(sys) +/- 0.049(sys.2018) +/- 0.076(stat)
+
+
+TightVSjet
+r_lowpt_16APV  = 0.952 +/- 0.073(sys) +/- 0.008(sys.2016) +/- 0.044(stat)
+r_highpt_16APV = 1.033 +/- 0.070(sys) +/- 0.051(sys.2016) +/- 0.127(stat)
+r_lowpt_16     = 1.083 +/- 0.068(sys) +/- 0.009(sys.2016) +/- 0.048(stat)
+r_highpt_16    = 1.018 +/- 0.059(sys) +/- 0.047(sys.2016) +/- 0.110(stat)
+r_lowpt_17     = 1.102 +/- 0.068(sys) +/- 0.006(sys.2017) +/- 0.035(stat)
+r_highpt_17    = 1.103 +/- 0.063(sys) +/- 0.037(sys.2017) +/- 0.086(stat)
+r_lowpt_18     = 1.024 +/- 0.073(sys) +/- 0.006(sys.2018) +/- 0.031(stat)
+r_highpt_18    = 1.180 +/- 0.071(sys) +/- 0.046(sys.2018) +/- 0.072(stat)
+
+
+VTightVSjet
+r_lowpt_16APV  = 0.967 +/- 0.058(sys) +/- 0.008(sys.2016) +/- 0.043(stat)
+r_highpt_16APV = 1.123 +/- 0.058(sys) +/- 0.053(sys.2016) +/- 0.120(stat)
+r_lowpt_16     = 1.088 +/- 0.058(sys) +/- 0.008(sys.2016) +/- 0.049(stat)
+r_highpt_16    = 1.011 +/- 0.056(sys) +/- 0.044(sys.2016) +/- 0.111(stat)
+r_lowpt_17     = 1.041 +/- 0.057(sys) +/- 0.006(sys.2017) +/- 0.035(stat)
+r_highpt_17    = 1.138 +/- 0.059(sys) +/- 0.040(sys.2017) +/- 0.083(stat)
+r_lowpt_18     = 1.020 +/- 0.060(sys) +/- 0.006(sys.2018) +/- 0.031(stat)
+r_highpt_18    = 1.155 +/- 0.063(sys) +/- 0.044(sys.2018) +/- 0.068(stat)
+
+
+VVTightVSjet
+r_lowpt_16APV  = 0.961 +/- 0.051(sys) +/- 0.007(sys.2016) +/- 0.044(stat)
+r_highpt_16APV = 1.060 +/- 0.050(sys) +/- 0.045(sys.2016) +/- 0.111(stat)
+r_lowpt_16     = 1.051 +/- 0.051(sys) +/- 0.007(sys.2016) +/- 0.050(stat)
+r_highpt_16    = 1.066 +/- 0.052(sys) +/- 0.047(sys.2016) +/- 0.111(stat)
+r_lowpt_17     = 0.975 +/- 0.052(sys) +/- 0.007(sys.2017) +/- 0.036(stat)
+r_highpt_17    = 1.143 +/- 0.054(sys) +/- 0.042(sys.2017) +/- 0.079(stat)
+r_lowpt_18     = 1.002 +/- 0.052(sys) +/- 0.006(sys.2018) +/- 0.031(stat)
+r_highpt_18    = 1.088 +/- 0.054(sys) +/- 0.044(sys.2018) +/- 0.063(stat)
+
+
+++++++++++++++++++++++++++++++++++++++++++++
++++++ TightVSmu TightVSe discriminants +++++
+++++++++++++++++++++++++++++++++++++++++++++
+
+LooseVSjet
+r_lowpt_16APV  = 0.856 +/- 0.113(sys) +/- 0.009(sys.2016) +/- 0.053(stat)
+r_highpt_16APV = 0.955 +/- 0.076(sys) +/- 0.048(sys.2016) +/- 0.136(stat)
+r_lowpt_16     = 0.947 +/- 0.107(sys) +/- 0.010(sys.2016) +/- 0.058(stat)
+r_highpt_16    = 0.885 +/- 0.072(sys) +/- 0.047(sys.2016) +/- 0.142(stat)
+r_lowpt_17     = 1.033 +/- 0.102(sys) +/- 0.006(sys.2017) +/- 0.041(stat)
+r_highpt_17    = 0.974 +/- 0.075(sys) +/- 0.039(sys.2017) +/- 0.110(stat)
+r_lowpt_18     = 0.986 +/- 0.110(sys) +/- 0.004(sys.2018) +/- 0.037(stat)
+r_highpt_18    = 1.091 +/- 0.081(sys) +/- 0.047(sys.2018) +/- 0.084(stat)
+
+
+MediumVSjet
+r_lowpt_16APV  = 0.815 +/- 0.086(sys) +/- 0.008(sys.2016) +/- 0.047(stat)
+r_highpt_16APV = 0.953 +/- 0.066(sys) +/- 0.045(sys.2016) +/- 0.125(stat)
+r_lowpt_16     = 0.937 +/- 0.079(sys) +/- 0.009(sys.2016) +/- 0.051(stat)
+r_highpt_16    = 0.866 +/- 0.057(sys) +/- 0.045(sys.2016) +/- 0.119(stat)
+r_lowpt_17     = 1.015 +/- 0.078(sys) +/- 0.005(sys.2017) +/- 0.038(stat)
+r_highpt_17    = 0.971 +/- 0.066(sys) +/- 0.038(sys.2017) +/- 0.098(stat)
+r_lowpt_18     = 0.975 +/- 0.084(sys) +/- 0.004(sys.2018) +/- 0.033(stat)
+r_highpt_18    = 1.011 +/- 0.069(sys) +/- 0.042(sys.2018) +/- 0.077(stat)
+
+
+TightVSjet
+r_lowpt_16APV  = 0.853 +/- 0.066(sys) +/- 0.008(sys.2016) +/- 0.045(stat)
+r_highpt_16APV = 0.891 +/- 0.061(sys) +/- 0.042(sys.2016) +/- 0.125(stat)
+r_lowpt_16     = 0.954 +/- 0.062(sys) +/- 0.009(sys.2016) +/- 0.049(stat)
+r_highpt_16    = 0.861 +/- 0.050(sys) +/- 0.044(sys.2016) +/- 0.111(stat)
+r_lowpt_17     = 0.994 +/- 0.064(sys) +/- 0.005(sys.2017) +/- 0.036(stat)
+r_highpt_17    = 0.973 +/- 0.057(sys) +/- 0.034(sys.2017) +/- 0.089(stat)
+r_lowpt_18     = 0.968 +/- 0.066(sys) +/- 0.004(sys.2018) +/- 0.032(stat)
+r_highpt_18    = 0.987 +/- 0.060(sys) +/- 0.040(sys.2018) +/- 0.072(stat)
+
+
+VTightVSjet
+r_lowpt_16APV  = 0.868 +/- 0.054(sys) +/- 0.007(sys.2016) +/- 0.045(stat)
+r_highpt_16APV = 1.007 +/- 0.052(sys) +/- 0.046(sys.2016) +/- 0.120(stat)
+r_lowpt_16     = 0.968 +/- 0.053(sys) +/- 0.008(sys.2016) +/- 0.050(stat)
+r_highpt_16    = 0.900 +/- 0.049(sys) +/- 0.043(sys.2016) +/- 0.114(stat)
+r_lowpt_17     = 0.963 +/- 0.054(sys) +/- 0.005(sys.2017) +/- 0.036(stat)
+r_highpt_17    = 0.984 +/- 0.052(sys) +/- 0.035(sys.2017) +/- 0.085(stat)
+r_lowpt_18     = 0.962 +/- 0.055(sys) +/- 0.003(sys.2018) +/- 0.032(stat)
+r_highpt_18    = 0.968 +/- 0.053(sys) +/- 0.039(sys.2018) +/- 0.070(stat)
+
+
+VVTightVSjet
+r_lowpt_16APV  = 0.869 +/- 0.046(sys) +/- 0.006(sys.2016) +/- 0.047(stat)
+r_highpt_16APV = 0.973 +/- 0.046(sys) +/- 0.040(sys.2016) +/- 0.112(stat)
+r_lowpt_16     = 0.992 +/- 0.048(sys) +/- 0.007(sys.2016) +/- 0.052(stat)
+r_highpt_16    = 0.955 +/- 0.046(sys) +/- 0.045(sys.2016) +/- 0.114(stat)
+r_lowpt_17     = 0.919 +/- 0.048(sys) +/- 0.008(sys.2017) +/- 0.038(stat)
+r_highpt_17    = 1.022 +/- 0.048(sys) +/- 0.038(sys.2017) +/- 0.080(stat)
+r_lowpt_18     = 0.978 +/- 0.049(sys) +/- 0.004(sys.2018) +/- 0.032(stat)
+r_highpt_18    = 0.942 +/- 0.047(sys) +/- 0.041(sys.2018) +/- 0.065(stat)

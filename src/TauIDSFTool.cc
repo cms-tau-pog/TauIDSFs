@@ -25,6 +25,15 @@ TH1* extractTH1(const TFile* file, const std::string& histname){
   return hist;
 }
 
+TGraph* extractTGraph(const TFile* file, const std::string& graphname){
+  TGraph* graph = dynamic_cast<TGraph*>((const_cast<TFile*>(file))->Get(graphname.data()));
+  if(!graph){
+    std::cerr << std::endl << "ERROR! Failed to load graph = '" << graphname << "' from input file!" << std::endl;
+    assert(0);
+  }
+  return graph;
+}
+
 const TF1* extractTF1(const TFile* file, const std::string& funcname){
   const TF1* function = dynamic_cast<TF1*>((const_cast<TFile*>(file))->Get(funcname.data()));
   if(!function){
@@ -68,7 +77,7 @@ void TauIDSFTool::disabled() const {
 }
 
 
-TauIDSFTool::TauIDSFTool(const std::string& year, const std::string& id, const std::string& wp, const std::string& wp_vsele,  const bool dm, const bool ptdm, const bool embedding): ID(id), WP(wp), WP_VSELE(wp_vsele){
+TauIDSFTool::TauIDSFTool(const std::string& year, const std::string& id, const std::string& wp, const std::string& wp_vsele,  const bool dm, const bool ptdm, const bool embedding, const bool highpT): ID(id), WP(wp), WP_VSELE(wp_vsele){
 
   bool verbose = false;
   std::string datapath                = Form("%s/src/TauPOG/TauIDSFs/data",getenv("CMSSW_BASE"));
@@ -89,7 +98,52 @@ TauIDSFTool::TauIDSFTool(const std::string& year, const std::string& id, const s
   }
 
   if(std::find(antiJetIDs.begin(),antiJetIDs.end(),ID)!=antiJetIDs.end()){
-    if (ptdm) {
+
+    if (highpT) {
+      std::vector<std::string> allowed_wp={"Loose","Medium","Tight","VTight"};
+      std::vector<std::string> allowed_wp_vsele={"VVLoose","Tight"};
+      if (ID != "DeepTau2017v2p1VSjet") {
+        std::cerr << "Scale factors not available for ID '"+ID+"'!" << std::endl;
+        assert(0);
+      }
+      if (std::find(allowed_wp.begin(), allowed_wp.end(), wp) == allowed_wp.end() ||
+      std::find(allowed_wp_vsele.begin(), allowed_wp_vsele.end(), wp_vsele) == allowed_wp_vsele.end()) {
+      std::ostringstream msg;
+      msg << "Scale factors not available for this combination of WPs! Allowed WPs for VSjet are [";
+      for (const auto& x : allowed_wp) {
+      msg << x << ", ";
+      }
+      msg << "]. Allowed WPs for VSele are [";
+      for (const auto& x : allowed_wp_vsele) {
+      msg << x << ", ";
+      }
+      msg << "]";
+      std::cerr << msg.str() << std::endl;
+      assert(0);
+      }
+      if (embedding) {
+        std::cerr << "Scale factors for embedded samples not available in this format! Use either pT-binned or DM-binned SFs." << std::endl;
+        assert(0);
+      }
+      TString filename = Form("%s/TauID_SF_Highpt_%s_VSjet%s_VSele%s_Mar07.root",datapath.data(),ID.data(),WP.data(),WP_VSELE.data());
+      TFile* file = ensureTFile(filename, verbose);
+      std::string year_ = year;
+      if (year.find("UL") == 0) {
+      year_ = year_.substr(2);
+      }
+      graph[""]     = extractTGraph(file,Form("DMinclusive_%s",year_.data()));
+      graph["syst_alleras"]   = extractTGraph(file,Form("DMinclusive_%s_syst_alleras",year_.data())); 
+      graph["syst_oneera"]   = extractTGraph(file,Form("DMinclusive_%s_syst_%s",year_.data(),year_.data()));
+      file->Close();
+      TString fname_extrap = Form("%s/TauID_SF_HighptExtrap_%s_Mar07.root",datapath.data(),ID.data());
+      TFile* file_extrap = ensureTFile(fname_extrap, verbose);
+      func["syst_extrap"] = extractTF1(file_extrap,Form("uncert_func_%sVSjet_%sVSe",WP.data(),WP_VSELE.data()));
+      file_extrap->Close();
+
+      isHighPTVsPT = true;
+
+    }
+    else if (ptdm) {
       DMs    = {0,1,10};
       if (ID.find("oldDM") == std::string::npos)
       {
@@ -230,7 +284,70 @@ float TauIDSFTool::getSFvsPT(double pt, const std::string& unc){
   return getSFvsPT(pt,5,unc);
 }
 
+float TauIDSFTool::getHighPTSFvsPT(double pt, int genmatch, const std::string& unc){
+  if(!isHighPTVsPT) disabled();
+  if(genmatch==5){
+    //x=ROOT.Double(); 
+    //y=ROOT.Double(); 
+    Double_t x=0., y=0.;
+    // we only measured for 2 pT bins 100-200 and > 200 so return 1 of 2 values depending on whether pt is less than 200 or not
+    int bin = 0;
+    if (pt>=200) bin=1;
+    graph[""]->GetPoint(bin, x,y);
+    float SF = y;
 
+    if (unc.find("stat_bin1") != std::string::npos && pt < 200) {
+        // we define the stat error as the statistical error summed in quadrature with the systematic error that is uncorrelated by era
+        // in principle these could be taken as seperate uncertainties but the effect of correlating the systematic part by pT bin will be negligible overall
+        if (unc.find("up") != std::string::npos) {
+            SF += sqrt(pow(this->graph[""]->GetErrorY(0), 2) + pow(this->graph["syst_oneera"]->GetErrorY(0), 2));
+        }
+        if (unc.find("down") != std::string::npos) {
+            SF -= sqrt(pow(this->graph[""]->GetErrorY(0), 2) + pow(this->graph["syst_oneera"]->GetErrorY(0), 2));
+        }
+    }
+    if (unc.find("stat_bin2") != std::string::npos && pt >= 200) {
+        // we define the stat error as the statistical error summed in quadrature with the systematic error that is uncorrelated by era
+        // in principle these could be taken as seperate uncertainties but the effect of correlating the systematic part by pT bin will be negligible overall
+        if (unc.find("up") != std::string::npos) {
+            SF += sqrt(pow(this->graph[""]->GetErrorY(1), 2) + pow(this->graph["syst_oneera"]->GetErrorY(1), 2));
+        }
+        if (unc.find("down") != std::string::npos) {
+            SF -= sqrt(pow(this->graph[""]->GetErrorY(1), 2) + pow(this->graph["syst_oneera"]->GetErrorY(1), 2));
+        }
+    }
+    if (unc.find("stat") != std::string::npos && unc.find("bin") == std::string::npos) {
+        // we define the stat error as the statistical error summed in quadrature with the systematic error that is uncorrelated by era
+        // in principle these could be taken as seperate uncertainties but the effect of correlating the systematic part by pT bin will be negligible overall
+        if (unc.find("up") != std::string::npos) {
+            SF += sqrt(pow(this->graph[""]->GetErrorY(bin), 2) + pow(this->graph["syst_oneera"]->GetErrorY(bin), 2));
+        }
+        if (unc.find("down") != std::string::npos) {
+            SF -= sqrt(pow(this->graph[""]->GetErrorY(bin), 2) + pow(this->graph["syst_oneera"]->GetErrorY(bin), 2));
+        }
+    }
+    if (unc.find("syst") != std::string::npos) {
+        if (unc.find("up") != std::string::npos) {
+            SF += this->graph["syst_alleras"]->GetErrorY(bin);
+        }
+        if (unc.find("down") != std::string::npos) {
+            SF -= this->graph["syst_alleras"]->GetErrorY(bin);
+        }
+    }
+    if (unc.find("extrap") != std::string::npos) {
+      if (unc.find("up") != std::string::npos) SF *= func["syst_extrap"]->Eval(pt);
+      if (unc.find("down") != std::string::npos) SF *= (2. - func["syst_extrap"]->Eval(pt));
+    }
+ 
+    return SF;
+  }
+  return 1.0;
+
+}
+
+float TauIDSFTool::getHighPTSFvsPT(double pt, const std::string& unc){
+  return getHighPTSFvsPT(pt,5,unc);
+}
 
 float TauIDSFTool::getSFvsDM(double pt, int dm, int genmatch, const std::string& unc) const{
   if(!isVsDM) disabled();

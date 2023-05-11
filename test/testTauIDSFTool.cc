@@ -19,11 +19,39 @@
 void printSFTable(std::string year, std::string id, std::string wp, std::string wp_vsele, std::string vs, const bool emb=false){
   bool dm = (vs=="dm");
   bool ptdm = (vs=="ptdm");
-  TauIDSFTool* sftool = new TauIDSFTool(year,id,wp,wp_vsele,dm,ptdm,emb);
+  bool highpT = (vs=="highpt");
+  TauIDSFTool* sftool = new TauIDSFTool(year,id,wp,wp_vsele,dm,ptdm,emb,highpT);
 
   std::cout << std::fixed;
   std::cout.precision(5);
-  if (ptdm) {
+  if (highpT){
+      std::vector<int> ptvals = {50,100,150,200,300,400,500,1000};
+      std::vector<std::string> uncerts = {"stat","stat_bin1","stat_bin2","syst","extrap"};
+      std::cout << ">>>  " << std::endl;
+      std::cout << ">>> High pT SF for "<<wp<<" WP of "<<id<<" in "<<year << std::endl;
+      std::cout << ">>>  " << std::endl;
+      std::cout << ">>>  " << std::setw(15) << "var \\ pt";
+      for(auto const& pt: ptvals)
+        std::cout << std::setw(9) << pt
+        ;
+      std::cout << std::endl;
+      std::cout << ">>>  " << std::setw(15) << "central";
+      for(auto const& pt: ptvals)
+        std::cout << std::setw(9) << sftool->getHighPTSFvsPT(pt,5);
+      std::cout << std::endl;
+      for (auto u : uncerts) {
+        std::cout << ">>>  " << std::setw(15) << (u + "_up");
+        for(auto const& pt: ptvals)
+        std::cout << std::setw(9) << sftool->getHighPTSFvsPT(pt,5,u+"_up");
+        std::cout << std::endl;
+        std::cout << ">>>  " << std::setw(15) << (u + "_down");
+        for(auto const& pt: ptvals)
+        std::cout << std::setw(9) << sftool->getHighPTSFvsPT(pt,5,u+"_down");
+        std::cout << std::endl;
+      }
+      std::cout << ">>>  " << std::endl;
+  }
+  else if (ptdm) {
     std::vector<int> ptvals = {10, 20, 40, 100, 140, 200};
     std::vector<int> dmvals = {0, 1, 5, 6, 10, 11};
     std::string year_ = year;
@@ -183,13 +211,13 @@ int main(int argc, char* argv[]){
       if(id.find("anti")!=std::string::npos or id.find("VSe")!=std::string::npos or id.find("VSmu")!=std::string::npos)
         vslist = {"eta"};
       else
-        vslist = {"ptdm","pt","dm"};
+        vslist = {"ptdm","pt","highpt","dm"};
       std::string wp_vsele = "VVLoose";
       for(auto const& vs: vslist){
         for(auto const& wp: WPs){
           if(id=="antiMu3" and wp=="Medium") continue;
           if(vs!="pt" && vs!="dm") printSFTable(year,id,wp,wp_vsele,vs);
-          if(year.find("UL")==std::string::npos  && vs!="ptdm"&&id=="DeepTau2017v2p1VSjet") // do not test embed for UL at the moment as these SFs don't exist yet
+          if(year.find("UL")==std::string::npos  && !(vs=="ptdm" || vs=="highpt")&&id=="DeepTau2017v2p1VSjet") // do not test embed for UL at the moment as these SFs don't exist yet
             printSFTable(year,id,wp,wp_vsele,vs,true);
         }
       }
