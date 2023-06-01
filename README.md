@@ -128,10 +128,10 @@ For example to obtain the central value of the SFs for the Medium VSjet and VVLo
 ```
 file = TFile("data/TauID_SF_dm_DeepTau2017v2p1VSjet_VSjetMedium_VSeleVVLoose_Mar07.root")
 func = file.Get('DM1_2018_fit')
-sf   = sf.Eval(pt)
+sf   = func.Eval(pt)
 ```
 
-There are also functions that correspond to systematic variations that can be accessed in the same way. The table below gives a summary of the function names and what uncertainties they correspond to:
+There are also  that correspond to systematic variations that can be accessed in the same way. The table below gives a summary of the function names and what uncertainties they correspond to:
 
 | Uncertainty      | Function name in ROOT files | String to pass to the tool | Notes                            | Correlated by era | Correlated by DM |
 |:----------------:|:---------------------------:| :-------------------------:| :-------------------------------:| :----------------:| :----------------:|
@@ -157,6 +157,36 @@ sf        = tauSFTool.getSFvsDMandPT(pt,dm,genmatch,unc)
 
 where the `unc` string is used to identify the systematic variation as given in the third column in the above table 
 
+### High-pT pT-dependent SFs
+
+Analyses that are sensitive to taus with pT>140 GeV should switch to the dedicated high pT SFs measured in bins of pT above 140 GeV
+
+The SFs are provided as TGraphAsymmErrors objects in the "TauID_SF_Highpt_DeepTau2017v2p1VSjet_VSjetX_VSeleY_Mar07.root" ROOT files, where X corresponds to the VSjet WP and Y corresponds to the VSele WP. 
+
+The ROOT files contain several graphs. The central values are obtained from the graphs named like "DMinclusive_$ERA" where $ERA = 2016_preVFP, 2016_postVFP, 2017, or 2018. These graphs contain 2 pT bins with pT 100-200, and pT>200 GeV. You should only use these as binned values for taus between 140-200 GeV use the first bin, and for taus with pT>200 GeV use the second bin. 
+
+The SFs can also be accessed using the tool:
+
+```
+from TauPOG.TauIDSFs.TauIDSFTool import TauIDSFTool
+tauSFTool = TauIDSFTool(year='UL2018',id='DeepTau2017v2p1VSjet',wp='Medium',wp_vsele='VVLoose',highpT=True)
+sf        = tauSFTool.getHighPTSFvsPT(pt,genmatch)
+```
+
+And uncertainty variations can be accessed using:
+
+```
+sf        = tauSFTool.getHighPTSFvsPT(pt,genmatch,unc)
+```
+
+where "unc" dependends on the uncertainty source. The table below describes the uncertainty sources and the string you need to pass to the tool to retrieve them:
+
+| Uncertainty      | String to pass to the tool | Notes                            | Correlated by era | Correlated by pT |
+| `Statistical uncertainty 1` | `stat_bin1_{up,down}` | `Statistical uncertainty on the pT 140-200 GeV bin. Note this also includes systematic uncertainties that are decorrelated by pT bin and era (since they also behave like statistical uncertainties)` | &cross; | &cross; | 
+| `Statistical uncertainty 2` | `stat_bin2_{up,down}` | `Statistical uncertainty on the pT >200 GeV bin. Note this also includes systematic uncertainties that are decorrelated by pT bin and era (since they also behave like statistical uncertainties)` | &cross; | &cross; |
+| `Systematic` | `syst_{up,down}` | `The systematic uncertainty that is correlated across pT regions and eras` | &check; | &check; |
+| `Extrapolation Systematic` | `extrap_{up,down}` | `The systematics uncertainty due to the extrapolation of the SF to higher pT regions` | &check; | &check; | 
+
 ### pT-dependent SFs
 
 ***Deprecated for UL MC - use DM and pT-dependent SFs instead!***
@@ -167,7 +197,7 @@ The pT-dependent SFs are provided as `TF1` functions. For example, to obtain tho
 ```
 file = TFile("data/TauID_SF_pt_DeepTau2017v2p1VSjet_2016Legacy.root")
 func = file.Get('Medium_cent')
-sf   = sf.Eval(pt)
+sf   = func.Eval(pt)
 ```
 The tool can be used as
 ```
