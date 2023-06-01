@@ -163,7 +163,7 @@ Analyses that are sensitive to taus with pT>140 GeV should switch to the dedicat
 
 The SFs are provided as TGraphAsymmErrors objects in the "TauID_SF_Highpt_DeepTau2017v2p1VSjet_VSjetX_VSeleY_Mar07.root" ROOT files, where X corresponds to the VSjet WP and Y corresponds to the VSele WP. 
 
-The ROOT files contain several graphs. The central values are obtained from the graphs named like "DMinclusive_$ERA" where $ERA = 2016_preVFP, 2016_postVFP, 2017, or 2018. These graphs contain 2 pT bins with pT 100-200, and pT>200 GeV. You should only use these as binned values for taus between 140-200 GeV use the first bin, and for taus with pT>200 GeV use the second bin. 
+The ROOT files contain several graphs. The central values are obtained from the graphs named like "DMinclusive_$ERA" where $ERA = 2016_preVFP, 2016_postVFP, 2017, or 2018. These graphs contain 2 pT bins with pT 100-200, and pT>200 GeV. You should only use these as binned values. For taus between 140-200 GeV use the first bin, and for taus with pT>200 GeV use the second bin. 
 
 The SFs can also be accessed using the tool:
 
@@ -182,6 +182,7 @@ sf        = tauSFTool.getHighPTSFvsPT(pt,genmatch,unc)
 where "unc" dependends on the uncertainty source. The table below describes the uncertainty sources and the string you need to pass to the tool to retrieve them:
 
 | Uncertainty      | String to pass to the tool | Notes                            | Correlated by era | Correlated by pT |
+|:----------------:|:--------------------------:| :-------------------------------:| :----------------:| :---------------:|
 | `Statistical uncertainty 1` | `stat_bin1_{up,down}` | `Statistical uncertainty on the pT 140-200 GeV bin. Note this also includes systematic uncertainties that are decorrelated by pT bin and era (since they also behave like statistical uncertainties)` | &cross; | &cross; | 
 | `Statistical uncertainty 2` | `stat_bin2_{up,down}` | `Statistical uncertainty on the pT >200 GeV bin. Note this also includes systematic uncertainties that are decorrelated by pT bin and era (since they also behave like statistical uncertainties)` | &cross; | &cross; |
 | `Systematic` | `syst_{up,down}` | `The systematic uncertainty that is correlated across pT regions and eras` | &check; | &check; |
