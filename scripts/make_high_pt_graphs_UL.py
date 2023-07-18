@@ -2,7 +2,10 @@ import re
 import ROOT
 from array import array
 
-input_file = 'data/HighPT_tauIdSF_4eras.txt'
+#tauid='DeepTau2017v2p1VSjet'
+tauid='DeepTau2018v2p5VSjet'
+
+input_file = 'data/HighPT_tauIdSF_4eras_%s.txt' % tauid
 vs_ele_wp=None
 
 sf_maps = {}
@@ -38,7 +41,8 @@ with open(input_file) as file:
           else: sf_maps[vs_ele_wp][vs_jet_wp][year] = [pt+vals]
  
 
-outname = 'data/TauID_SF_Highpt_DeepTau2017v2p1VSjet_VSjetXXX_VSeleYYY_Mar07.root'
+if tauid == 'DeepTau2018v2p5VSjet': outname = 'data/TauID_SF_Highpt_%s_VSjetXXX_VSeleYYY_Jul18.root' % tauid
+else: outname = 'data/TauID_SF_Highpt_%s_VSjetXXX_VSeleYYY_Mar07.root' % tauid
 h1=ROOT.TH1D('h1','',2,array('d',[100.,200.,300.]))
 
 def ScaleByHighPT(gin):
