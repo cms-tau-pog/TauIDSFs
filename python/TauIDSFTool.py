@@ -34,7 +34,9 @@ class TauIDSFTool:
         self.extraUnc = None
         self.filename = None
         
-        if id in ['MVAoldDM2017v2','DeepTau2017v2p1VSjet']:
+        if id in ['MVAoldDM2017v2','DeepTau2017v2p1VSjet','DeepTau2018v2p5VSjet']:
+          if id == 'DeepTau2018v2p5VSjet': scheme='Jul18'
+          else: scheme='Mar07'
           if highpT: # pT-dependent SFs from W*->taunu events
             allowed_wp=['Loose','Medium','Tight','VTight']
             allowed_wp_vsele=['VVLoose','Tight']
@@ -42,7 +44,7 @@ class TauIDSFTool:
             if wp not in allowed_wp or wp_vsele not in allowed_wp_vsele:
               raise IOError("Scale factors not available for this combination of WPs! Allowed WPs for VSjet are [%s]. Allowed WPs for VSele are [%s]"%(', '.join(allowed_wp),', '.join(allowed_wp_vsele)))
             if emb: raise IOError("Scale factors for embedded samples not available in this format! Use either pT-binned or DM-binned SFs.")
-            fname = os.path.join(path,"TauID_SF_Highpt_%s_VSjet%s_VSele%s_Mar07.root" %(id, wp, wp_vsele))
+            fname = os.path.join(path,"TauID_SF_Highpt_%s_VSjet%s_VSele%s_%s.root" %(id, wp, wp_vsele, scheme))
             file = ensureTFile(fname,verbose=verbose)
             year_=year
             if year_.startswith('UL'): year_=year_[2:]
@@ -51,7 +53,7 @@ class TauIDSFTool:
             self.func['syst_alleras']   = file.Get("DMinclusive_%s_syst_alleras"%(year_))
             self.func['syst_oneera']   = file.Get("DMinclusive_%s_syst_%s"%(year_,year_))
             file.Close()
-            fname_extrap = os.path.join(path,"TauID_SF_HighptExtrap_%s_Mar07.root" %(id))
+            fname_extrap = os.path.join(path,"TauID_SF_HighptExtrap_%s_%s.root" %(id,scheme))
             file_extrap = ensureTFile(fname_extrap,verbose=verbose)
             self.func['syst_extrap']   = file_extrap.Get("uncert_func_%sVSjet_%sVSe"%(wp,wp_vsele))
             file_extrap.Close()
@@ -65,7 +67,7 @@ class TauIDSFTool:
             if wp not in allowed_wp or wp_vsele not in allowed_wp_vsele:
               raise IOError("Scale factors not available for this combination of WPs! Allowed WPs for VSjet are [%s]. Allowed WPs for VSele are [%s]"%(', '.join(allowed_wp),', '.join(allowed_wp_vsele)))
             if emb: raise IOError("Scale factors for embedded samples not available in this format! Use either pT-binned or DM-binned SFs.")
-            fname = os.path.join(path,"TauID_SF_dm_%s_VSjet%s_VSele%s_Mar07.root" %(id, wp, wp_vsele))
+            fname = os.path.join(path,"TauID_SF_dm_%s_VSjet%s_VSele%s_%s.root" %(id, wp, wp_vsele, scheme))
             file = ensureTFile(fname,verbose=verbose)
             year_=year
             if year_.startswith('UL'): year_=year_[2:]
