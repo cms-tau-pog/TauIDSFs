@@ -38,7 +38,6 @@ def printSFTable(year,id,wp,vs='pt',emb=False,otherVSlepWP=False):
   elif vs=='highpt':
       ptvals = [50,100,150,200,300,400,500,1000]
       uncerts=['stat','stat_bin1','stat_bin2','syst','extrap']
-      #uncerts=['uncert0','uncert1','syst_alleras','syst_%s' % year_, 'syst_dmX_%s' % year_]
       print(">>> ")
       print(">>> High pT SF for %s WP of %s in %s"%(wp,green(id),year))
       print(">>> ")
@@ -162,7 +161,7 @@ if __name__ == "__main__":
   ]
   for year in years:
     for id in tauIDs:
-      vslist = ['eta'] if any(s in id for s in ['anti','VSe','VSmu']) else (['pt','dm'] if emb else (['ptdm','highpt'] if id != 'DeepTau2018v2p5VSjet' else ['ptdm'])) # not showing highpT ones for deepTauv2p5 for now as they are not updated yet
+      vslist = ['eta'] if any(s in id for s in ['anti','VSe','VSmu']) else (['pt','dm'] if emb else ['ptdm','highpt']) 
       for vs in vslist:
         for wp in WPs:
           if 'antiMu' in id and wp=='Medium': continue

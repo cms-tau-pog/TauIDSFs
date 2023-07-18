@@ -40,7 +40,7 @@ class TauIDSFTool:
           if highpT: # pT-dependent SFs from W*->taunu events
             allowed_wp=['Loose','Medium','Tight','VTight']
             allowed_wp_vsele=['VVLoose','Tight']
-            if id != 'DeepTau2017v2p1VSjet': raise IOError("Scale factors not available for ID '%s'!"%id)
+            if not (id == 'DeepTau2017v2p1VSjet' or id == 'DeepTau2018v2p5VSjet'): raise IOError("Scale factors not available for ID '%s'!"%id)
             if wp not in allowed_wp or wp_vsele not in allowed_wp_vsele:
               raise IOError("Scale factors not available for this combination of WPs! Allowed WPs for VSjet are [%s]. Allowed WPs for VSele are [%s]"%(', '.join(allowed_wp),', '.join(allowed_wp_vsele)))
             if emb: raise IOError("Scale factors for embedded samples not available in this format! Use either pT-binned or DM-binned SFs.")
@@ -53,7 +53,8 @@ class TauIDSFTool:
             self.func['syst_alleras']   = file.Get("DMinclusive_%s_syst_alleras"%(year_))
             self.func['syst_oneera']   = file.Get("DMinclusive_%s_syst_%s"%(year_,year_))
             file.Close()
-            fname_extrap = os.path.join(path,"TauID_SF_HighptExtrap_%s_%s.root" %(id,scheme))
+            #fname_extrap = os.path.join(path,"TauID_SF_HighptExtrap_%s_%s.root" %(id,scheme))
+            fname_extrap = os.path.join(path,"TauID_SF_HighptExtrap_%s_%s.root" %('DeepTau2017v2p1VSjet','Mar07')) # this hasn't been remade yet for DeepTauv2p5 so for now keep the same one as for DeepTauV2p1
             file_extrap = ensureTFile(fname_extrap,verbose=verbose)
             self.func['syst_extrap']   = file_extrap.Get("uncert_func_%sVSjet_%sVSe"%(wp,wp_vsele))
             file_extrap.Close()
