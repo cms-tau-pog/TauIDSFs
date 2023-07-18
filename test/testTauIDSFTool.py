@@ -21,7 +21,9 @@ def printSFTable(year,id,wp,vs='pt',emb=False,otherVSlepWP=False):
       dmvals = [0,1,5,6,10,11]
       year_=year
       if year_.startswith('UL'): year_=year_[2:]
-      uncerts=['uncert0','uncert1','syst_alleras','syst_%s' % year_, 'syst_dmX_%s' % year_]
+      uncerts=['uncert0','uncert1','syst_alleras']
+      if id != 'DeepTau2018v2p5VSjet': uncerts+=['syst_%s' % year_, 'syst_dmX_%s' % year_]
+      else: uncerts+=['syst_alldms_%s' % year_,'TES']
       for pt in ptvals:
         print(">>> ")
         print(">>> SF for %s WP of %s in %s with pT = %s GeV"%(wp,green(id),year,pt))
@@ -134,14 +136,15 @@ if __name__ == "__main__":
     #'2016Legacy',
     #'2017ReReco',
     #'2018ReReco',
-    'UL2016_preVFP',
-    'UL2016_postVFP',
-    'UL2017',
+    #'UL2016_preVFP',
+    #'UL2016_postVFP',
+    #'UL2017',
     'UL2018',
   ]
   tauIDs      = [
     #'MVAoldDM2017v2',
     'DeepTau2017v2p1VSjet',
+    'DeepTau2018v2p5VSjet',
     #'antiEleMVA6',
     #'antiMu3',
     #'DeepTau2017v2p1VSmu',
@@ -154,11 +157,11 @@ if __name__ == "__main__":
   WPs         = [
     #'Loose',
     'Medium',
-    'Tight'
+    #'Tight'
   ]
   for year in years:
     for id in tauIDs:
-      vslist = ['eta'] if any(s in id for s in ['anti','VSe','VSmu']) else (['pt','dm'] if emb else ['ptdm','highpt'])
+      vslist = ['eta'] if any(s in id for s in ['anti','VSe','VSmu']) else (['pt','dm'] if emb else (['ptdm','highpt'] if id != 'DeepTau2018v2p5VSjet' else ['ptdm'])) # not showing highpT ones for deepTauv2p5 for now as they are not updated yet
       for vs in vslist:
         for wp in WPs:
           if 'antiMu' in id and wp=='Medium': continue

@@ -63,7 +63,7 @@ class TauIDSFTool:
             self.DMs        = [0,1,10] if 'oldDM' in id else [0,1,10,11]
             allowed_wp=['Loose','Medium','Tight','VTight']
             allowed_wp_vsele=['VVLoose','Tight']
-            if id != 'DeepTau2017v2p1VSjet': raise IOError("Scale factors not available for ID '%s'!"%id)
+            if not (id == 'DeepTau2017v2p1VSjet' or id == 'DeepTau2018v2p5VSjet'): raise IOError("Scale factors not available for ID '%s'!"%id)
             if wp not in allowed_wp or wp_vsele not in allowed_wp_vsele:
               raise IOError("Scale factors not available for this combination of WPs! Allowed WPs for VSjet are [%s]. Allowed WPs for VSele are [%s]"%(', '.join(allowed_wp),', '.join(allowed_wp_vsele)))
             if emb: raise IOError("Scale factors for embedded samples not available in this format! Use either pT-binned or DM-binned SFs.")
@@ -72,6 +72,7 @@ class TauIDSFTool:
             year_=year
             if year_.startswith('UL'): year_=year_[2:]
             uncerts=['uncert0','uncert1','syst_alleras','syst_%s' % year_]
+            if scheme == 'Jul18': uncerts+=['syst_alldms_%s' % year_, 'TES']
 
             self.funcs_dm0  = extractTF1DMandPT(file,'DM0_%s_fit' % year_,uncerts=uncerts+['syst_dm0_%s' % year_])
             self.funcs_dm1  = extractTF1DMandPT(file,'DM1_%s_fit' % year_,uncerts=uncerts+['syst_dm1_%s' % year_])
@@ -225,7 +226,7 @@ class TauIDSFTool:
           elif 0<dm<=2: funcs = self.funcs_dm1
           elif dm==10: funcs = self.funcs_dm10
           elif dm==11: funcs = self.funcs_dm11
-          
+         
           if not unc: sf=funcs['nom'].Eval(max(min(pt,140.),20.))
           else: sf=funcs[unc].Eval(max(min(pt,140.),20.))
           return sf
