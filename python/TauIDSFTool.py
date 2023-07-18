@@ -269,38 +269,51 @@ class TauESTool:
           year_highpt = year
         assert year in campaigns, "You must choose a year from %s! Got %r."%(', '.join(campaigns),year)
         assert year_highpt in campaigns, "You must choose a year from %s! Got %r."%(', '.join(campaigns),year_highpt)
-        fname_lowpt  = os.path.join(path,"TauES_dm_%s_%s.root"%(id,year))
-        fname_highpt = os.path.join(path,"TauES_dm_%s_%s_ptgt100.root"%(id,year_highpt))
-        file_lowpt   = ensureTFile(fname_lowpt, verbose=verbose)
-        file_highpt  = ensureTFile(fname_highpt,verbose=verbose)
-        self.hist_lowpt  = extractTH1(file_lowpt, 'tes')
-        self.hist_highpt = extractTH1(file_highpt,'tes')
-        self.hist_lowpt.SetDirectory(0)
-        self.hist_highpt.SetDirectory(0)
-        file_lowpt.Close()
-        file_highpt.Close()
         self.pt_low  = 34  # average pT in Z -> tautau measurement (incl. in DM)
         self.pt_high = 170 # average pT in W* -> taunu measurement (incl. in DM)
         self.DMs     = [0,1,10] if "oldDM" in id else [0,1,10,11]
-        self.filename = fname_lowpt
-        self.filename_highpt = fname_highpt
-    
+        # the new scheme for deepTau v2p5 does not apply any shift in the nominal values of the TES and uses a 1.5% (2%) uncertainty for DM != (=) 11 for lowpt
+        # for high pT the uncertainties are increased to 3% 
+        self.Jul18_scheme=False
+        if id=='DeepTau2018v2p5VSjet': self.Jul18_scheme=True
+        if not self.Jul18_scheme:
+          fname_lowpt  = os.path.join(path,"TauES_dm_%s_%s.root"%(id,year))
+          fname_highpt = os.path.join(path,"TauES_dm_%s_%s_ptgt100.root"%(id,year_highpt))
+          file_lowpt   = ensureTFile(fname_lowpt, verbose=verbose)
+          file_highpt  = ensureTFile(fname_highpt,verbose=verbose)
+          self.hist_lowpt  = extractTH1(file_lowpt, 'tes')
+          self.hist_highpt = extractTH1(file_highpt,'tes')
+          self.hist_lowpt.SetDirectory(0)
+          self.hist_highpt.SetDirectory(0)
+          file_lowpt.Close()
+          file_highpt.Close()
+          self.filename = fname_lowpt
+          self.filename_highpt = fname_highpt
+ 
     def getTES(self, pt, dm, genmatch=5, unc=None):
         """Get tau ES vs. tau DM."""
         if genmatch==5 and dm in self.DMs:
-          bin = self.hist_lowpt.GetXaxis().FindBin(dm)
-          tes = self.hist_lowpt.GetBinContent(bin)
+          if self.Jul18_scheme:
+            if pt<140.: 
+              if dm==11: err=0.02
+              else: err=0.015
+            else: err=0.03
+            tes=1.0
+          else:
+            bin = self.hist_lowpt.GetXaxis().FindBin(dm)
+            tes = self.hist_lowpt.GetBinContent(bin)
+            if unc!=None:
+              if pt>=self.pt_high: # high pT
+                bin_high = self.hist_highpt.GetXaxis().FindBin(dm)
+                err      = self.hist_highpt.GetBinError(bin_high)
+              elif pt>self.pt_low: # linearly interpolate between low and high pT
+                bin_high = self.hist_highpt.GetXaxis().FindBin(dm)
+                err_high = self.hist_highpt.GetBinError(bin_high)
+                err_low  = self.hist_lowpt.GetBinError(bin)
+                err      = err_low + (err_high-err_low)/(self.pt_high-self.pt_low)*(pt-self.pt_low)
+              else: # low pT
+                err      = self.hist_lowpt.GetBinError(bin)
           if unc!=None:
-            if pt>=self.pt_high: # high pT
-              bin_high = self.hist_highpt.GetXaxis().FindBin(dm)
-              err      = self.hist_highpt.GetBinError(bin_high)
-            elif pt>self.pt_low: # linearly interpolate between low and high pT
-              bin_high = self.hist_highpt.GetXaxis().FindBin(dm)
-              err_high = self.hist_highpt.GetBinError(bin_high)
-              err_low  = self.hist_lowpt.GetBinError(bin)
-              err      = err_low + (err_high-err_low)/(self.pt_high-self.pt_low)*(pt-self.pt_low)
-            else: # low pT
-              err      = self.hist_lowpt.GetBinError(bin)
             if unc=='Up':
               tes += err
             elif unc=='Down':
