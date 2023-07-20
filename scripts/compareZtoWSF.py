@@ -76,8 +76,8 @@ for wp in vs_jet_wps:
     f2 = ROOT.TFile('data/TauID_SF_Highpt_DeepTau2018v2p5VSjet_VSjet%(wp)s_VSele%(wp_VSe)s_Jul18.root' % vars())
     f3 = ROOT.TFile('data/TauID_SF_dm_DeepTau2018v2p5VSjet_VSjet%(wp)s_VSele%(wp_VSe)s_Jul18.root' % vars())
 
-    #for y in ['2016_preVFP','2016_postVFP', '2017', '2018']:
-    for y in ['2018']: # only comparing 2018 for now
+
+    for y in ['2016_preVFP','2016_postVFP', '2017', '2018']:
       h1 = f2.Get('DMinclusive_%(y)s_hist' % vars())
 
       for pt in pt_vals:

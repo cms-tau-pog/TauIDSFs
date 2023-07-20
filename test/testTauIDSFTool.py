@@ -135,9 +135,9 @@ if __name__ == "__main__":
     #'2016Legacy',
     #'2017ReReco',
     #'2018ReReco',
-    #'UL2016_preVFP',
-    #'UL2016_postVFP',
-    #'UL2017',
+    'UL2016_preVFP',
+    'UL2016_postVFP',
+    'UL2017',
     'UL2018',
   ]
   tauIDs      = [
