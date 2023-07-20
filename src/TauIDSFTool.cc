@@ -54,6 +54,12 @@ std::map<std::string, const TF1*> extractTF1DMandPT(const TFile* file, const std
                 if (u.find("syst") != std::string::npos) {
                     syst_funcname = funcname;
                     syst_funcname.replace(syst_funcname.find("fit"), 3, u + "_" + x + "_fit");
+                } else if (u.find("TES") != std::string::npos) {
+                    std::string x_cap = x;
+                    x_cap[0] = std::toupper(x_cap[0]);
+                    syst_funcname = funcname;
+                    syst_funcname.replace(syst_funcname.find("fit"), 3, u + x_cap+"_fit");
+                    std::cout << "!!!! " << syst_funcname << std::endl;
                 } else {
                     syst_funcname = funcname + "_";
                     syst_funcname += u + "_" + x;
@@ -82,7 +88,7 @@ TauIDSFTool::TauIDSFTool(const std::string& year, const std::string& id, const s
   bool verbose = false;
   std::string datapath                = Form("%s/src/TauPOG/TauIDSFs/data",getenv("CMSSW_BASE"));
   std::vector<std::string> years      = {"2016Legacy","2017ReReco","2018ReReco","UL2016_preVFP","UL2016_postVFP","UL2017","UL2018"};
-  std::vector<std::string> antiJetIDs = {"MVAoldDM2017v2","DeepTau2017v2p1VSjet"};
+  std::vector<std::string> antiJetIDs = {"MVAoldDM2017v2","DeepTau2017v2p1VSjet", "DeepTau2018v2p5VSjet"};
   std::vector<std::string> antiEleIDs = {"antiEleMVA6",   "DeepTau2017v2p1VSe"};
   std::vector<std::string> antiMuIDs  = {"antiMu3",       "DeepTau2017v2p1VSmu"};
 
@@ -99,10 +105,14 @@ TauIDSFTool::TauIDSFTool(const std::string& year, const std::string& id, const s
 
   if(std::find(antiJetIDs.begin(),antiJetIDs.end(),ID)!=antiJetIDs.end()){
 
+    std::string scheme="";
+    if (ID == "DeepTau2018v2p5VSjet") scheme="Jul18";
+    else scheme="Mar07";
+
     if (highpT) {
       std::vector<std::string> allowed_wp={"Loose","Medium","Tight","VTight"};
       std::vector<std::string> allowed_wp_vsele={"VVLoose","Tight"};
-      if (ID != "DeepTau2017v2p1VSjet") {
+      if (!(ID == "DeepTau2017v2p1VSjet" || ID == "DeepTau2018v2p5VSjet") ) {
         std::cerr << "Scale factors not available for ID '"+ID+"'!" << std::endl;
         assert(0);
       }
@@ -125,7 +135,7 @@ TauIDSFTool::TauIDSFTool(const std::string& year, const std::string& id, const s
         std::cerr << "Scale factors for embedded samples not available in this format! Use either pT-binned or DM-binned SFs." << std::endl;
         assert(0);
       }
-      TString filename = Form("%s/TauID_SF_Highpt_%s_VSjet%s_VSele%s_Mar07.root",datapath.data(),ID.data(),WP.data(),WP_VSELE.data());
+      TString filename = Form("%s/TauID_SF_Highpt_%s_VSjet%s_VSele%s_%s.root",datapath.data(),ID.data(),WP.data(),WP_VSELE.data(),scheme.data());
       TFile* file = ensureTFile(filename, verbose);
       std::string year_ = year;
       if (year.find("UL") == 0) {
@@ -135,7 +145,8 @@ TauIDSFTool::TauIDSFTool(const std::string& year, const std::string& id, const s
       graph["syst_alleras"]   = extractTGraph(file,Form("DMinclusive_%s_syst_alleras",year_.data())); 
       graph["syst_oneera"]   = extractTGraph(file,Form("DMinclusive_%s_syst_%s",year_.data(),year_.data()));
       file->Close();
-      TString fname_extrap = Form("%s/TauID_SF_HighptExtrap_%s_Mar07.root",datapath.data(),ID.data());
+      //TString fname_extrap = Form("%s/TauID_SF_HighptExtrap_%s_%s.root",datapath.data(),ID.data(),scheme.data());
+      TString fname_extrap = Form("%s/TauID_SF_HighptExtrap_DeepTau2017v2p1VSjet_Mar07.root",datapath.data()); // temporarily use v2p1 input for this until it is rederived
       TFile* file_extrap = ensureTFile(fname_extrap, verbose);
       func["syst_extrap"] = extractTF1(file_extrap,Form("uncert_func_%sVSjet_%sVSe",WP.data(),WP_VSELE.data()));
       file_extrap->Close();
@@ -151,7 +162,7 @@ TauIDSFTool::TauIDSFTool(const std::string& year, const std::string& id, const s
       }
       std::vector<std::string> allowed_wp={"Loose","Medium","Tight","VTight"};
       std::vector<std::string> allowed_wp_vsele={"VVLoose","Tight"};
-      if (ID != "DeepTau2017v2p1VSjet") {
+      if (!(ID == "DeepTau2017v2p1VSjet" || ID == "DeepTau2018v2p5VSjet") ) {
         std::cerr << "Scale factors not available for ID '"+ID+"'!" << std::endl;
         assert(0);
       }
@@ -174,17 +185,34 @@ TauIDSFTool::TauIDSFTool(const std::string& year, const std::string& id, const s
         std::cerr << "Scale factors for embedded samples not available in this format! Use either pT-binned or DM-binned SFs." << std::endl;
         assert(0);
       }
-      TString filename = Form("%s/TauID_SF_dm_%s_VSjet%s_VSele%s_Mar07.root",datapath.data(),ID.data(),WP.data(),WP_VSELE.data());
+      TString filename = Form("%s/TauID_SF_dm_%s_VSjet%s_VSele%s_%s.root",datapath.data(),ID.data(),WP.data(),WP_VSELE.data(),scheme.data());
       TFile* file = ensureTFile(filename, verbose);
       std::string year_ = year;
       if (year.find("UL") == 0) {
       year_ = year_.substr(2);
       }
 
-      std::vector<std::string> uncerts_dm0={"uncert0","uncert1","syst_alleras","syst_"+year_,"syst_dm0_"+year_};
-      std::vector<std::string> uncerts_dm1={"uncert0","uncert1","syst_alleras","syst_"+year_,"syst_dm1_"+year_};
-      std::vector<std::string> uncerts_dm10={"uncert0","uncert1","syst_alleras","syst_"+year_,"syst_dm10_"+year_};
-      std::vector<std::string> uncerts_dm11={"uncert0","uncert1","syst_alleras","syst_"+year_,"syst_dm11_"+year_};
+      std::vector<std::string> uncerts_dm0={"uncert0","uncert1","syst_alleras"};
+      std::vector<std::string> uncerts_dm1={"uncert0","uncert1","syst_alleras"};
+      std::vector<std::string> uncerts_dm10={"uncert0","uncert1","syst_alleras"};
+      std::vector<std::string> uncerts_dm11={"uncert0","uncert1","syst_alleras"};
+      if(scheme=="Jul18") {
+        std::vector<std::string> extra_uncerts = {"syst_alldms_"+year_, "TES"};
+        uncerts_dm0.insert(uncerts_dm0.end(), extra_uncerts.begin(), extra_uncerts.end());
+        uncerts_dm1.insert(uncerts_dm1.end(), extra_uncerts.begin(), extra_uncerts.end());
+        uncerts_dm10.insert(uncerts_dm10.end(), extra_uncerts.begin(), extra_uncerts.end());
+        uncerts_dm11.insert(uncerts_dm11.end(), extra_uncerts.begin(), extra_uncerts.end());
+      } else {
+        std::vector<std::string> extra_uncerts_dm0={"syst_"+year_,"syst_dm0_"+year_};
+        std::vector<std::string> extra_uncerts_dm1={"syst_"+year_,"syst_dm1_"+year_};
+        std::vector<std::string> extra_uncerts_dm10={"syst_"+year_,"syst_dm10_"+year_};
+        std::vector<std::string> extra_uncerts_dm11={"syst_"+year_,"syst_dm11_"+year_};
+        uncerts_dm0.insert(uncerts_dm0.end(), extra_uncerts_dm0.begin(), extra_uncerts_dm0.end());
+        uncerts_dm1.insert(uncerts_dm1.end(), extra_uncerts_dm1.begin(), extra_uncerts_dm1.end());
+        uncerts_dm10.insert(uncerts_dm10.end(), extra_uncerts_dm10.begin(), extra_uncerts_dm10.end());
+        uncerts_dm11.insert(uncerts_dm11.end(), extra_uncerts_dm11.begin(), extra_uncerts_dm11.end());
+      }
+      
       funcs_dm0 = extractTF1DMandPT(file,"DM0_"+year_+"_fit", uncerts_dm0);
       funcs_dm1 = extractTF1DMandPT(file,"DM1_"+year_+"_fit", uncerts_dm1);
       funcs_dm10 = extractTF1DMandPT(file,"DM10_"+year_+"_fit", uncerts_dm10);
