@@ -78,11 +78,11 @@ from TauIDSFTool import TauIDSFTool
 
 This is a rough summary of the available SFs for `DeepTau2017v2p1` in [`data/`](data):
 
-| Tau component  | `genmatch`  | `DeepTau2017v2p1` `VSjet`  | `DeepTau2017v2p1` `VSe`  | `DeepTau2017v2p1` `VSmu`  | energy scale   |
+| Tau component  | `genmatch`  | `DeepTau2017v2p1` `VSjet`  | `DeepTau2017v2p1` `VSe`  | `DeepTau2017v2p1` `VSmu`  | `DeepTau2018v2p5` `VSjet`  | energy scale   |
 |:--------------:|:-----------:|:--------------------------:|:------------------------:|:-------------------------:|:--------------:|
-| real tau       | `5`         | vs pT and DM (for MC) or vs. pT, or vs. DM (for Embed.)          | – (*)                    | – (*)                     | vs. DM         |
-| e -> tau fake  | `1`, `3`    | –                          | vs. eta                  | –                         | vs. DM and eta |
-| mu -> tau fake | `2`, `4`    | –                          | –                        | vs. eta                   | – (±1% unc.)   |
+| real tau       | `5`         | vs pT and DM (for MC) or vs. pT, or vs. DM (for Embed.)          | – (*)                    | – (*)                     | vs pT and DM (for MC), no Embed. corrections derived yet | vs. DM         |
+| e -> tau fake  | `1`, `3`    | –                          | vs. eta                  | –                         |    | vs. DM and eta |
+| mu -> tau fake | `2`, `4`    | –                          | –                        | vs. eta                   |    | – (±1% unc.)   |
 
 (*) The scale factors are provided only for a sub-set of the working points. For the VSele discriminator, they are measured for the VVLoose and Tight WPs - users are strongly encoraged to use one of these two working points and should report to the TauPOG for approval if another working point is used. For the VSmu, they are measured for the Tight WP but we don't expect a large dependence on the chosen VSmu WP in this case so you are free to use any available WP you like for the muon rejection. 
 
@@ -120,7 +120,7 @@ A simple script is given to dump the corrections saved in histograms or function
 ```
 
 ### DM and pT-dependent SFs
-The DM and pT dependent SFs are provided as TF1 functions in the "TauID_SF_dm_DeepTau2017v2p1VSjet_VSjetX_VSeleY_Mar07.root" ROOT files, where X corresponds to the VSjet WP and Y corresponds to the VSele WP. 
+The DM and pT dependent SFs are provided as TF1 functions in the "TauID_SF_dm_DeepTau2017v2p1VSjet_VSjetX_VSeleY_Mar07.root" ROOT files for DeepTau2017v2p1 and "TauID_SF_dm_DeepTau2018v2p5VSjet_VSjetX_VSeleY_Jul18.root" for DeepTau2018v2p5, where X corresponds to the VSjet WP and Y corresponds to the VSele WP. 
 
 The ROOT files contain several functions. The central values are obtained from the functions named like "DM$DM_$ERA_fit" where $DM is the decay mode = 0, 1, 10, or 11, and $ERA = 2016_preVFP, 2016_postVFP, 2017, or 2018.
 
@@ -131,12 +131,25 @@ func = file.Get('DM1_2018_fit')
 sf   = func.Eval(pt)
 ```
 
-There are also  that correspond to systematic variations that can be accessed in the same way. The table below gives a summary of the function names and what uncertainties they correspond to:
+There are also  that correspond to systematic variations that can be accessed in the same way. 
+The table below gives a summary of the function names and what uncertainties they correspond to for DeepTau2017v2p1:
 
 | Uncertainty      | Function name in ROOT files | String to pass to the tool | Notes                            | Correlated by era | Correlated by DM |
 |:----------------:|:---------------------------:| :-------------------------:| :-------------------------------:| :----------------:| :----------------:|
 | `Statistical uncertainty 1` | `DM$DM_$ERA_fit_uncert0_{up,down}` | `uncert0_{up,down}` | `Statistical uncertainty on linear fit parameters from eigendecomposition of covariance matrix.` | &cross; | &cross; |
 | `Statistical uncertainty 2` | `DM$DM_$ERA_fit_uncert1_{up,down}` | `uncert1_{up,down}` | `Statistical uncertainty on linear fit parameters from eigendecomposition of covariance matrix.` | &cross; | &cross; |
+| `Systematic alleras`        | `DM$DM_$ERA_syst_alleras_{up,down}_fit` | `syst_alleras_{up,down}` | `The component of the systematic uncertainty that is correlated across DMs and eras` | &check; | &check; |
+| `Systematic by-era`         | `DM$DM_$ERA_syst_$ERA_{up,down}_fit`    | `syst_$ERA_{up,down}` | `The component of the systematic uncertainty that is correlated across DMs but uncorrelated by eras` | &cross; | &check; |
+| `Systematic by-era and by-DM` | `DM$DM_$ERA_syst_dm$DM_$ERA_{up,down}_fit` | `syst_dm$DM_$ERA_{up,down}` | `The component of the systematic uncertainty that is uncorrelated across DMs and eras` | &cross; | &cross; |
+
+The table below gives a summary of the function names and what uncertainties they correspond to for DeepTau2018v2p5:
+
+| Uncertainty      | Function name in ROOT files | String to pass to the tool | Notes                            | Correlated by era | Correlated by DM |
+|:----------------:|:---------------------------:| :-------------------------:| :-------------------------------:| :----------------:| :----------------:|
+| `Statistical uncertainty 1` | `DM$DM_$ERA_fit_uncert0_{up,down}` | `uncert0_{up,down}` | `Statistical uncertainty on linear fit parameters from eigendecomposition of covariance matrix for the low pT (20-50 GeV) regime.` | &cross; | &cross; |
+| `Statistical uncertainty 2` | `DM$DM_$ERA_fit_uncert1_{up,down}` | `uncert1_{up,down}` | `Statistical uncertainty on linear fit parameters from eigendecomposition of covariance matrix for the medium pT (50-140 GeV) regime.` | &cross; | &cross; |
+| `Statistical uncertainty 3` | `DM$DM_$ERA_fit_uncert0_{up,down}` | `uncert2_{up,down}` | `Statistical uncertainty on linear fit parameters from eigendecomposition of covariance matrix for the low pT (20-50 GeV) regime.` | &cross; | &cross; |
+| `Statistical uncertainty 4` | `DM$DM_$ERA_fit_uncert1_{up,down}` | `uncert3_{up,down}` | `Statistical uncertainty on linear fit parameters from eigendecomposition of covariance matrix for the medium pT (50-140 GeV) regime.` | &cross; | &cross; |
 | `Systematic alleras`        | `DM$DM_$ERA_syst_alleras_{up,down}_fit` | `syst_alleras_{up,down}` | `The component of the systematic uncertainty that is correlated across DMs and eras` | &check; | &check; |
 | `Systematic by-era`         | `DM$DM_$ERA_syst_$ERA_{up,down}_fit`    | `syst_$ERA_{up,down}` | `The component of the systematic uncertainty that is correlated across DMs but uncorrelated by eras` | &cross; | &check; |
 | `Systematic by-era and by-DM` | `DM$DM_$ERA_syst_dm$DM_$ERA_{up,down}_fit` | `syst_dm$DM_$ERA_{up,down}` | `The component of the systematic uncertainty that is uncorrelated across DMs and eras` | &cross; | &cross; |
