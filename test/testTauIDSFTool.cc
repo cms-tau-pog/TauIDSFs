@@ -56,14 +56,15 @@ void printSFTable(std::string year, std::string id, std::string wp, std::string 
     std::vector<int> dmvals = {0, 1, 5, 6, 10, 11};
     std::string year_ = year;
     if (year_.find("UL") == 0) year_ = year_.substr(2);
-    std::vector<std::string> uncerts = {"uncert0", "uncert1", "syst_alleras"};
+    std::vector<std::string> uncerts = {"uncert0", "uncert1"};
     if(id=="DeepTau2018v2p5VSjet") {
-        std::vector<std::string> extra_uncerts = {"syst_alldms_"+year_, "TES"};
+        std::vector<std::string> extra_uncerts = {"uncert2","uncert3","syst_alldms_"+year_, "TES"};
         uncerts.insert(uncerts.end(), extra_uncerts.begin(), extra_uncerts.end());
     } else { 
         std::vector<std::string> extra_uncerts = {"syst_" + year_, "syst_dmX_" + year_};
         uncerts.insert(uncerts.end(), extra_uncerts.begin(), extra_uncerts.end()); 
     }
+    uncerts.push_back("syst_alleras");
     for (auto pt : ptvals) {
         std::cout << ">>> " << std::endl;
         std::cout << ">>> SF for " << wp << " WP of " << id << " in " << year << " with pT = " << pt << " GeV" << std::endl;

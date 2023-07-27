@@ -8,7 +8,7 @@ pt_vals = [145,250]
 #vs_ele_wps = ['VVLoose','Tight']
 
 vs_jet_wps = ['Medium']
-vs_ele_wps = ['VVLoose']
+vs_ele_wps = ['VVLoose','Tight']
 
 syst_key = {
   'syst_up' : 'syst_alleras_up_fit',
@@ -23,6 +23,10 @@ syst_key = {
   'stat_uncert0_down': 'fit_uncert0_down',
   'stat_uncert1_up': 'fit_uncert1_up',
   'stat_uncert1_down': 'fit_uncert1_down',
+  'stat_uncert2_up': 'fit_uncert2_up',
+  'stat_uncert2_down': 'fit_uncert2_down',
+  'stat_uncert3_up': 'fit_uncert3_up',
+  'stat_uncert3_down': 'fit_uncert3_down',
 }
 
 def GetDMAveragedSF(f1,f2,pt,era):

@@ -73,7 +73,7 @@ class TauIDSFTool:
             year_=year
             if year_.startswith('UL'): year_=year_[2:]
             uncerts=['uncert0','uncert1','syst_alleras','syst_%s' % year_]
-            if scheme == 'Jul18': uncerts+=['syst_alldms_%s' % year_, 'TES']
+            if scheme == 'Jul18': uncerts+=['uncert2', 'uncert3', 'syst_alldms_%s' % year_, 'TES']
 
             self.funcs_dm0  = extractTF1DMandPT(file,'DM0_%s_fit' % year_,uncerts=uncerts+['syst_dm0_%s' % year_])
             self.funcs_dm1  = extractTF1DMandPT(file,'DM1_%s_fit' % year_,uncerts=uncerts+['syst_dm1_%s' % year_])
@@ -295,9 +295,11 @@ class TauESTool:
         """Get tau ES vs. tau DM."""
         if genmatch==5 and dm in self.DMs:
           if self.Jul18_scheme:
-            if pt<140.: 
-              if dm==11: err=0.02
-              else: err=0.015
+            if pt<140.:
+              bin_high = self.hist_highpt.GetXaxis().FindBin(dm)
+              err      = self.hist_highpt.GetBinError(bin_high) 
+             # if dm==11: err=0.02
+             # else: err=0.015
             else: err=0.03
             tes=1.0
           else:

@@ -21,7 +21,9 @@ def printSFTable(year,id,wp,vs='pt',emb=False,otherVSlepWP=False):
       dmvals = [0,1,5,6,10,11]
       year_=year
       if year_.startswith('UL'): year_=year_[2:]
-      uncerts=['uncert0','uncert1','syst_alleras']
+      uncerts=['uncert0','uncert1']
+      if id == 'DeepTau2018v2p5VSjet': uncerts+=['uncert2','uncert3']
+      uncerts+=['syst_alleras']
       if id != 'DeepTau2018v2p5VSjet': uncerts+=['syst_%s' % year_, 'syst_dmX_%s' % year_]
       else: uncerts+=['syst_alldms_%s' % year_,'TES']
       for pt in ptvals:
