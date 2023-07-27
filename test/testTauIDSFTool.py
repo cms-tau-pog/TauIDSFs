@@ -92,13 +92,14 @@ def printSFTable(year,id,wp,vs='pt',emb=False,otherVSlepWP=False):
       ###sftool.getSFvsEta(1.5,1,5) # results in an error
   
 
-def printTESTable(year,id):
+def printTESTable(year,id, wp=None):
   testool = TauESTool(year,id)
   ptvals  = [25,102,175] #[25,30,102,170,175]
   dmvals  = [0,1,5,10,11]
   for pt in ptvals:
     print(">>> ")
-    print(">>> TES for '%s' ('%s') and pT = %s GeV"%(green(id),year,pt))
+    if wp==None: print(">>> TES for '%s' ('%s') and pT = %s GeV"%(green(id),year,pt)) 
+    else: print(">>> TES for %s WP of '%s' ('%s') and pT = %s GeV"%(wp, green(id),year,pt))
     print(">>> ")
     print(">>> %10s"%('var \ DM')+''.join("%9d"%dm for dm in dmvals))
     print(">>> %10s"%("central") +''.join("%9.5f"%testool.getTES(pt,dm,5)        for dm in dmvals))
@@ -171,7 +172,8 @@ if __name__ == "__main__":
             printSFTable(year,id,wp,vs,emb,otherVSlepWP)
     if testTESTool:
       for id in tauESs:
-        printTESTable(year,id)
+        for wp in WPs:
+          printTESTable(year,id,wp)
     if testFESTool:
       printFESTable(year)
   
