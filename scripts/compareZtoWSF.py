@@ -72,7 +72,7 @@ for wp in vs_jet_wps:
     print 'VSjet = %(wp)s, VSe = %(wp_VSe)s' % vars()   
     print '-----------------------------------'
 
-    f1 = ROOT.TFile('data/TauID_Highpt_DMFracts_DeepTau2017v2p1VSjet_VSjet%(wp)s_VSele%(wp_VSe)s_Mar07.root' % vars()) # note DM fracts were not updated for DeepTauv2p5, but should be very similar
+    f1 = ROOT.TFile('data/TauID_Highpt_DMFracts_DeepTau2018v2p5VSjet_VSjet%(wp)s_VSele%(wp_VSe)s_Jul18.root' % vars()) # note DM fracts were not updated for DeepTauv2p5, but should be very similar
     f2 = ROOT.TFile('data/TauID_SF_Highpt_DeepTau2018v2p5VSjet_VSjet%(wp)s_VSele%(wp_VSe)s_Jul18.root' % vars())
     f3 = ROOT.TFile('data/TauID_SF_dm_DeepTau2018v2p5VSjet_VSjet%(wp)s_VSele%(wp_VSe)s_Jul18.root' % vars())
 
