@@ -196,7 +196,7 @@ TauIDSFTool::TauIDSFTool(const std::string& year, const std::string& id, const s
       std::vector<std::string> uncerts_dm10={"uncert0","uncert1","syst_alleras"};
       std::vector<std::string> uncerts_dm11={"uncert0","uncert1","syst_alleras"};
       if(scheme=="Jul18") {
-        std::vector<std::string> extra_uncerts = {"uncert2", "uncert3", "syst_alldms_"+year_, "TES"};
+        std::vector<std::string> extra_uncerts = {"syst_alldms_"+year_, "TES"};
         uncerts_dm0.insert(uncerts_dm0.end(), extra_uncerts.begin(), extra_uncerts.end());
         uncerts_dm1.insert(uncerts_dm1.end(), extra_uncerts.begin(), extra_uncerts.end());
         uncerts_dm10.insert(uncerts_dm10.end(), extra_uncerts.begin(), extra_uncerts.end());

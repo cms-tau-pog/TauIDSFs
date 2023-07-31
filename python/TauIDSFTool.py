@@ -73,7 +73,7 @@ class TauIDSFTool:
             year_=year
             if year_.startswith('UL'): year_=year_[2:]
             uncerts=['uncert0','uncert1','syst_alleras','syst_%s' % year_]
-            if scheme == 'Jul18': uncerts+=['uncert2', 'uncert3', 'syst_alldms_%s' % year_, 'TES']
+            if scheme == 'Jul18': uncerts+=['syst_alldms_%s' % year_, 'TES']
 
             self.funcs_dm0  = extractTF1DMandPT(file,'DM0_%s_fit' % year_,uncerts=uncerts+['syst_dm0_%s' % year_])
             self.funcs_dm1  = extractTF1DMandPT(file,'DM1_%s_fit' % year_,uncerts=uncerts+['syst_dm1_%s' % year_])

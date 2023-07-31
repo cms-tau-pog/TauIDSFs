@@ -146,13 +146,12 @@ The table below gives a summary of the function names and what uncertainties the
 
 | Uncertainty      | Function name in ROOT files | String to pass to the tool | Notes                            | Correlated by era | Correlated by DM |
 |:----------------:|:---------------------------:| :-------------------------:| :-------------------------------:| :----------------:| :----------------:|
-| `Statistical uncertainty 1` | `DM$DM_$ERA_fit_uncert0_{up,down}` | `uncert0_{up,down}` | `Statistical uncertainty on linear fit parameters from eigendecomposition of covariance matrix for the low pT (20-50 GeV) regime.` | &cross; | &cross; |
-| `Statistical uncertainty 2` | `DM$DM_$ERA_fit_uncert1_{up,down}` | `uncert1_{up,down}` | `Statistical uncertainty on linear fit parameters from eigendecomposition of covariance matrix for the medium pT (50-140 GeV) regime.` | &cross; | &cross; |
-| `Statistical uncertainty 3` | `DM$DM_$ERA_fit_uncert0_{up,down}` | `uncert2_{up,down}` | `Statistical uncertainty on linear fit parameters from eigendecomposition of covariance matrix for the low pT (20-50 GeV) regime.` | &cross; | &cross; |
-| `Statistical uncertainty 4` | `DM$DM_$ERA_fit_uncert1_{up,down}` | `uncert3_{up,down}` | `Statistical uncertainty on linear fit parameters from eigendecomposition of covariance matrix for the medium pT (50-140 GeV) regime.` | &cross; | &cross; |
+| `Statistical uncertainty 1` | `DM$DM_$ERA_fit_uncert0_{up,down}` | `uncert0_{up,down}` | `Statistical uncertainty on linear fit parameters from eigendecomposition of covariance matrix.` | &cross; | &cross; |
+| `Statistical uncertainty 2` | `DM$DM_$ERA_fit_uncert1_{up,down}` | `uncert1_{up,down}` | `Statistical uncertainty on linear fit parameters from eigendecomposition of covariance matrix.` | &cross; | &cross; |
 | `Systematic alleras`        | `DM$DM_$ERA_syst_alleras_{up,down}_fit` | `syst_alleras_{up,down}` | `The component of the systematic uncertainty that is correlated across DMs and eras` | &check; | &check; |
-| `Systematic by-era`         | `DM$DM_$ERA_syst_$ERA_{up,down}_fit`    | `syst_$ERA_{up,down}` | `The component of the systematic uncertainty that is correlated across DMs but uncorrelated by eras` | &cross; | &check; |
-| `Systematic by-era and by-DM` | `DM$DM_$ERA_syst_dm$DM_$ERA_{up,down}_fit` | `syst_dm$DM_$ERA_{up,down}` | `The component of the systematic uncertainty that is uncorrelated across DMs and eras` | &cross; | &cross; |
+| `Systematic by-era` | `DM$DM_$ERA_syst_alldms_$ERA_{up,down}_fit` | `syst_alldms_$ERA_{up,down}` | `The component of the systematic uncertainty that is correlated across DMs but uncorrelated by eras` | &cross; | &cross; |
+| `Systematic Tau Energy scale` | `DM$DM_$ERA_TES{Up,Down}_fit` | `TES_{up,down}` | `The uncertainty due to the tauenergy scale systematic uncertainty` | &cross; | &cross; |
+
 
 The SFs can also be accessed using the tool:
 
@@ -294,11 +293,45 @@ The uncertainty is obtained in a similar way as above.
 
 ### DM-dependent tau energy scale
 
+## Usage for DeepTau2018v2p5
+
+The tau energy scale (TES) corrections for taus with pT<140 GeV are provided in the files [`data/TauES_dm_DeepTau2018v2p5VSjet_$ERA_VSjet$X_VSele$Y_Jul18.root`](data), where $X corresponds to the VSjet WP, $Y corresponds to the VSele WP, and $ERA = UL2016_preVFP, UL2016_postVFP, UL2017, or UL2018
+
+Each file contains one histogram (`'tes'`) with the TES centered around `1.0` measured in bins of the tau decay mode.
+It should be applied to a genuine tau by multiplying the tau `TLorentzVector`, or equivalently, the tau energy, pT and mass as follows:
+```
+file = TFile("data/TauES_dm_DeepTau2018v2p5VSjet_UL2018_VSjetMedium_VSeleVVLoose_Jul18.root")
+hist = file.Get('tes')
+tes  = hist.GetBinContent(hist.GetXaxis().FindBin(dm))
+
+# scale the tau's TLorentzVector
+tau_tlv *= tes
+
+# OR, scale the energy, mass and pT
+tau_E  *= tes
+tau_pt *= tes
+tau_m  *= tes
+```
+The uncertainties are equal to 1.5% for decay modes 0, 1, and 10, and 2% for decay mode 11. The uncertainties should be decorrelated by decay modes and eras.
+For taus with pT>140 GeV, no corrections should be applied to the nominal TES value from MC but a larger 3% uncertainty should be included.
+A simple class, [`TauESTool`](python/TauIDSFTool.py), is provided to obtain the TES as
+```
+from TauPOG.TauIDSFs.TauIDSFTool import TauESTool
+testool = TauESTool('UL2018','DeepTau2018v2p5VSjet',wp='Medium', wp_vsele='VVLoose')
+tes     = testool.getTES(pt,dm,genmatch)
+tesUp   = testool.getTES(pt,dm,genmatch,unc='Up')
+tesDown = testool.getTES(pt,dm,genmatch,unc='Down')
+```
+This method computes the central values and uncertainty for low pT (20 GeV < pT < 140 GeV) and higher pT values (pT > 140 GeV).
+
+
+## Usage for DeepTau2017v2p1
+
 The tau energy scale (TES) is provided in the files [`data/TauES_dm_*.root`](data).
 Each file contains one histogram (`'tes'`) with the TES centered around `1.0`.
 It should be applied to a genuine tau by multiplying the tau `TLorentzVector`, or equivalently, the tau energy, pT and mass as follows:
 ```
-file = TFile("data/TauES_dm_MVAoldDM2017v2_2016Legacy.root")
+file = TFile("data/TauES_dm_DeepTau2017v2p1VSjet_UL2018.root")
 hist = file.Get('tes')
 tes  = hist.GetBinContent(hist.GetXaxis().FindBin(dm))
 
