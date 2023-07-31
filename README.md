@@ -76,10 +76,10 @@ from TauIDSFTool import TauIDSFTool
 
 ## Summary of available SFs
 
-This is a rough summary of the available SFs for `DeepTau2017v2p1` in [`data/`](data):
+This is a rough summary of the available SFs for `DeepTau2017v2p1` and `DeepTau2018v2p5` in [`data/`](data):
 
 | Tau component  | `genmatch`  | `DeepTau2017v2p1` `VSjet`  | `DeepTau2017v2p1` `VSe`  | `DeepTau2017v2p1` `VSmu`  | `DeepTau2018v2p5` `VSjet`  | energy scale   |
-|:--------------:|:-----------:|:--------------------------:|:------------------------:|:-------------------------:|:--------------:|
+|:--------------:|:-----------:|:--------------------------:|:------------------------:|:-------------------------:|:--------------------------:| :-------------:|
 | real tau       | `5`         | vs pT and DM (for MC) or vs. pT, or vs. DM (for Embed.)          | – (*)                    | – (*)                     | vs pT and DM (for MC), no Embed. corrections derived yet | vs. DM         |
 | e -> tau fake  | `1`, `3`    | –                          | vs. eta                  | –                         |    | vs. DM and eta |
 | mu -> tau fake | `2`, `4`    | –                          | –                        | vs. eta                   |    | – (±1% unc.)   |
@@ -293,7 +293,7 @@ The uncertainty is obtained in a similar way as above.
 
 ### DM-dependent tau energy scale
 
-## Usage for DeepTau2018v2p5
+***Usage for DeepTau2018v2p5***
 
 The tau energy scale (TES) corrections for taus with pT<140 GeV are provided in the files [`data/TauES_dm_DeepTau2018v2p5VSjet_$ERA_VSjet$X_VSele$Y_Jul18.root`](data), where $X corresponds to the VSjet WP, $Y corresponds to the VSele WP, and $ERA = UL2016_preVFP, UL2016_postVFP, UL2017, or UL2018
 
@@ -325,7 +325,7 @@ tesDown = testool.getTES(pt,dm,genmatch,unc='Down')
 This method computes the central values and uncertainty for low pT (20 GeV < pT < 140 GeV) and higher pT values (pT > 140 GeV).
 
 
-## Usage for DeepTau2017v2p1
+***Usage for DeepTau2017v2p1***
 
 The tau energy scale (TES) is provided in the files [`data/TauES_dm_*.root`](data).
 Each file contains one histogram (`'tes'`) with the TES centered around `1.0`.
