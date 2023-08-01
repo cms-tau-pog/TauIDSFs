@@ -144,8 +144,7 @@ TauIDSFTool::TauIDSFTool(const std::string& year, const std::string& id, const s
       graph["syst_alleras"]   = extractTGraph(file,Form("DMinclusive_%s_syst_alleras",year_.data())); 
       graph["syst_oneera"]   = extractTGraph(file,Form("DMinclusive_%s_syst_%s",year_.data(),year_.data()));
       file->Close();
-      //TString fname_extrap = Form("%s/TauID_SF_HighptExtrap_%s_%s.root",datapath.data(),ID.data(),scheme.data());
-      TString fname_extrap = Form("%s/TauID_SF_HighptExtrap_DeepTau2017v2p1VSjet_Mar07.root",datapath.data()); // temporarily use v2p1 input for this until it is rederived
+      TString fname_extrap = Form("%s/TauID_SF_HighptExtrap_%s_%s.root",datapath.data(),ID.data(),scheme.data());
       TFile* file_extrap = ensureTFile(fname_extrap, verbose);
       func["syst_extrap"] = extractTF1(file_extrap,Form("uncert_func_%sVSjet_%sVSe",WP.data(),WP_VSELE.data()));
       file_extrap->Close();

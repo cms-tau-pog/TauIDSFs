@@ -1,8 +1,8 @@
 import ROOT
 import numpy as np
 
-#pt_vals = [145, 250]
-pt_vals = [145]
+pt_vals = [145, 250]
+#pt_vals = [145]
 
 #vs_jet_wps = ['Loose','Medium','Tight','VTight']
 #vs_ele_wps = ['VVLoose','Tight']

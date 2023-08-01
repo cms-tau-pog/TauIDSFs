@@ -25,7 +25,7 @@ void printSFTable(std::string year, std::string id, std::string wp, std::string 
   std::cout << std::fixed;
   std::cout.precision(5);
   if (highpT){
-      std::vector<int> ptvals = {50,100,150,200,300,400,500,1000};
+      std::vector<int> ptvals = {50,100,150,200,300,400,500,690,1000};
       std::vector<std::string> uncerts = {"stat","stat_bin1","stat_bin2","syst","extrap"};
       std::cout << ">>>  " << std::endl;
       std::cout << ">>> High pT SF for "<<wp<<" WP of "<<id<<" in "<<year << std::endl;

@@ -37,7 +37,7 @@ def printSFTable(year,id,wp,vs='pt',emb=False,otherVSlepWP=False):
           print(">>> %20s"%(u+"_down")    +''.join("%9.5f"%sftool.getSFvsDMandPT(pt,dm,5,u.replace('dmX','dm%s' % dm)+'_down') for dm in dmvals))
         print(">>> ")
   elif vs=='highpt':
-      ptvals = [50,100,150,200,300,400,500,1000]
+      ptvals = [50,100,150,200,300,400,500,690,1000]
       uncerts=['stat','stat_bin1','stat_bin2','syst','extrap']
       print(">>> ")
       print(">>> High pT SF for %s WP of %s in %s"%(wp,green(id),year))

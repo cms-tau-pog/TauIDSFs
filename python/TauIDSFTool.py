@@ -53,8 +53,8 @@ class TauIDSFTool:
             self.func['syst_alleras']   = file.Get("DMinclusive_%s_syst_alleras"%(year_))
             self.func['syst_oneera']   = file.Get("DMinclusive_%s_syst_%s"%(year_,year_))
             file.Close()
-            #fname_extrap = os.path.join(path,"TauID_SF_HighptExtrap_%s_%s.root" %(id,scheme))
-            fname_extrap = os.path.join(path,"TauID_SF_HighptExtrap_%s_%s.root" %('DeepTau2017v2p1VSjet','Mar07')) # this hasn't been remade yet for DeepTauv2p5 so for now keep the same one as for DeepTauV2p1
+            fname_extrap = os.path.join(path,"TauID_SF_HighptExtrap_%s_%s.root" %(id,scheme))
+            #fname_extrap = os.path.join(path,"TauID_SF_HighptExtrap_%s_%s.root" %('DeepTau2017v2p1VSjet','Mar07')) # this hasn't been remade yet for DeepTauv2p5 so for now keep the same one as for DeepTauV2p1
             file_extrap = ensureTFile(fname_extrap,verbose=verbose)
             self.func['syst_extrap']   = file_extrap.Get("uncert_func_%sVSjet_%sVSe"%(wp,wp_vsele))
             file_extrap.Close()
