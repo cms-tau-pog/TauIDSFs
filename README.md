@@ -131,7 +131,7 @@ func = file.Get('DM1_2018_fit')
 sf   = func.Eval(pt)
 ```
 
-There are also  that correspond to systematic variations that can be accessed in the same way. 
+There are also functions that correspond to systematic variations that can be accessed in the same way. 
 The table below gives a summary of the function names and what uncertainties they correspond to for DeepTau2017v2p1:
 
 | Uncertainty      | Function name in ROOT files | String to pass to the tool | Notes                            | Correlated by era | Correlated by DM |
