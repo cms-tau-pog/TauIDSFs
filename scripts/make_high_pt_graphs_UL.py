@@ -1,8 +1,17 @@
 import re
 import ROOT
 from array import array
+from argparse import ArgumentParser
+import json
 
-input_file = 'data/HighPT_tauIdSF_4eras.txt'
+parser = ArgumentParser()
+parser.add_argument('--saveJson', dest='saveJson', default=False, action='store_true', help="if specified then store the scale factors into jsons")
+args = parser.parse_args()
+
+#tauid='DeepTau2017v2p1VSjet'
+tauid='DeepTau2018v2p5VSjet'
+
+input_file = 'data/HighPT_tauIdSF_4eras_%s.txt' % tauid
 vs_ele_wp=None
 
 sf_maps = {}
@@ -38,7 +47,8 @@ with open(input_file) as file:
           else: sf_maps[vs_ele_wp][vs_jet_wp][year] = [pt+vals]
  
 
-outname = 'data/TauID_SF_Highpt_DeepTau2017v2p1VSjet_VSjetXXX_VSeleYYY_Mar07.root'
+if tauid == 'DeepTau2018v2p5VSjet': outname = 'data/TauID_SF_Highpt_%s_VSjetXXX_VSeleYYY_Jul18.root' % tauid
+else: outname = 'data/TauID_SF_Highpt_%s_VSjetXXX_VSeleYYY_Mar07.root' % tauid
 h1=ROOT.TH1D('h1','',2,array('d',[100.,200.,300.]))
 
 def ScaleByHighPT(gin):
@@ -115,6 +125,20 @@ for key1 in sf_maps:
     g.Write('comb_eras') 
 
     fout.Close()
-  
+
+if args.saveJson:
+  json_map = {}
+  for key in sf_maps:
+    for key2 in sf_maps[key]:
+      wp='%s_%sle' %(key2.lower(), key.lower())
+      json_map[wp]={}
+      for year in ['2016_preVFP','2016_postVFP','2017','2018']:
+        low = sf_maps[key][key2][year][0][2]
+        high = sf_maps[key][key2][year][1][2]
+        out='((gen_match_2!=5) + (gen_match_2==5)*(%(low).4f*(pt_2<200.)+%(high).4f*(pt_2>=200.)))' % vars()
+        json_map[wp][year] = out
 
 
+  json_out_name = 'tau_SF_pt_binned_highpT_%(tauid)s.json' % vars()
+  with open(json_out_name, 'w') as fp:
+    json.dump(json_map, fp, sort_keys=True, indent=4)

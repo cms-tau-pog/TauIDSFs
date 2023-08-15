@@ -59,6 +59,8 @@ def extractTF1DMandPT(file, funcname, uncerts=[]):
       for u in uncerts:
         for x in ['up','down']: 
           if 'syst' in u: syst_funcname = funcname.replace('fit', '%s_%s_fit' % (u,x))
+          elif 'TES' in u:
+            syst_funcname = funcname.replace('fit', '%s%s_fit' % (u,x.capitalize()))
           else:           syst_funcname = funcname.replace('fit','fit_%s_%s' % (u,x))
           funcs['%s_%s' %(u,x)] = file.Get(syst_funcname) 
     if not func:

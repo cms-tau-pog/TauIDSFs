@@ -1,7 +1,10 @@
 import re
 import ROOT
 
-input_file = 'data/HighPT_fractions_4eras.txt'
+#tauid='DeepTau2017v2p1VSjet'
+tauid='DeepTau2018v2p5VSjet'
+
+input_file = 'data/HighPT_fractions_4eras_%s.txt' % tauid
 vs_ele_wp=None
 
 sf_maps = {}
@@ -36,7 +39,10 @@ with open(input_file) as file:
 
           else: sf_maps[vs_ele_wp][vs_jet_wp][year] = [pt+vals]
 
-outname = 'data/TauID_Highpt_DMFracts_DeepTau2017v2p1VSjet_VSjetXXX_VSeleYYY_Mar07.root'
+if tauid=='DeepTau2017v2p1VSjet':
+  outname = 'data/TauID_Highpt_DMFracts_DeepTau2017v2p1VSjet_VSjetXXX_VSeleYYY_Mar07.root'
+else:
+  outname = 'data/TauID_Highpt_DMFracts_DeepTau2018v2p5VSjet_VSjetXXX_VSeleYYY_Jul18.root'
 
 for key1 in sf_maps:
   for key2 in sf_maps[key1]:

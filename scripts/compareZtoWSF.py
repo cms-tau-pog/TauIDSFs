@@ -1,8 +1,8 @@
 import ROOT
 import numpy as np
 
-#pt_vals = [145, 250]
-pt_vals = [145,250]
+pt_vals = [145, 250]
+#pt_vals = [145]
 
 vs_jet_wps = ['Loose','Medium','Tight','VTight']
 vs_ele_wps = ['VVLoose','Tight']
@@ -10,10 +10,12 @@ vs_ele_wps = ['VVLoose','Tight']
 syst_key = {
   'syst_up' : 'syst_alleras_up_fit',
   'syst_down' : 'syst_alleras_down_fit',
-  'syst_byera_up' : 'syst_$ERA_up_fit',
-  'syst_byera_down' : 'syst_$ERA_down_fit',
-  'syst_byera_bydm_up' : 'syst_dm$DM_$ERA_up_fit',
-  'syst_byera_bydm_down' : 'syst_dm$DM_$ERA_down_fit',
+  'syst_byera_up' : 'syst_alldms_$ERA_up_fit',
+  'syst_byera_down' : 'syst_alldms_$ERA_down_fit',
+  #'syst_byera_bydm_up' : 'syst_dm$DM_$ERA_up_fit',
+  #'syst_byera_bydm_down' : 'syst_dm$DM_$ERA_down_fit',
+  'syst_TES_up': 'TESUp_fit', 
+  'syst_TES_down': 'TESDown_fit', 
   'stat_uncert0_up': 'fit_uncert0_up',
   'stat_uncert0_down': 'fit_uncert0_down',
   'stat_uncert1_up': 'fit_uncert1_up',
@@ -67,9 +69,10 @@ for wp in vs_jet_wps:
     print 'VSjet = %(wp)s, VSe = %(wp_VSe)s' % vars()   
     print '-----------------------------------'
 
-    f1 = ROOT.TFile('data/TauID_Highpt_DMFracts_DeepTau2017v2p1VSjet_VSjet%(wp)s_VSele%(wp_VSe)s_Mar07.root' % vars())
-    f2 = ROOT.TFile('data/TauID_SF_Highpt_DeepTau2017v2p1VSjet_VSjet%(wp)s_VSele%(wp_VSe)s_Mar07.root' % vars())
-    f3 = ROOT.TFile('data/TauID_SF_dm_DeepTau2017v2p1VSjet_VSjet%(wp)s_VSele%(wp_VSe)s_Mar07.root' % vars())
+    f1 = ROOT.TFile('data/TauID_Highpt_DMFracts_DeepTau2018v2p5VSjet_VSjet%(wp)s_VSele%(wp_VSe)s_Jul18.root' % vars()) # note DM fracts were not updated for DeepTauv2p5, but should be very similar
+    f2 = ROOT.TFile('data/TauID_SF_Highpt_DeepTau2018v2p5VSjet_VSjet%(wp)s_VSele%(wp_VSe)s_Jul18.root' % vars())
+    f3 = ROOT.TFile('data/TauID_SF_dm_DeepTau2018v2p5VSjet_VSjet%(wp)s_VSele%(wp_VSe)s_Jul18.root' % vars())
+
 
     for y in ['2016_preVFP','2016_postVFP', '2017', '2018']:
       h1 = f2.Get('DMinclusive_%(y)s_hist' % vars())

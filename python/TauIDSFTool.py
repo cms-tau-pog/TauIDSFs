@@ -34,15 +34,17 @@ class TauIDSFTool:
         self.extraUnc = None
         self.filename = None
         
-        if id in ['MVAoldDM2017v2','DeepTau2017v2p1VSjet']:
+        if id in ['MVAoldDM2017v2','DeepTau2017v2p1VSjet','DeepTau2018v2p5VSjet']:
+          if id == 'DeepTau2018v2p5VSjet': scheme='Jul18'
+          else: scheme='Mar07'
           if highpT: # pT-dependent SFs from W*->taunu events
             allowed_wp=['Loose','Medium','Tight','VTight']
             allowed_wp_vsele=['VVLoose','Tight']
-            if id != 'DeepTau2017v2p1VSjet': raise IOError("Scale factors not available for ID '%s'!"%id)
+            if not (id == 'DeepTau2017v2p1VSjet' or id == 'DeepTau2018v2p5VSjet'): raise IOError("Scale factors not available for ID '%s'!"%id)
             if wp not in allowed_wp or wp_vsele not in allowed_wp_vsele:
               raise IOError("Scale factors not available for this combination of WPs! Allowed WPs for VSjet are [%s]. Allowed WPs for VSele are [%s]"%(', '.join(allowed_wp),', '.join(allowed_wp_vsele)))
             if emb: raise IOError("Scale factors for embedded samples not available in this format! Use either pT-binned or DM-binned SFs.")
-            fname = os.path.join(path,"TauID_SF_Highpt_%s_VSjet%s_VSele%s_Mar07.root" %(id, wp, wp_vsele))
+            fname = os.path.join(path,"TauID_SF_Highpt_%s_VSjet%s_VSele%s_%s.root" %(id, wp, wp_vsele, scheme))
             file = ensureTFile(fname,verbose=verbose)
             year_=year
             if year_.startswith('UL'): year_=year_[2:]
@@ -51,7 +53,7 @@ class TauIDSFTool:
             self.func['syst_alleras']   = file.Get("DMinclusive_%s_syst_alleras"%(year_))
             self.func['syst_oneera']   = file.Get("DMinclusive_%s_syst_%s"%(year_,year_))
             file.Close()
-            fname_extrap = os.path.join(path,"TauID_SF_HighptExtrap_%s_Mar07.root" %(id))
+            fname_extrap = os.path.join(path,"TauID_SF_HighptExtrap_%s_%s.root" %(id,scheme))
             file_extrap = ensureTFile(fname_extrap,verbose=verbose)
             self.func['syst_extrap']   = file_extrap.Get("uncert_func_%sVSjet_%sVSe"%(wp,wp_vsele))
             file_extrap.Close()
@@ -61,15 +63,16 @@ class TauIDSFTool:
             self.DMs        = [0,1,10] if 'oldDM' in id else [0,1,10,11]
             allowed_wp=['Loose','Medium','Tight','VTight']
             allowed_wp_vsele=['VVLoose','Tight']
-            if id != 'DeepTau2017v2p1VSjet': raise IOError("Scale factors not available for ID '%s'!"%id)
+            if not (id == 'DeepTau2017v2p1VSjet' or id == 'DeepTau2018v2p5VSjet'): raise IOError("Scale factors not available for ID '%s'!"%id)
             if wp not in allowed_wp or wp_vsele not in allowed_wp_vsele:
               raise IOError("Scale factors not available for this combination of WPs! Allowed WPs for VSjet are [%s]. Allowed WPs for VSele are [%s]"%(', '.join(allowed_wp),', '.join(allowed_wp_vsele)))
             if emb: raise IOError("Scale factors for embedded samples not available in this format! Use either pT-binned or DM-binned SFs.")
-            fname = os.path.join(path,"TauID_SF_dm_%s_VSjet%s_VSele%s_Mar07.root" %(id, wp, wp_vsele))
+            fname = os.path.join(path,"TauID_SF_dm_%s_VSjet%s_VSele%s_%s.root" %(id, wp, wp_vsele, scheme))
             file = ensureTFile(fname,verbose=verbose)
             year_=year
             if year_.startswith('UL'): year_=year_[2:]
             uncerts=['uncert0','uncert1','syst_alleras','syst_%s' % year_]
+            if scheme == 'Jul18': uncerts+=['syst_alldms_%s' % year_, 'TES']
 
             self.funcs_dm0  = extractTF1DMandPT(file,'DM0_%s_fit' % year_,uncerts=uncerts+['syst_dm0_%s' % year_])
             self.funcs_dm1  = extractTF1DMandPT(file,'DM1_%s_fit' % year_,uncerts=uncerts+['syst_dm1_%s' % year_])
@@ -223,7 +226,7 @@ class TauIDSFTool:
           elif 0<dm<=2: funcs = self.funcs_dm1
           elif dm==10: funcs = self.funcs_dm10
           elif dm==11: funcs = self.funcs_dm11
-          
+         
           if not unc: sf=funcs['nom'].Eval(max(min(pt,140.),20.))
           else: sf=funcs[unc].Eval(max(min(pt,140.),20.))
           return sf
@@ -257,7 +260,7 @@ class TauIDSFTool:
     
 
 class TauESTool:
-    def __init__(self, year, id='DeepTau2017v2p1VSjet', path=datapath, verbose=False):
+    def __init__(self, year, id='DeepTau2017v2p1VSjet', wp='Medium', wp_vsele='VVLoose', path=datapath, verbose=False):
         """Choose the IDs and WPs for SFs."""
         if "UL" in year:
           print(">>> TauESTool: Warning! Using pre-UL (%r) TESs at high pT (for uncertainties only)..."%(year))
@@ -266,38 +269,60 @@ class TauESTool:
           year_highpt = year
         assert year in campaigns, "You must choose a year from %s! Got %r."%(', '.join(campaigns),year)
         assert year_highpt in campaigns, "You must choose a year from %s! Got %r."%(', '.join(campaigns),year_highpt)
-        fname_lowpt  = os.path.join(path,"TauES_dm_%s_%s.root"%(id,year))
-        fname_highpt = os.path.join(path,"TauES_dm_%s_%s_ptgt100.root"%(id,year_highpt))
-        file_lowpt   = ensureTFile(fname_lowpt, verbose=verbose)
-        file_highpt  = ensureTFile(fname_highpt,verbose=verbose)
-        self.hist_lowpt  = extractTH1(file_lowpt, 'tes')
-        self.hist_highpt = extractTH1(file_highpt,'tes')
-        self.hist_lowpt.SetDirectory(0)
-        self.hist_highpt.SetDirectory(0)
-        file_lowpt.Close()
-        file_highpt.Close()
         self.pt_low  = 34  # average pT in Z -> tautau measurement (incl. in DM)
         self.pt_high = 170 # average pT in W* -> taunu measurement (incl. in DM)
         self.DMs     = [0,1,10] if "oldDM" in id else [0,1,10,11]
-        self.filename = fname_lowpt
-        self.filename_highpt = fname_highpt
-    
+        # the new scheme for deepTau v2p5 does not apply any shift in the nominal values of the TES and uses a 1.5% (2%) uncertainty for DM != (=) 11 for lowpt
+        # for high pT the uncertainties are increased to 3% 
+        self.Jul18_scheme=False
+        if id=='DeepTau2018v2p5VSjet': 
+          allowed_wp=['Loose','Medium','Tight','VTight']
+          allowed_wp_vsele=['VVLoose','Tight']
+          if wp not in allowed_wp or wp_vsele not in allowed_wp_vsele:
+            raise IOError("TES corrections not available for this combination of WPs! Allowed WPs for VSjet are [%s]. Allowed WPs for VSele are [%s]"%(', '.join(allowed_wp),', '.join(allowed_wp_vsele)))
+          self.Jul18_scheme=True
+          fname_lowpt  = os.path.join(path,"TauES_dm_%s_%s_VSjet%s_VSele%s_Jul18.root"%(id,year, wp, wp_vsele))
+        if not self.Jul18_scheme:
+          fname_lowpt  = os.path.join(path,"TauES_dm_%s_%s.root"%(id,year))
+          fname_highpt = os.path.join(path,"TauES_dm_%s_%s_ptgt100.root"%(id,year_highpt))
+          file_highpt  = ensureTFile(fname_highpt,verbose=verbose)
+          self.hist_highpt = extractTH1(file_highpt,'tes')
+          self.hist_highpt.SetDirectory(0)
+          file_highpt.Close()
+          self.filename = fname_lowpt
+          self.filename_highpt = fname_highpt
+        file_lowpt   = ensureTFile(fname_lowpt, verbose=verbose)
+        self.hist_lowpt  = extractTH1(file_lowpt, 'tes')
+        self.hist_lowpt.SetDirectory(0)
+        file_lowpt.Close()
+ 
     def getTES(self, pt, dm, genmatch=5, unc=None):
         """Get tau ES vs. tau DM."""
         if genmatch==5 and dm in self.DMs:
-          bin = self.hist_lowpt.GetXaxis().FindBin(dm)
-          tes = self.hist_lowpt.GetBinContent(bin)
+          if self.Jul18_scheme:
+            if pt<140.:
+              bin = self.hist_lowpt.GetXaxis().FindBin(dm)
+              tes = self.hist_lowpt.GetBinContent(bin)
+              err = self.hist_lowpt.GetBinError(bin)
+            else:
+              # no nominal correction and larger uncertainty for high pT 
+              err=0.03
+              tes=1.0
+          else:
+            bin = self.hist_lowpt.GetXaxis().FindBin(dm)
+            tes = self.hist_lowpt.GetBinContent(bin)
+            if unc!=None:
+              if pt>=self.pt_high: # high pT
+                bin_high = self.hist_highpt.GetXaxis().FindBin(dm)
+                err      = self.hist_highpt.GetBinError(bin_high)
+              elif pt>self.pt_low: # linearly interpolate between low and high pT
+                bin_high = self.hist_highpt.GetXaxis().FindBin(dm)
+                err_high = self.hist_highpt.GetBinError(bin_high)
+                err_low  = self.hist_lowpt.GetBinError(bin)
+                err      = err_low + (err_high-err_low)/(self.pt_high-self.pt_low)*(pt-self.pt_low)
+              else: # low pT
+                err      = self.hist_lowpt.GetBinError(bin)
           if unc!=None:
-            if pt>=self.pt_high: # high pT
-              bin_high = self.hist_highpt.GetXaxis().FindBin(dm)
-              err      = self.hist_highpt.GetBinError(bin_high)
-            elif pt>self.pt_low: # linearly interpolate between low and high pT
-              bin_high = self.hist_highpt.GetXaxis().FindBin(dm)
-              err_high = self.hist_highpt.GetBinError(bin_high)
-              err_low  = self.hist_lowpt.GetBinError(bin)
-              err      = err_low + (err_high-err_low)/(self.pt_high-self.pt_low)*(pt-self.pt_low)
-            else: # low pT
-              err      = self.hist_lowpt.GetBinError(bin)
             if unc=='Up':
               tes += err
             elif unc=='Down':

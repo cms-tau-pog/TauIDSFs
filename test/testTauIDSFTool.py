@@ -21,7 +21,10 @@ def printSFTable(year,id,wp,vs='pt',emb=False,otherVSlepWP=False):
       dmvals = [0,1,5,6,10,11]
       year_=year
       if year_.startswith('UL'): year_=year_[2:]
-      uncerts=['uncert0','uncert1','syst_alleras','syst_%s' % year_, 'syst_dmX_%s' % year_]
+      uncerts=['uncert0','uncert1']
+      uncerts+=['syst_alleras']
+      if id != 'DeepTau2018v2p5VSjet': uncerts+=['syst_%s' % year_, 'syst_dmX_%s' % year_]
+      else: uncerts+=['syst_alldms_%s' % year_,'TES']
       for pt in ptvals:
         print(">>> ")
         print(">>> SF for %s WP of %s in %s with pT = %s GeV"%(wp,green(id),year,pt))
@@ -34,9 +37,8 @@ def printSFTable(year,id,wp,vs='pt',emb=False,otherVSlepWP=False):
           print(">>> %20s"%(u+"_down")    +''.join("%9.5f"%sftool.getSFvsDMandPT(pt,dm,5,u.replace('dmX','dm%s' % dm)+'_down') for dm in dmvals))
         print(">>> ")
   elif vs=='highpt':
-      ptvals = [50,100,150,200,300,400,500,1000]
+      ptvals = [50,100,150,200,300,400,500,690,1000]
       uncerts=['stat','stat_bin1','stat_bin2','syst','extrap']
-      #uncerts=['uncert0','uncert1','syst_alleras','syst_%s' % year_, 'syst_dmX_%s' % year_]
       print(">>> ")
       print(">>> High pT SF for %s WP of %s in %s"%(wp,green(id),year))
       print(">>> ")
@@ -89,13 +91,14 @@ def printSFTable(year,id,wp,vs='pt',emb=False,otherVSlepWP=False):
       ###sftool.getSFvsEta(1.5,1,5) # results in an error
   
 
-def printTESTable(year,id):
-  testool = TauESTool(year,id)
+def printTESTable(year,id, wp,wp_vsele):
+  testool = TauESTool(year,id,wp,wp_vsele)
   ptvals  = [25,102,175] #[25,30,102,170,175]
   dmvals  = [0,1,5,10,11]
   for pt in ptvals:
     print(">>> ")
-    print(">>> TES for '%s' ('%s') and pT = %s GeV"%(green(id),year,pt))
+    if wp==None: print(">>> TES for '%s' ('%s') and pT = %s GeV"%(green(id),year,pt)) 
+    else: print(">>> TES for %s VSjet and %s VSele WPs of '%s' ('%s') and pT = %s GeV"%(wp, wp_vsele, green(id),year,pt))
     print(">>> ")
     print(">>> %10s"%('var \ DM')+''.join("%9d"%dm for dm in dmvals))
     print(">>> %10s"%("central") +''.join("%9.5f"%testool.getTES(pt,dm,5)        for dm in dmvals))
@@ -124,7 +127,7 @@ if __name__ == "__main__":
   print(">>> start test tau ID SF tool")
   
   testIDTool   = True #and False
-  testTESTool  = True and False
+  testTESTool  = True #and False
   testFESTool  = True and False
   emb          = True and False
   otherVSlepWP = True and False
@@ -142,6 +145,7 @@ if __name__ == "__main__":
   tauIDs      = [
     #'MVAoldDM2017v2',
     'DeepTau2017v2p1VSjet',
+    'DeepTau2018v2p5VSjet',
     #'antiEleMVA6',
     #'antiMu3',
     #'DeepTau2017v2p1VSmu',
@@ -150,15 +154,22 @@ if __name__ == "__main__":
   tauESs = [
     #'MVAoldDM2017v2',
     'DeepTau2017v2p1VSjet',
+    'DeepTau2018v2p5VSjet',
   ]
   WPs         = [
-    #'Loose',
+    'Loose',
     'Medium',
+    'Tight',
+    'VTight'
+  ]
+  WPs_vsele   = [
+    'VVLoose',
     'Tight'
   ]
+
   for year in years:
     for id in tauIDs:
-      vslist = ['eta'] if any(s in id for s in ['anti','VSe','VSmu']) else (['pt','dm'] if emb else ['ptdm','highpt'])
+      vslist = ['eta'] if any(s in id for s in ['anti','VSe','VSmu']) else (['pt','dm'] if emb else ['ptdm','highpt']) 
       for vs in vslist:
         for wp in WPs:
           if 'antiMu' in id and wp=='Medium': continue
@@ -166,7 +177,9 @@ if __name__ == "__main__":
             printSFTable(year,id,wp,vs,emb,otherVSlepWP)
     if testTESTool:
       for id in tauESs:
-        printTESTable(year,id)
+        for wp in WPs:
+          for wp_vsele in WPs_vsele: 
+              printTESTable(year,id,wp,wp_vsele)
     if testFESTool:
       printFESTable(year)
   

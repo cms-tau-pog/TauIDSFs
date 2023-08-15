@@ -25,7 +25,7 @@ void printSFTable(std::string year, std::string id, std::string wp, std::string 
   std::cout << std::fixed;
   std::cout.precision(5);
   if (highpT){
-      std::vector<int> ptvals = {50,100,150,200,300,400,500,1000};
+      std::vector<int> ptvals = {50,100,150,200,300,400,500,690,1000};
       std::vector<std::string> uncerts = {"stat","stat_bin1","stat_bin2","syst","extrap"};
       std::cout << ">>>  " << std::endl;
       std::cout << ">>> High pT SF for "<<wp<<" WP of "<<id<<" in "<<year << std::endl;
@@ -56,7 +56,15 @@ void printSFTable(std::string year, std::string id, std::string wp, std::string 
     std::vector<int> dmvals = {0, 1, 5, 6, 10, 11};
     std::string year_ = year;
     if (year_.find("UL") == 0) year_ = year_.substr(2);
-    std::vector<std::string> uncerts = {"uncert0", "uncert1", "syst_alleras", "syst_" + year_, "syst_dmX_" + year_};
+    std::vector<std::string> uncerts = {"uncert0", "uncert1"};
+    if(id=="DeepTau2018v2p5VSjet") {
+        std::vector<std::string> extra_uncerts = {"syst_alldms_"+year_, "TES"};
+        uncerts.insert(uncerts.end(), extra_uncerts.begin(), extra_uncerts.end());
+    } else { 
+        std::vector<std::string> extra_uncerts = {"syst_" + year_, "syst_dmX_" + year_};
+        uncerts.insert(uncerts.end(), extra_uncerts.begin(), extra_uncerts.end()); 
+    }
+    uncerts.push_back("syst_alleras");
     for (auto pt : ptvals) {
         std::cout << ">>> " << std::endl;
         std::cout << ">>> SF for " << wp << " WP of " << id << " in " << year << " with pT = " << pt << " GeV" << std::endl;
@@ -195,10 +203,12 @@ int main(int argc, char* argv[]){
   std::vector<std::string> years = {
     "UL2018"
   };
-  std::vector<std::string> WPs   = {"Loose","Medium","Tight"};
+  //std::vector<std::string> WPs   = {"Loose","Medium","Tight"};
+  std::vector<std::string> WPs   = {"Medium"};
   std::vector<std::string> IDs   = {
     //"MVAoldDM2017v2",
     "DeepTau2017v2p1VSjet",
+    "DeepTau2018v2p5VSjet",
     //"antiEleMVA6",
     //"antiMu3",
     "DeepTau2017v2p1VSe",
@@ -217,7 +227,7 @@ int main(int argc, char* argv[]){
         for(auto const& wp: WPs){
           if(id=="antiMu3" and wp=="Medium") continue;
           if(vs!="pt" && vs!="dm") printSFTable(year,id,wp,wp_vsele,vs);
-          if(year.find("UL")==std::string::npos  && !(vs=="ptdm" || vs=="highpt")&&id=="DeepTau2017v2p1VSjet") // do not test embed for UL at the moment as these SFs don't exist yet
+          if(year.find("UL")==std::string::npos  && !(vs=="ptdm" || vs=="highpt")&&(id=="DeepTau2017v2p1VSjet" || id=="DeepTau2018v2p5VSjet")) // do not test embed for UL at the moment as these SFs don't exist yet
             printSFTable(year,id,wp,wp_vsele,vs,true);
         }
       }

@@ -76,13 +76,13 @@ from TauIDSFTool import TauIDSFTool
 
 ## Summary of available SFs
 
-This is a rough summary of the available SFs for `DeepTau2017v2p1` in [`data/`](data):
+This is a rough summary of the available SFs for `DeepTau2017v2p1` and `DeepTau2018v2p5` in [`data/`](data):
 
-| Tau component  | `genmatch`  | `DeepTau2017v2p1` `VSjet`  | `DeepTau2017v2p1` `VSe`  | `DeepTau2017v2p1` `VSmu`  | energy scale   |
-|:--------------:|:-----------:|:--------------------------:|:------------------------:|:-------------------------:|:--------------:|
-| real tau       | `5`         | vs pT and DM (for MC) or vs. pT, or vs. DM (for Embed.)          | – (*)                    | – (*)                     | vs. DM         |
-| e -> tau fake  | `1`, `3`    | –                          | vs. eta                  | –                         | vs. DM and eta |
-| mu -> tau fake | `2`, `4`    | –                          | –                        | vs. eta                   | – (±1% unc.)   |
+| Tau component  | `genmatch`  | `DeepTau2017v2p1` `VSjet`  | `DeepTau2017v2p1` `VSe`  | `DeepTau2017v2p1` `VSmu`  | `DeepTau2018v2p5` `VSjet`  | energy scale   |
+|:--------------:|:-----------:|:--------------------------:|:------------------------:|:-------------------------:|:--------------------------:| :-------------:|
+| real tau       | `5`         | vs pT and DM (for MC) or vs. pT, or vs. DM (for Embed.)          | – (*)                    | – (*)                     | vs pT and DM (for MC), no Embed. corrections derived yet | vs. DM         |
+| e -> tau fake  | `1`, `3`    | –                          | vs. eta                  | –                         |    | vs. DM and eta |
+| mu -> tau fake | `2`, `4`    | –                          | –                        | vs. eta                   |    | – (±1% unc.)   |
 
 (*) The scale factors are provided only for a sub-set of the working points. For the VSele discriminator, they are measured for the VVLoose and Tight WPs - users are strongly encoraged to use one of these two working points and should report to the TauPOG for approval if another working point is used. For the VSmu, they are measured for the Tight WP but we don't expect a large dependence on the chosen VSmu WP in this case so you are free to use any available WP you like for the muon rejection. 
 
@@ -120,7 +120,7 @@ A simple script is given to dump the corrections saved in histograms or function
 ```
 
 ### DM and pT-dependent SFs
-The DM and pT dependent SFs are provided as TF1 functions in the "TauID_SF_dm_DeepTau2017v2p1VSjet_VSjetX_VSeleY_Mar07.root" ROOT files, where X corresponds to the VSjet WP and Y corresponds to the VSele WP. 
+The DM and pT dependent SFs are provided as TF1 functions in the "TauID_SF_dm_DeepTau2017v2p1VSjet_VSjetX_VSeleY_Mar07.root" ROOT files for DeepTau2017v2p1 and "TauID_SF_dm_DeepTau2018v2p5VSjet_VSjetX_VSeleY_Jul18.root" for DeepTau2018v2p5, where X corresponds to the VSjet WP and Y corresponds to the VSele WP. 
 
 The ROOT files contain several functions. The central values are obtained from the functions named like "DM$DM_$ERA_fit" where $DM is the decay mode = 0, 1, 10, or 11, and $ERA = 2016_preVFP, 2016_postVFP, 2017, or 2018.
 
@@ -131,7 +131,8 @@ func = file.Get('DM1_2018_fit')
 sf   = func.Eval(pt)
 ```
 
-There are also  that correspond to systematic variations that can be accessed in the same way. The table below gives a summary of the function names and what uncertainties they correspond to:
+There are also functions that correspond to systematic variations that can be accessed in the same way. 
+The table below gives a summary of the function names and what uncertainties they correspond to for DeepTau2017v2p1:
 
 | Uncertainty      | Function name in ROOT files | String to pass to the tool | Notes                            | Correlated by era | Correlated by DM |
 |:----------------:|:---------------------------:| :-------------------------:| :-------------------------------:| :----------------:| :----------------:|
@@ -140,6 +141,17 @@ There are also  that correspond to systematic variations that can be accessed in
 | `Systematic alleras`        | `DM$DM_$ERA_syst_alleras_{up,down}_fit` | `syst_alleras_{up,down}` | `The component of the systematic uncertainty that is correlated across DMs and eras` | &check; | &check; |
 | `Systematic by-era`         | `DM$DM_$ERA_syst_$ERA_{up,down}_fit`    | `syst_$ERA_{up,down}` | `The component of the systematic uncertainty that is correlated across DMs but uncorrelated by eras` | &cross; | &check; |
 | `Systematic by-era and by-DM` | `DM$DM_$ERA_syst_dm$DM_$ERA_{up,down}_fit` | `syst_dm$DM_$ERA_{up,down}` | `The component of the systematic uncertainty that is uncorrelated across DMs and eras` | &cross; | &cross; |
+
+The table below gives a summary of the function names and what uncertainties they correspond to for DeepTau2018v2p5:
+
+| Uncertainty      | Function name in ROOT files | String to pass to the tool | Notes                            | Correlated by era | Correlated by DM |
+|:----------------:|:---------------------------:| :-------------------------:| :-------------------------------:| :----------------:| :----------------:|
+| `Statistical uncertainty 1` | `DM$DM_$ERA_fit_uncert0_{up,down}` | `uncert0_{up,down}` | `Statistical uncertainty on linear fit parameters from eigendecomposition of covariance matrix.` | &cross; | &cross; |
+| `Statistical uncertainty 2` | `DM$DM_$ERA_fit_uncert1_{up,down}` | `uncert1_{up,down}` | `Statistical uncertainty on linear fit parameters from eigendecomposition of covariance matrix.` | &cross; | &cross; |
+| `Systematic alleras`        | `DM$DM_$ERA_syst_alleras_{up,down}_fit` | `syst_alleras_{up,down}` | `The component of the systematic uncertainty that is correlated across DMs and eras` | &check; | &check; |
+| `Systematic by-era` | `DM$DM_$ERA_syst_alldms_$ERA_{up,down}_fit` | `syst_alldms_$ERA_{up,down}` | `The component of the systematic uncertainty that is correlated across DMs but uncorrelated by eras` | &cross; | &cross; |
+| `Systematic Tau Energy scale` | `DM$DM_$ERA_TES{Up,Down}_fit` | `TES_{up,down}` | `The uncertainty due to the tauenergy scale systematic uncertainty` | &cross; | &cross; |
+
 
 The SFs can also be accessed using the tool:
 
@@ -281,11 +293,45 @@ The uncertainty is obtained in a similar way as above.
 
 ### DM-dependent tau energy scale
 
+***Usage for DeepTau2018v2p5***
+
+The tau energy scale (TES) corrections for taus with pT<140 GeV are provided in the files [`data/TauES_dm_DeepTau2018v2p5VSjet_$ERA_VSjet$X_VSele$Y_Jul18.root`](data), where $X corresponds to the VSjet WP, $Y corresponds to the VSele WP, and $ERA = UL2016_preVFP, UL2016_postVFP, UL2017, or UL2018
+
+Each file contains one histogram (`'tes'`) with the TES centered around `1.0` measured in bins of the tau decay mode.
+It should be applied to a genuine tau by multiplying the tau `TLorentzVector`, or equivalently, the tau energy, pT and mass as follows:
+```
+file = TFile("data/TauES_dm_DeepTau2018v2p5VSjet_UL2018_VSjetMedium_VSeleVVLoose_Jul18.root")
+hist = file.Get('tes')
+tes  = hist.GetBinContent(hist.GetXaxis().FindBin(dm))
+
+# scale the tau's TLorentzVector
+tau_tlv *= tes
+
+# OR, scale the energy, mass and pT
+tau_E  *= tes
+tau_pt *= tes
+tau_m  *= tes
+```
+The uncertainties are equal to 1.5% for decay modes 0, 1, and 10, and 2% for decay mode 11. The uncertainties should be decorrelated by decay modes and eras.
+For taus with pT>140 GeV, no corrections should be applied to the nominal TES value from MC but a larger 3% uncertainty should be included.
+A simple class, [`TauESTool`](python/TauIDSFTool.py), is provided to obtain the TES as
+```
+from TauPOG.TauIDSFs.TauIDSFTool import TauESTool
+testool = TauESTool('UL2018','DeepTau2018v2p5VSjet',wp='Medium', wp_vsele='VVLoose')
+tes     = testool.getTES(pt,dm,genmatch)
+tesUp   = testool.getTES(pt,dm,genmatch,unc='Up')
+tesDown = testool.getTES(pt,dm,genmatch,unc='Down')
+```
+This method computes the central values and uncertainty for low pT (20 GeV < pT < 140 GeV) and higher pT values (pT > 140 GeV).
+
+
+***Usage for DeepTau2017v2p1***
+
 The tau energy scale (TES) is provided in the files [`data/TauES_dm_*.root`](data).
 Each file contains one histogram (`'tes'`) with the TES centered around `1.0`.
 It should be applied to a genuine tau by multiplying the tau `TLorentzVector`, or equivalently, the tau energy, pT and mass as follows:
 ```
-file = TFile("data/TauES_dm_MVAoldDM2017v2_2016Legacy.root")
+file = TFile("data/TauES_dm_DeepTau2017v2p1VSjet_UL2018.root")
 hist = file.Get('tes')
 tes  = hist.GetBinContent(hist.GetXaxis().FindBin(dm))
 
